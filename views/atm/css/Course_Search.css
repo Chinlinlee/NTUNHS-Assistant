@@ -1,0 +1,78 @@
+
+/*https://stackoverflow.com/questions/46083768/html-js-drop-down-checkboxes*/
+.multiselect 
+{
+  width: 100%;
+  position: relative;
+  display: inline-block;
+}
+
+.selectBox
+{
+  width: 100%;
+  position: relative;
+  cursor:pointer;
+}
+
+.selectBox select 
+{
+  width: 100%;
+  font-weight: bold;
+
+}
+
+.overSelect 
+{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.checkboxes 
+{
+  display: none;
+  border: 1px #dadada solid;
+  overflow-y:scroll;
+  max-height: 200px;
+  width: 100%;
+  z-index: 1;
+  position: absolute;
+  background-color: rgb(249, 249, 249);
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.checkboxes label 
+{
+  display: block;
+  cursor:pointer;
+}
+
+.checkboxes label:hover 
+{
+  background-color: #1e90ff;
+}
+.Gap-row
+{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+select
+{
+    cursor:pointer;
+}
+table, td {border:1em solid black}
+table {border-collapse:collapse}
+.flowcontrol
+{
+    overflow-y:scroll;
+    max-height: 200px;
+    z-index: 1;
+    position: absolute; 
+    width:97%;
+}
+.pointer
+{
+  cursor: pointer;
+}

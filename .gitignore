@@ -1,0 +1,14 @@
+node_modules
+xlsx
+docx
+pdf
+picture
+views/loaderio-be689f282278f5218658702c3eb0fe95.txt
+*.log
+config/config.js
+models/NTUNHS/*.log
+models/NTUNHS/config.js
+models/NTUNHS/courses.xls
+models/NTUNHS/plan.json
+mongo_exportandimport/
+node.exe

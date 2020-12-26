@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html ng-app="CTE_BOTApp">
+
+<head>
+    <title>教學評量機器人</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8" >
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="no-cache" http-equiv="cache-control">
+    <meta content="no-cache" http-equiv="pragma">
+    <meta content="0" http-equiv="expires">
+    <meta name="viewport" content="width=device-width, initial-scale=1 ,maximum-scale=1,user-scalable=no" />
+    <link href="/atm/css/theme/angular-loading.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/atm/css/main.css">
+    <link rel="stylesheet" href="/atm/css/rwd-table.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" crossorigin="anonymous">
+    <script>
+        function blockui()
+		{
+			$.blockUI({
+				message: "<i class='fa fa-spinner fa-pulse orange' style='font-size:600%'></i>", 
+				//borderWidth:'0px' 和透明背景
+				css: { borderWidth: '0px', backgroundColor: 'transparent' },
+			});
+			return true;
+		}
+    </script>
+    <STYLE>
+       @media (max-width: 736px) 
+       { 
+           .div-rwd p 
+            {
+                text-align: left;
+                font-size: 20px;
+                overflow: hidden;
+                width: 100%;
+                display: block;
+            }
+            .div-rwd p:after 
+            {
+                /*最重要的就是這串*/
+                content: attr(data-th);
+                /*最重要的就是這串*/
+                display: inline-block;
+                text-transform: uppercase;
+                font-weight: bold;
+                margin-right: 10px;
+                color: rgb(11, 57, 210);
+            }
+            .div-rwd .before:before 
+            {
+                /*最重要的就是這串*/
+                content: attr(data-before-th) " : ";
+                /*最重要的就是這串*/
+                display: inline-block;
+                text-transform: uppercase;
+                font-weight: bold;
+                margin-right: 10px;
+                color: rgb(11, 57, 210);
+            }
+            .no-th
+            {
+                display:none !important;
+            }
+            .topgap
+            {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+        }
+    </STYLE>
+</head>
+
+<body ng-controller="CTE_BOTCtrl">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse"   id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Course">個人修課明細</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Schedule">個人課表</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Scores">學期成績</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/History_Scores">歷年成績</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
+                </li>
+                <li class="nav-item active">
+                        <a class="nav-link" href="/Course_Search">課程查詢</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/logout" ng-show="HaveUser">登出</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <form action="/api/CTE_BOT" method="POST" onsubmit="return blockui();">
+            <div class="row" ng-if="!HaveUser">
+                <div class="col-sm-1 text-lg-center">
+                    <p>學號:</p>
+                </div>
+                <div class="col-sm-5 text-lg-center topgap">
+                    <input type="text" class="input input-lg" id="username" name="username" required>
+                </div>
+                <div class="col-sm-1 text-lg-center">
+                    <p>密碼:</p>
+                </div>
+                <div class="col-sm-5 text-lg-center topgap">
+                    <input type="password" class="input password input-lg" id="usernmae" name="password" required>
+                </div>
+            </div>
+            <div class="row" ng-if="HaveUser" style="visibility:hidden">
+                <div class="col-sm-1 text-center">
+                    <p>學號:</p>
+                </div>
+                <div class="col-sm-5 text-center">
+                    <input type="text" class="input" id="username" name="username" value="{{Currentuser}}" readonly>
+                </div>
+            </div>
+            <div class="row div-rwd">
+                <div class="col-sm-1">
+                    <p class="font-weight-bold text-center no-th">題號</p>
+                </div>
+                <div class="col-sm-4">
+                    <p class="font-weight-bold text-center no-th">題目</p>
+                </div>
+                <div class="col-sm-2">
+                    <p class="font-weight-bold text-center no-th">非常同意</p>
+                </div>
+                <div class="col-sm-1">
+                    <p class="font-weight-bold text-center no-th">同意</p>
+                </div>
+                <div class="col-sm-1">
+                    <p class="font-weight-bold text-center no-th">普通</p>
+                </div>
+                <div class="col-sm-1">
+                    <p class="font-weight-bold text-center no-th">不滿意</p>
+                </div>
+                <div class="col-sm-2">
+                    <p class="font-weight-bold text-center no-th">非常不滿意</p>
+                </div>
+            </div>
+            
+            <div ng-repeat="Item in Items">
+                <div class="row div-rwd">
+                    <div class="col-sm-1 font-weight-bold text-center border" >
+                        <p data-before-th="題號" class="before">{{Item.Num}}</p>
+                    </div>
+                    <div class="col-sm-4 font-weight-bold border">
+                        <p data-before-th="題目" class="before">{{Item.Question}}</p>
+                    </div>
+                    <div class="col-sm-2 text-center border">
+                        <div class="custom-control custom-radio">
+                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E1_{{$index+1}}" value="{{Item.E1}}"> 
+                            <label class="custom-control-label" for="E1_{{$index+1}}"><p ng-if="$index<10" data-th="非常同意"></p><p ng-if="$index ==10">不曾缺席</p><p ng-if="$index == 11">總是</p></label>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 text-center border">
+                        <div class="custom-control custom-radio">
+                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E2_{{$index+1}}" value="{{Item.E2}}"> 
+                            <label class="custom-control-label" for="E2_{{$index+1}}"><p ng-if="$index<10" data-th="同意"></p><p ng-if="$index ==10">缺席1~2次</p><p ng-if="$index == 11">經常</p></label>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 text-center border">
+                        <div class="custom-control custom-radio">
+                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E3_{{$index+1}}" value="{{Item.E3}}"> 
+                            <label class="custom-control-label" for="E3_{{$index+1}}"><p ng-if="$index<10" data-th="普通"></p><p ng-if="$index ==10">缺席3~4次</p><p ng-if="$index == 11">偶爾</p></label>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 text-center border">
+                        <div class="custom-control custom-radio">
+                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E4_{{$index+1}}" value="{{Item.E4}}"> 
+                            <label class="custom-control-label" for="E4_{{$index+1}}"><p ng-if="$index<10" data-th="不同意"></p><p ng-if="$index ==10">缺席5~6次</p><p ng-if="$index == 11">很少</p></label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 text-center border">
+                        <div class="custom-control custom-radio">
+                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E5_{{$index+1}}" value="{{Item.E5}}"> 
+                            <label class="custom-control-label" for="E5_{{$index+1}}"><p ng-if="$index<10" data-th="非常不同意"></p><p ng-if="$index ==10">缺席7次以上</p><p ng-if="$index == 11">從不</p></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 8px;">
+                <div class="col-lg-12 text-center">
+                    <button class="btn btn-success btn-lg" type="submit">送出</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+<script src="../externals/angularjs/angular.min.js"></script>
+<script src="../externals/jquery/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/atm/scripts/CTE_BOT.js"></script>
+<script src="/atm/scripts/rwd-td.js"></script>
+<script src="/atm/scripts/Common.js"></script>
+<script>
+    window.onload = async function() {
+        for (var i = 1 ; i <= 11 ; i++)
+        {
+            $('#E1_' + i ).prop('checked' ,true);
+        }
+        $('#E5_12').prop('checked' , true);
+        $('#loginAlert').hide();
+        const urlParams = new URLSearchParams(window.location.search);
+        const myParam = urlParams.get('error');
+        if(myParam == "Password_Error") 
+        {
+            alert('帳號或密碼錯誤');
+        }
+        else if (myParam == "System_Error")
+        {
+            alert('系統錯誤，請聯繫作者');
+            
+        }
+        else if (myParam == "Success")
+        {
+            alert('填寫完成');
+        }
+    };
+    
+</script>

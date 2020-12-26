@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html ng-app="TSApp">
+
+<head>
+    <title>今日課表</title>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="no-cache" http-equiv="cache-control">
+    <meta content="no-cache" http-equiv="pragma">
+    <meta content="0" http-equiv="expires">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/atm/css/rwd-table.css">
+    <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/atm/css/main.css">
+</head>
+
+<body ng-controller="TSCtrl" class="myBody">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="mynav">
+        <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" id="navbutton">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <select class="custom-select" id="day_select">
+                        <option value="1">星期一</option>
+                        <option value="2">星期二</option>
+                        <option value="3">星期三</option>
+                        <option value="4">星期四</option>
+                        <option value="5">星期五</option>
+                        <option value="6">星期六</option>
+                        <option value="7">星期日</option>
+                    </select>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Course">個人修課明細</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Schedule">個人課表</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Scores">學期成績</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/History_Scores">歷年成績</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Course_Search">課程查詢</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span><span style="font-size:25px">🌞 </span><input type="checkbox"  data-toggle="toggle" data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px"> 🌛</span></span>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/logout">登出</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" style="width:100%; padding-top:32px;" >
+        <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}">
+            <table id="setting" class="table table-bordered table-striped">
+                <thead class="thead-dark">
+                    <tr >
+                        <th>課程名稱</th>
+                        <th>教室</th>
+                        <th>時間</th>
+                        <th>節次</th>
+                        <th>任課教師</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr name="DataList" ng-repeat="Item in DataList">
+                        <td class="table-th" data-th="課程名稱" id="{{Item.Name}}" onclick='Item_Visible_Control(this.id+"_content" , this.id , true)' >{{Item.Name}}</td>
+                        <td data-th="教室" id="{{Item.Name}}_content">{{Item.Place}}</td>
+                        <td data-th="時間" id="{{Item.Name}}_content">{{Item.Time}}</td>
+                        <td data-th="節次" id="{{Item.Name}}_content">{{Item.Period}}</td>
+                        <td data-th="任課教師" id="{{Item.Name}}_content">{{Item.Teacher}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="ModalCenter_Update" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered custom-class" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLongTitle">輸入密碼</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input id="password" type="password" class="input password" name="password" placeholder="請輸入密碼" title="請輸入密碼" ng-model="password">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="phpupdate()" ng-disabled="!password" id="Btn_Update_Confirm">確認</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="../externals/angularjs/angular.min.js"></script>
+<script src="../externals/jquery/jquery-1.11.1.min.js"></script>
+<script src="../externals/jqueryui/jquery-ui.min.js"></script>
+<script src="..//externals/jqueryui/datepicker-zh-TW.js"></script>
+<script src="/atm/scripts/Today_Schedule.js"></script>
+<script src="/atm/scripts/rwd-td.js"></script>
+<script src="/atm/scripts/Common.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
+
+<script>
+    window.onload = async function() {
+        commonFunc.darkModeInit();
+        window.onresize();
+        var date = new Date();
+        var weekday = date.getDay();
+        var week = new Array(7,1,2,3,4,5,6);
+        $('#day_select option[value=' + week[weekday] +']').attr('selected','selected');
+        await sleep(100);
+        angular.element(document.getElementById('setting')).scope().Query(week[weekday]);
+        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        await sleep(300);
+        if (width <= 736)
+        {
+            HideTd('content');
+            $(`.table-th`).addClass("table-th-show");
+        } 
+        
+    };
+    $( "#day_select" ).change(async function() 
+    {
+        var selectday = $('#day_select :selected').val();
+        angular.element(document.getElementById('setting')).scope().Query(selectday);
+        $("#navbutton").click();
+        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        await sleep(400);
+        if (width <= 736)
+        {
+            HideTd('content');
+            $(`.table-th`).addClass("table-th-show");
+        }
+    });
+    window.onresize = async function () {
+        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        if (width <= 736)
+        {
+            $("#setting").addClass("table-rwd");
+            TdDisplay('content');
+        } 
+        else 
+        {
+            $("#setting").removeClass("table-rwd");
+            TdDisplayNoneRWD('content');
+        }
+    }
+</script>
