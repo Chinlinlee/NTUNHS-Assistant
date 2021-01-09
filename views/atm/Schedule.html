@@ -4,36 +4,44 @@
 <head>
     <title>我的課表</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta charset="UTF-8" >
+    <meta charset="UTF-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="no-cache" http-equiv="cache-control">
     <meta content="no-cache" http-equiv="pragma">
     <meta content="0" http-equiv="expires">
     <meta name="viewport" content="width=device-width, initial-scale=1 ,maximum-scale=1,user-scalable=no" />
-    <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     
-    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" crossorigin="anonymous">
-   
+
     <link rel="stylesheet" href="/atm/css/rwd-table.css">
     <link rel="stylesheet" href="/atm/css/main.css">
+    <link rel="stylesheet" href="/atm/css/dark.css">
     <style>
         fieldset {
             border-radius: 8px;
-            border : 1px solid;
-            box-shadow:3px 3px 10px #666;
-            margin-bottom:10px;
+            border: 1px solid;
+            box-shadow: 3px 3px 10px #666;
+            margin-bottom: 10px;
         }
+
         legend {
-            border-radius:3px;
-            padding:5px 10px;
-            background-color:#393e43;
-            color:#FFF;
-            box-shadow:2px 2px 4px #666;
+            border-radius: 3px;
+            padding: 5px 10px;
+            background-color: #393e43;
+            color: #FFF;
+            box-shadow: 2px 2px 4px #666;
         }
+
         .modal-backdrop {
             position: fixed;
             top: 0;
@@ -49,43 +57,31 @@
 <body ng-controller="ScheduleCtrl">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse"   id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
+                <div ng-include="'navDropdownLearnInfo.html'"></div>
                 <li class="nav-item active">
-                    <a class="nav-link" href="/Course">個人修課明細</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Schedule">個人課表</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Scores">學期成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/History_Scores">歷年成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
-                </li>
-                <li class="nav-item active">
-                        <a class="nav-link" href="/Course_Search">課程查詢</a>
+                    <a class="nav-link" href="/Course_Search">課程查詢</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <span><span style="font-size:25px">🌞 </span><input type="checkbox"  data-toggle="toggle" data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px"> 🌛</span></span>
+                    <span><span style="font-size:25px">🌞 </span><input type="checkbox" data-toggle="toggle"
+                            data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px">
+                            🌛</span></span>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/logout">登出</a>
-                </li>
+                <div ng-include="'navRight.html'"></div>
             </ul>
         </div>
     </nav>
     <div class="container-overview" id="table-lg">
         <div dw-loading="LogList" dw-loading-options="{text: '載入清單...'}">
-            <table id="setting" class="table table-bordered table-striped table-hover table-sm table-rwd" width="100%" cellspacing="0" >
+            <table id="setting" class="table table-bordered table-striped table-hover table-lg table-rwd" width="100%"
+                cellspacing="0">
                 <thead class="thead-dark">
                     <tr>
                         <th width="1%">節次</th>
@@ -99,60 +95,100 @@
                         <th width="16%">星期日</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="font-size: 20px;">
                     <tr name="LogList" ng-repeat="LogItem in LogList">
                         <td class="align-middle" data-th="節次">{{LogItem.Period}}</td>
                         <td class="align-middle" data-th="時間">{{LogItem.Time}}</td>
-                        <td class="align-middle" data-th="星期一" id="Schedule_content"><P>{{LogItem.Mon}}</P></td>
-                        <td class="align-middle" data-th="星期二" id="Schedule_content"><P>{{LogItem.Tue}}</P></td>
-                        <td class="align-middle" data-th="星期三" id="Schedule_content"><P>{{LogItem.Wed}}</P></td>
-                        <td class="align-middle" data-th="星期四" id="Schedule_content"><P>{{LogItem.Thu}}</P></td>
-                        <td class="align-middle" data-th="星期五" id="Schedule_content"><P>{{LogItem.Fri}}</P></td>
-                        <td class="align-middle" data-th="星期六" id="Schedule_content"><P>{{LogItem.Sat}}</P></td>
-                        <td class="align-middle" data-th="星期日" id="Schedule_content"><P>{{LogItem.Sun}}</P></td>
+                        <td class="align-middle justify-content-center align-items-center" data-th="星期一" id="Schedule_content"><button class="td-btn-center"
+                                ng-click="onClickSchedule(LogItem.Mon_detail);">{{LogItem.Mon}}</button></td>
+                        <td class="align-middle" data-th="星期二" id="Schedule_content"><button  class="td-btn-center"
+                                ng-click="onClickSchedule(LogItem.Tue_detail);">{{LogItem.Tue}}</button></td>
+                        <td class="align-middle" data-th="星期三" id="Schedule_content"><button  class="td-btn-center"
+                                ng-click="onClickSchedule(LogItem.Wed_detail);">{{LogItem.Wed}}</button></td>
+                        <td class="align-middle" data-th="星期四" id="Schedule_content"><button  class="td-btn-center"
+                                ng-click="onClickSchedule(LogItem.Thu_detail);">{{LogItem.Thu}}</button></td>
+                        <td class="align-middle" data-th="星期五" id="Schedule_content"><button  class="td-btn-center"
+                                ng-click="onClickSchedule(LogItem.Fri_detail);">{{LogItem.Fri}}</button></td>
+                        <td class="align-middle" data-th="星期六" id="Schedule_content"><button  class="td-btn-center"
+                                ng-click="onClickSchedule(LogItem.Sat_detail);">{{LogItem.Sat}}</button></td>
+                        <td class="align-middle" data-th="星期日" id="Schedule_content"><button  class="td-btn-center"
+                                ng-click="onClickSchedule(LogItem.Sun_detail);">{{LogItem.Sun}}</button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
     <div class="container" id="table-mobile">
-        <div class="row" ng-repeat="(key , item) in ['星期一'  ,'星期二' , '星期三', '星期四', '星期五', '星期六', '星期日']" id="fieldSet{{key+1}}">
+        <div class="row" ng-repeat="(key , item) in ['星期一'  ,'星期二' , '星期三', '星期四', '星期五', '星期六', '星期日']"
+            id="fieldSet{{key+1}}">
             <div class="col-md-12 col-12">
                 <fieldset class="p-2">
-                    <legend  class="w-auto">{{item}}</legend>
-                    <div class="row  h-100 justify-content-center align-items-center">
-                        <div class="col-sm-6 col-12 " ng-repeat="(scheduleKey , scheduleItem) in scheduleList" ng-if="scheduleItem.Day == key+1">
+                    <legend class="w-auto">{{item}}</legend>
+                    <div class="row h-100 justify-content-center align-items-center">
+                        <div class="col-sm-6 col-12 " ng-repeat="(scheduleKey , scheduleItem) in scheduleList"
+                            ng-if="scheduleItem.Day == key+1">
                             <div class="card mb-3 mx-auto" style="max-width: 18rem;cursor: pointer;">
-                                <div class="card-body text-center" data-toggle="modal" data-target="#modal{{scheduleItem.Code}}">
+                                <div class="card-body text-center" data-toggle="modal"
+                                    data-target="#modal{{scheduleItem.Code}}">
                                     <p class="card-title">{{scheduleItem.Time}}</p>
+                                    <p class="card-title">{{scheduleItem.Place}}</p>
                                     <h5 class="card-text">{{scheduleItem.Name}}</h5>
                                 </div>
                             </div>
-                            <div class="modal fade" id="modal{{scheduleItem.Code}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal fade" id="modal{{scheduleItem.Code}}" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalCenterTitle">Other</h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">Other</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>教室：{{scheduleItem.Place}}</p>
+                                            <p>節次：{{scheduleItem.Period}}</p>
+                                            <p>學分：{{scheduleItem.Credit}}</p>
+                                            <p>課程性質：{{scheduleItem.Type}}</p>
+                                            <p>授課老師：{{scheduleItem.Teacher}}</p>
+                                            <p>代碼：{{scheduleItem.Code}}</p>
+                                            <p>備註：{{scheduleItem.Other}}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                      <p>節次：{{scheduleItem.Period}}</p>
-                                      <p>學分：{{scheduleItem.Credit}}</p>
-                                      <p>課程性質：{{scheduleItem.Type}}</p>
-                                      <p>授課老師：{{scheduleItem.Teacher}}</p>
-                                      <p>備註：{{scheduleItem.Other}}</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    </div>
-                                  </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                 </fieldset>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalScheduleDetail" tabindex="-1" role="dialog"
+        aria-labelledby="modalScheduleDetailCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalScheduleDetailCenterTitle">Other</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>教室：{{openScheduleDetail.Place}}</p>
+                    <p>節次：{{openScheduleDetail.Period}}</p>
+                    <p>學分：{{openScheduleDetail.Credit}}</p>
+                    <p>課程性質：{{openScheduleDetail.Type}}</p>
+                    <p>授課老師：{{openScheduleDetail.Teacher}}</p>
+                    <p>代碼：{{openScheduleDetail.Code}}</p>
+                    <p>備註：{{openScheduleDetail.Other}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -162,45 +198,35 @@
 <script src="../externals/angularjs/angular.min.js"></script>
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="../externals/jqueryui/jquery-ui.min.js"></script>
-<script src="/atm/scripts/Schedule.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/atm/scripts/ngCommon.js"></script>
+<script src="/atm/scripts/Schedule.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
 <script>
-
-    window.onload = async function() {
-        commonFunc.darkModeInit();
+    window.onload = async function () {
+        commonFunc.myDarkModeInit();
         let darkMode = localStorage.getItem("darkMode");
-        await sleep(500);
+        await sleep(200);
         angular.element(document.getElementById('setting')).scope().Query();
         await sleep(300);
         var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-        if (width <= 736)
-        {
-            document.body.style.zoom = "87%" ;
+        if (width <= 736) {
+            document.body.style.zoom = "87%";
             $("#table-lg").hide();
-        }
-        else 
-        {
+        } else {
             $("#table-mobile").hide();
         }
-        $('[id*="Schedule_content"]').each(function()
-        {
-            
-            if ($(this).children().text().trim()!=="")
-            {
-                /*if (darkMode) 
-                {
-                    $(this).children().addClass("label border myBg-dark");
-                }*/
-               // else 
-                //{
-                    $(this).children().addClass("label border myBg-dark text-center my-0");
-               // }
+        $('[id*="Schedule_content"]').each(function () {
+            if ($(this).children().text().trim() !== "") {
+                $(this).children().addClass("label border myBg-dark text-center my-0");
+            } else {
+                $(this).children().remove();
             }
         })
     };
-    
 </script>

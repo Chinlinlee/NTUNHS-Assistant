@@ -1,13 +1,17 @@
 
-var ScheduleApp = angular.module("ScheduleApp", []);
-ScheduleApp.controller("ScheduleCtrl", function ($scope, ScheduleService) {
+var ScheduleApp = angular.module("ScheduleApp", ["commonApp"]);
+ScheduleApp.controller("ScheduleCtrl", function ($scope, ScheduleService , commonService) {
   /**variables initialize*/
   $scope.LogList = [];
   $scope.scheduleList = [];
   $scope.isMobile = false;
   $scope.LogListSize = "";
-  $scope.Currentuser ="";
-  ScheduleService.Get_User($scope);
+  $scope.Currentuser = "";
+  $scope.openScheduleDetail = {};
+  commonService.user.getStuInfo().then(function (res) {
+    $scope.Currentuser = res.data;
+  });
+  
   let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
   if (width <= 736)
   {
@@ -57,22 +61,19 @@ ScheduleApp.controller("ScheduleCtrl", function ($scope, ScheduleService) {
       $("[id*='modal']").modal('hide');
     }
   }
+
+  $scope.onClickSchedule = function (data) {
+    console.log(data);
+    $scope.openScheduleDetail = data;
+    $("#modalScheduleDetail").modal('show');
+  }
 });
 
 
 ScheduleApp.service('ScheduleService', function ($http) {
   return ({
-    Load_Trans: Load_Trans,
-    Get_User : Get_User
+    Load_Trans: Load_Trans
   });
-  function Get_User($scope)
-  {
-    var request  =$http.get('/api/user').then(function(result)
-    {
-      $scope.Currentuser = result.data;
-    });
-    return request.then(handleSuccess , handleError);
-  }
   function Load_Trans(QueryKeys) {
     var request = $http({
       method: "GET",
