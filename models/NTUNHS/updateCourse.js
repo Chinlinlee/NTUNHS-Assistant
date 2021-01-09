@@ -1,5 +1,4 @@
 
-const fetch = require("node-fetch");
 const fs = require('fs');
 const cheerio = require('cheerio');
 const chrome = require('selenium-webdriver/chrome');
@@ -9,7 +8,6 @@ const glob = require("glob");
 const xlsx = require("xlsx");
 const _ = require("lodash");
 const mongodb = require("../common/data");
-const hash = require("object-hash")
 const config = require("./config");
 const path = require('path');
 async function getCourseExcel(driver) {
@@ -29,7 +27,9 @@ async function getCourseExcel(driver) {
                 console.log(matches);
                 for (let match of matches) {
                     if (match.includes("課程查詢")) {
-                        fs.renameSync(match, "courses.xls");
+                        let matchDirname = path.dirname(match);
+                        let storePath = path.join(matchDirname , "courses.xls");
+                        fs.renameSync(match, storePath);
                         return resolve(true);
                     } else {
                         return resolve(true);
@@ -80,6 +80,7 @@ async function getCoursePlanPageUrl(driver) {
     let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例*/
     [___, driver] = await seleSchoolLogin(driver, config.stuNum, config.stuPwd);
     await driver.navigate().to("https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Teachplan/qry/Teachplan_qry_01.aspx");
+    await driver.sleep(2000);
     let queryFrame = await driver.findElement({ id: 'ctl00_ContentPlaceHolderQuery_QueryFrame' });
     await driver.switchTo().frame(queryFrame);
     await driver.sleep(1000);
@@ -106,9 +107,9 @@ async function crawlCoursePlan(driver) {
     let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例*/
     let url = await getCoursePlanPageUrl(driver);
     await driver.navigate().to(url);
-
+    await driver.sleep(1500);
     let $ = cheerio.load(await driver.getPageSource());
-    let count = $("#GridView1_ctl13_lblPageCount").text();
+    let count = $("#GridView1_ctl13_lblPageCount").text() || 1;
     let coursePlanObjList = [];
     for (let i = 0; i < count; i++) {
         let pageUrl = new URL(url);
@@ -164,7 +165,6 @@ async function updateCourse() {
     let result = [];
     console.log(dataJson[0]);
     for (let item of dataJson) {
-        //console.log(item);
         let hitCourse = _.filter(coursePlans, v => {
             if (_.get(v, "secondCode")) {
                 return (v.code == item["科目代碼(舊碼)"] && v.openTeacher == item["主開課教師代碼(舊碼)"] && v.secondCode == item["課表代碼(舊碼)"]);
@@ -214,19 +214,21 @@ async function updateCourse() {
         , function (err, result) {
             if (err) console.error(err);
             console.log(result);
-        });
+        }
+    );
     // await mongodb.InsertManydata("All_Courses" , result);
     for (let key in result) {
         let course = result[key];
         let id = course._id;
         await (async () => {
             return new Promise((resolve) => {
-                conn.db('My_ntunhs').collection("All_Courses").findOneAndUpdate({ _id: id }, { $set: course }, { upsert: true }, function (err, doc) {
+                conn.db('My_ntunhs').collection("All_Courses").findOneAndUpdate({ _id: id }, { $set: course }, { upsert: true }, async function (err, doc) {
                     if (err) {
                         console.error(err);
                         return resolve(false);
                     }
                     //console.log(doc);
+                    await conn.close();
                     return resolve(doc);
                 })
             })
@@ -245,9 +247,9 @@ async function updateCourseMain() {
     crawlCoursePlan(driver).then(() => {
         getCourseExcel(driver).then(() => {
             driver.quit();
+            //driver.quit();
             updateCourse().then(() => {
                 console.log("success");
-
             });
         });
     });
