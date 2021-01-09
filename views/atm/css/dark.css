@@ -1,0 +1,123 @@
+.darkmode--activated {
+    background: #1f1f1f;
+    color: white
+}
+
+
+.darkmode--activated .thead-dark th {
+    background-color: #2f2f2f;
+    color: whitesmoke;
+    border: 0.5px solid #1f1f1f;
+    border-bottom: 0.5px solid whitesmoke;
+}
+
+
+.darkmode--activated .table-bordered td,
+.table-bordered th {
+    border: 0.5px solid #1f1f1f;
+    color: whitesmoke;
+    background-color: #2f2f2f;
+}
+
+.darkmode--activated label {
+    color: #fff;
+}
+
+.darkmode--activated .card-body {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    background-color: #3b3c3e;
+    color: #fff;
+}
+
+.darkmode--activated .modal-content {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: .3rem;
+    outline: 0;
+    background-color: #3b3c3e;
+    color: #fff;
+}
+
+.darkmode--activated .myBg-dark {
+    background-color: #4f5656;
+    color: whitesmoke;
+    border-radius: 10px;
+    border: 1px solid #2f2f2f!important;
+}
+
+.darkmode--activated .form-control {
+    background-color : #464649;
+    border: 1px solid #1f1f1f;
+    color: whitesmoke;
+}
+.darkmode--activated .bg-school-green {
+    background-color : #46565d;
+}
+
+.darkmode--activated .alert-secondary {
+    background-color: #b1b5bc78!important;
+}
+.darkmode--activated .alert-secondary b{
+    color: whitesmoke;
+}
+.darkmode--activated .alert-secondary span{
+    color: whitesmoke;
+}
+
+/* #region li block*/
+.darkmode--activated  li{
+    background-color: #2f2f2f;
+    color: whitesmoke;
+}
+
+.darkmode--activated li.nav-item {
+    background-color: #343a40;
+}
+/* #endregion */
+
+@media (max-width: 736px) {
+    .darkmode--activated .table-th-show::after {
+        display: block;
+        content: ' ';
+        float: right;
+        background-image: url('/images/plus.svg');
+        background-size: 28px 28px;
+        height: 28px;
+        width: 28px;
+    }
+    .darkmode--activated table.table.table-striped tr td {
+        background-color: #2f2f2f;
+        color: white;
+    }
+
+    .darkmode--activated .table-rwd tr {
+        border: 1px black solid;
+    }
+
+    .darkmode--activated .table-bordered td,
+    .table-bordered th {
+        border: 0.5px solid #000000;
+        color: #000
+    }
+    .darkmode--activated .table-rwd td:before {
+        /*最重要的就是這串*/
+        content: attr(data-th) " : ";
+        /*最重要的就是這串*/
+        display: inline-block;
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-right: 10px;
+        color: #76e676;
+        border-bottom: 1px solid whitesmoke;
+        background-color: #2f2f2f;
+    }
+}
