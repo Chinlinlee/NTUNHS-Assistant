@@ -1,0 +1,9 @@
+
+<li class="nav-item active"  ng-if="$parent.Currentuser">
+    <div class="dropdown show">
+        <a class="nav-link dropdown-toggle active" href="#" data-toggle="dropdown" id="dropdownUser" aria-haspopup="true" aria-expanded="false">Hello，{{$parent.Currentuser.stuName}}</a>
+        <div class="dropdown-menu" aria-labelledby="dropdownUser">
+            <a class="dropdown-item" href="/logout">Logout</a>
+        </div>
+    </div>
+</li>
