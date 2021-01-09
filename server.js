@@ -93,9 +93,9 @@ function Clear_Files()
   }
 }
 
-let scheduleUpdateCourse = schedule.scheduleJob({rule: '* 30 0 * * *'} ,function () {
+let scheduleUpdateCourse = schedule.scheduleJob({rule: '0 30 0 * * *'} ,function () {
   console.log("update course");
   updateCourseMain();
 });
 
-updateCourseMain();
+//updateCourseMain();
