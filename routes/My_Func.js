@@ -2,11 +2,15 @@ const log  = require('log-to-file');
 const mongodb = require('../models/common/data')
 const request  = require('request');
 const fetch = require('node-fetch');
+const FormData = require('form-data');
 const fakeUa = require('fake-useragent');
 const cheerio = require('cheerio');
 const auth = require("../models/users/School_Auth");
 const moment = require('moment');
 const tough =  require('tough-cookie');
+const chrome = require('selenium-webdriver/chrome');
+const webdriver = require('selenium-webdriver');
+
 module.exports.IsLoggedIn = function(req ,res , next)
 {  
     if (req.isAuthenticated())
@@ -16,7 +20,13 @@ module.exports.IsLoggedIn = function(req ,res , next)
     }
     log("Not Login" + "   IP:" + req.connection.remoteAddress);
     res.writeHead(401,{"Content-Type" : "text/html;charset=utf8"});
-    res.write("Unauthorized <br/>未登入(2秒後跳轉) <br/><a href='/'>Go to Login Page<a/><meta http-equiv='refresh' content='2; url='/' />");
+    res.write(`Unauthorized <br/>未登入(2秒後跳轉) <br/><a href='/'>Go to Login Page<a/><meta http-equiv='refresh' content='2; url='/' />
+    <script>
+        setTimeout(() => {
+            window.location = "/";
+        }, 2000);
+    </script>
+    `);
     res.end();
 }
 
@@ -109,7 +119,8 @@ module.exports.getJar = function  (req) { //system8
     }
     return jar;*/
     let jar = new tough.CookieJar();
-    if (req && req.session.ntunhsApp) {
+    let sessionntunhsApp = _.get(req.session , "ntunhsApp");
+    if (req && sessionntunhsApp) {
         req.session.ntunhsApp.split(";").map(function (value) {
             jar.setCookieSync(value, "http://system8.ntunhs.edu.tw");
         })
@@ -118,209 +129,51 @@ module.exports.getJar = function  (req) { //system8
 }
 
 module.exports.getSignOffJar = function (req) {
-    let jar = request.jar();
-    if (req && req.session.ntunhsSignOff) {
+    let jar = new tough.CookieJar();
+    let sessionntunhsSignOff = _.get(req.session , "ntunhsSignOff");
+    if (req && sessionntunhsSignOff) {
         req.session.ntunhsSignOff.split(";").map(function (value) {
-            jar.setCookie(request.cookie(value) , "http://system10.ntunhs.edu.tw");
+            jar.setCookieSync(value , "http://system10.ntunhs.edu.tw");
         });
     }
     return jar;
 }
 
 
+
+
 module.exports.ntunhsApp = {
-    getCourse : async (req) => {
-        if (req.session.Course.length > 0) {
-            return req.session.Course;
-        }
-        let courses_URL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_14.aspx?stno=undefined&size=100&action=LoadJSon`;
-        let reqOption = {
-            method : "GET"  ,
-            uri : courses_URL , 
-            jar : exports.getJar(req)
-        }
-        let fetchCookie = require('fetch-cookie')(fetch , exports.getJar(req));
-        fetchCookie
-        let courseFetch = await fetchCookie(reqOption.uri , {method : reqOption.method});
-        let course = await courseFetch.text();
-        let courseJson = "";
-        try {
-            courseJson = JSON.parse(course);
-        } catch (e) {
-            return Promise.resolve(false);
-        }
-        _.unset(courseJson , "0");
-        let result = [];
-        for (let i  in courseJson) {
-            let item = courseJson[i]
-            result.push({
-                Name:item.課程代碼與名稱_L.substr(11) , 
-                Code : item.課程代碼與名稱_L.substr(0,10) ,
-                Place:item.教室,
-                Day:item.星期,
-                Period:item.節次,
-                Credit:item.學分 , 
-                Type:item.課程性質 , 
-                Teacher:item.任課教師_L.replace(/<br\/>/gi , "") ,
-                Other : item.備註_L
-            });
-        }
-        req.session.Course = result;
-        return Promise.resolve(result);
-    } , 
-    Score : {
-        tdFunc : {
-            "7" : (td , result  , result2) => {  //課程分數
-                const tdItem = {
-                    Name:td.eq(1).text() ,
-                    Class:td.eq(2).text(),
-                    Teacher:td.eq(3).text(),
-                    Type:td.eq(4).text(),
-                    Credit:td.eq(5).text() , 
-                    Score:td.eq(6).text() , 
-                }
-                result.push(tdItem);
-                return tdItem;
-            } , 
-            "2" : (td , result , result2) => { //平均、排名
-                const tdItem = {
-                    id:td.eq(0).text() ,
-                    name:td.eq(1).text(),
-                }
-                result2.push(tdItem);
-                return tdItem;
-            }
-        } ,
-        get : async function (req)  {
-            if (req.session.Score.length >0) {
-                return req.session.Score;
-            }
-            let ScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_24.aspx?stno=${req.session.STNO}`;
-            let j = exports.getJar(req);
-            console.log(ScoreURL);
-            let reqOption = {
-                method : "GET"  ,
-                uri : ScoreURL , 
-                jar : exports.getJar(req)
-            }
-            let fetchCookie = require("fetch-cookie")(fetch , j);
-            let ScorePageFetch = await fetchCookie( reqOption.uri , {method: reqOption.method4});
-            let ScorePage = await ScorePageFetch.text();
-            let $ = cheerio.load(ScorePage);
-            let scoreTableTr = $('.FormView tr');
-            if (scoreTableTr.length <= 0) {
-                return [false];
-            }
-            scoreTableTr = scoreTableTr.slice(2);
-            let result = []; //分數
-            let result2 = []; //排名
-            for (let i = 0 ; i < scoreTableTr.length ; i++) {
-                const td = scoreTableTr.eq(i).find('td');
-                this.tdFunc[td.length](td , result , result2);
-            }
-            req.session.Score = [result , result2];
-            return [result , result2];
-        }
-    } ,
-    historyScores : {
-        tdFunc : {
-            "7" : function (td , sem_no , sems, result ,result2) { //課程成績
-                const tdSem = td.eq(0).text();
-                (tdSem)? (() => {
-                    sem_no = tdSem;
-                    sems.push({Sem:sem_no});
-                })() : undefined;
-                const tdItem = {
-                    Sem:sem_no ,
-                    Type:td.eq(1).text(),
-                    Course:td.eq(2).text(),
-                    Up_Credit:td.eq(3).text(),
-                    Up_Score:td.eq(4).text() , 
-                    Down_Credit:td.eq(5).text() , 
-                    Down_Score:td.eq(6).text()
-                }
-                result.push(tdItem);
-                return [tdItem , sem_no];
-            } , 
-            "5" : function (td , sem_no , sems , result ,result2) { //平均分數
-                const tdItem = {
-                    title:td.eq(0).text() , 
-                    Up_Credit:td.eq(1).text() ,
-                    Up_Score:td.eq(2).text(),
-                    Down_Credit:td.eq(3).text() ,
-                    Down_Score:td.eq(4).text()
-                }
-                result2.push(tdItem);
-                return [tdItem];
-            } , 
-            "2" : function (td, sem_no , sems , result ,result2) { //累計排名，累計平均
-                const tdItem = {
-                    title:td.eq(0).text() , 
-                    Up_Credit:td.eq(1).text() ,
-                }
-                result2.push(tdItem);
-                return [tdItem];
-            }
-        },
-        get : async function (req , res) {
-            if (req.session.HistoryScore.length > 0) {
-                return req.session.HistoryScore;
-            }
-            let historyScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_25.aspx?stno=${req.session.STNO}`;
-            let reqOption = {
-                method : "GET"  ,
-                uri : historyScoreURL , 
-                jar : exports.getJar(req)
-            }
-            let fetchCookie = require("fetch-cookie")(fetch , reqOption.jar);
-            let historyScorePageFetch = await fetchCookie(reqOption.uri , {method : reqOption.method});
-            let historyScorePage = await historyScorePageFetch.text();
-            let $ = cheerio.load(historyScorePage);
-            let scoreTableTr = $('.FormView tr');
-            let result = [];
-            let result2 = [];
-            let sems = [];
-            let sem_no = "";
-            scoreTableTr = scoreTableTr.slice(3);
-            scoreTableTr = scoreTableTr.slice(0 ,-2);
-            if (!scoreTableTr.length) {
-                return Promise.resolve(false);
-            }
-            for (let i = 0 ; i < scoreTableTr.length ; i++) {
-                const td = scoreTableTr.eq(i).find('td');
-                let [item , newSem ] = this.tdFunc[td.length](td , sem_no , sems,result,result2);
-                sem_no = newSem;
-            }
-            //res.cookie("test" , "123" , {signed: true});
-            req.session.HistoryScore = [result , result2 , sems];
-            return Promise.resolve([result , result2 , sems]);
-        }
-    } ,
     signOff : {
         enter : async (req , res) => {
-            let j = exports.getSignOffJar(req);
-            let enterURL = `http://system10.ntunhs.edu.tw/Workflow/Modules/Main/login.aspx?first=true&action=&info=`;
-            let reqOption = {
-                method : "GET"  ,
-                uri : enterURL , 
-                jar : j , 
-                followRedirect : true
-            }
-            let body =await exports.Request_func(request , reqOption);
-            req.session.ntunhsSignOff = j.getCookieString('http://system10.ntunhs.edu.tw');
+            return new Promise (async (resolve) => {
+                let j = exports.getSignOffJar(req);
+                let enterURL = `http://system10.ntunhs.edu.tw/Workflow/Modules/Main/login.aspx?first=true&action=&info=`;
+                console.log( await j.getCookieString('http://system10.ntunhs.edu.tw'));
+                let fetchCookie = require('fetch-cookie')(fetch ,j);
+                let fetchRes = await fetchCookie(enterURL , {
+                    method : "GET"
+                });
+                let txt = await fetchRes.text();
+                req.session.ntunhsSignOff = await j.getCookieString('http://system10.ntunhs.edu.tw');
+                if (txt.includes('簽核系統')) {
+                    return resolve(true);
+                }
+            });
         } , 
         getPreRankCsrf : async (req , res) => {
             return new Promise (async (resolve)=> {
                 let j = exports.getSignOffJar(req);
-                let firstBody =await exports.Request_func(request , {
-                    uri : "http://system10.ntunhs.edu.tw/Workflow/Modules/Main/WFdocumentView.aspx" , 
-                    method : "GET" , 
-                    jar : j
+                let fetchCookie = require('fetch-cookie')(fetch , j);
+                let firstBodyFetch =await fetchCookie("http://system10.ntunhs.edu.tw/Workflow/Modules/Main/WFdocumentView.aspx" , {
+                    method : "GET"
                 });
+                let firstBody = await firstBodyFetch.text();
+               // console.log(firstBody);
                 let  $ = cheerio.load(firstBody);
                 let __VIEWSTATE = $("#__VIEWSTATE").val();
                 let __VIEWSTATEGENERATOR = $("#__VIEWSTATEGENERATOR").val();
                 let __EVENTVALIDATION = $("#__EVENTVALIDATION").val();
+                let today = moment(new Date()).format("YYYY/MM/DD");
                 let form = {
                     "ScriptManager1" : "UpdatePanel1|ddlWFName" , 
                     "__EVENTTARGET" : "ddlWFName" , 
@@ -332,23 +185,44 @@ module.exports.ntunhsApp = {
                     "__EVENTVALIDATION" : __EVENTVALIDATION ,
                     "ddlWFName" : "修課-少修申請" , 
                     "WCalApplyFrom" : "2020/07/08" ,
-                    "WCalApplyTo" : "2020/09/20" ,
+                    "WCalApplyTo" : today ,
                     "rdoApplyType" : "ALL" , 
                     "hidBrowserAlert" : "true" ,
                     "__ASYNCPOST" : "true"
                 }
+                myForm = new FormData();
+                myForm.append('ScriptManager1' , "UpdatePanel1|ddlWFName");
+                myForm.append("__EVENTTARGET" , "ddlWFName" );
+                myForm.append("__EVENTARGUMENT" , "" );
+                myForm.append("__LASTFOCUS", "" );
+                myForm.append("__VIEWSTATE" , __VIEWSTATE );
+                myForm.append("__VIEWSTATEGENERATOR" , __VIEWSTATEGENERATOR);
+                myForm.append("__VIEWSTATEENCRYPTED" , ""  );
+                myForm.append("__EVENTVALIDATION" , __EVENTVALIDATION);
+                myForm.append( "ddlWFName" , "修課-少修申請" );
+                myForm.append("WCalApplyFrom" , "2020/07/08");
+                myForm.append("WCalApplyTo" , today);
+                myForm.append("rdoApplyType"  ,"ALL" );
+                myForm.append("hidBrowserAlert" , "true");
+                myForm.append("__ASYNCPOST" , "true");
                 let getCsrfOption = {
                     url : "http://system10.ntunhs.edu.tw/Workflow/Modules/Main/WFdocumentView.aspx" , 
                     form : form , 
                     jar : j , 
                     method : "POST" , 
                     headers : {
-                        "Content-Type" : "multipart/form-data;" ,
+                        "Content-Type" : "multipart/form-data" ,
                         "Accept" : "*/*" ,
                         "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36"
                     }
                 };
-                let csrfBody = await exports.Request_func(request ,getCsrfOption);
+                //let csrfBody = await exports.Request_func(request ,getCsrfOption);
+                let csrfBodyFetch = await fetchCookie(getCsrfOption.url , {
+                    method : "POST" ,
+                    data : myForm , 
+                    headers : myForm.getHeaders()
+                });
+                let csrfBody = await csrfBodyFetch.text();
                 $ = cheerio.load(csrfBody);
                 let addFormBtnClick = $("#ImageNew").attr("onclick"); //新增表單按鈕 onclick事件
                 if (!addFormBtnClick) {
@@ -361,16 +235,32 @@ module.exports.ntunhsApp = {
         } , 
         getPreRank : async  (req , res , csrf) => {
             return new Promise (async (resolve)=> {
+                let opt = new chrome.Options();
+                opt.addArguments('--incognito');
+                opt.setUserPreferences({ "download.default_directory": __dirname });
+                let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build();
                 let j = exports.getSignOffJar(req);
+                let cookieStr =j.getCookieStringSync("http://system10.ntunhs.edu.tw");
+                let aspSessionID = cookieStr.split("=")[1];
+                await driver.navigate().to("http://system10.ntunhs.edu.tw/Workflow/Modules/Main/login.aspx?first=false&action=&info=");
+                await driver.manage().addCookie({
+                    name : "ASP.NET_SessionId" , 
+                    value : aspSessionID
+                });
+                await driver.navigate().to("http://system10.ntunhs.edu.tw/Workflow/Modules/Main/login.aspx?first=true&action=&info=");
+                driver.quit();
                 let timestamp = moment(new Date()).format("YYYYMMDDkkmmss");
                 let url =`http://system10.ntunhs.edu.tw/Workflow/Modules/Workflow/%e4%bf%ae%e8%aa%b2%e5%8b%95%e6%85%8b%e7%94%b3%e8%ab%8b/apply_form.aspx?id=&workflowname=%e4%bf%ae%e8%aa%b2-%e5%b0%91%e4%bf%ae%e7%94%b3%e8%ab%8b&userid=${req.user}&timestamp=${timestamp}&csrf=${csrf}`;
-                console.log(url);
                 let reqOption = {
                     method : "GET"  ,
                     uri : url , 
                     jar : j 
                 }
-                let body = await exports.Request_func(request , reqOption);
+                let fetchCookie = require('fetch-cookie')(fetch , j);
+                let fetchRes = await fetchCookie(reqOption.uri , {
+                    method : reqOption.method
+                });
+                let body = await fetchRes.text();
                 $ = cheerio.load(body);
                 let tableTr = $("table tr");
                 for (let i = 0 ; i< tableTr.length ; i++) {

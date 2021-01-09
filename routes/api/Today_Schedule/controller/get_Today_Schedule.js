@@ -1,5 +1,6 @@
 const data_log = require("../../../../models/common/data.js");
 const myFunc = require('../../../My_Func');
+const { getCourse } = require('../../Course/controller/get_Course');
 const _ = require("lodash");
 module.exports = async function(req, res)
 {
@@ -12,7 +13,7 @@ module.exports = async function(req, res)
        } 
     });
     let Result = [];
-    let course =await myFunc.ntunhsApp.getCourse(req);
+    let course =await getCourse(req);
     if (!course) {
         req.logout();
         return res.status(401).send();

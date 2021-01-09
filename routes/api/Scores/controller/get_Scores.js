@@ -1,8 +1,10 @@
-const data_log = require("../../../../models/common/data.js");
-const myFunc = require("../../../My_Func");
+const myFunc = require('../../../My_Func');
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 module.exports = async function (req, res) {
-    await myFunc.ntunhsApp.signOff.enter(req, res);
     let preRankObj = [];
+    //暫時將以前的排名方法去掉
+    /*await myFunc.ntunhsApp.signOff.enter(req, res);
     if (!req.session.noPreRank) {
         let csrf = await myFunc.ntunhsApp.signOff.getPreRankCsrf(req, res);
         if (csrf) {
@@ -23,8 +25,8 @@ module.exports = async function (req, res) {
         else {
             req.session.noPreRank = true;
         }
-    }
-    let [Result, Result_all] = await myFunc.ntunhsApp.Score.get(req);
+    }*/
+    let [Result, Result_all] = await getScore(req);
     if (!Result) {
         req.logout();
         return res.status(401).send();
@@ -32,3 +34,59 @@ module.exports = async function (req, res) {
     return res.send([Result, Result_all, preRankObj]);
 }
 
+const tdFunc = {
+    "7" : (td , result  , result2) => {  //課程分數
+        const tdItem = {
+            Name:td.eq(1).text() ,
+            Class:td.eq(2).text(),
+            Teacher:td.eq(3).text(),
+            Type:td.eq(4).text(),
+            Credit:td.eq(5).text() , 
+            Score:td.eq(6).text() , 
+        }
+        result.push(tdItem);
+        return tdItem;
+    } , 
+    "2" : (td , result , result2) => { //平均、排名
+        const tdItem = {
+            id:td.eq(0).text() ,
+            name:td.eq(1).text(),
+        }
+        result2.push(tdItem);
+        return tdItem;
+    }
+}
+
+async function getScore(req) {
+    if (req.session.Score.length >0) {
+        return req.session.Score;
+    }
+    let ScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_24.aspx?stno=${req.session.STNO}`;
+    let j = myFunc.getJar(req);
+    //console.log(ScoreURL);
+    let reqOption = {
+        method : "GET"  ,
+        uri : ScoreURL
+    }
+    let fetchCookie = require("fetch-cookie")(fetch , j);
+    let ScorePageFetch = await fetchCookie( reqOption.uri , {
+        method: reqOption.method
+    });
+    let ScorePage = await ScorePageFetch.text();
+    let $ = cheerio.load(ScorePage);
+    let scoreTableTr = $('.FormView tr');
+    if (scoreTableTr.length <= 0) {
+        return [false];
+    }
+    scoreTableTr = scoreTableTr.slice(2);
+    let scores = []; //分數
+    let ranks = []; //排名
+    for (let i = 0 ; i < scoreTableTr.length ; i++) {
+        const td = scoreTableTr.eq(i).find('td');
+        tdFunc[td.length](td , scores , ranks);
+    }
+    req.session.Score = [scores , ranks];
+    return [scores , ranks];
+}
+
+module.exports.getScore = getScore;
