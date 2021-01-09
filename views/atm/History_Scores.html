@@ -13,15 +13,11 @@
     <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/atm/css/rwd-table.css">
-    <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/atm/css/rwd-table.css">
     <link rel="stylesheet" href="/atm/css/main.css">
-    <script>
-
-        
-    </script>
+    <link rel="stylesheet" href="/atm/css/dark.css">
 </head>
 
 <body ng-controller="HSCtrl">
@@ -33,21 +29,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Course">個人修課明細</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Schedule">個人課表</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Scores">學期成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/History_Scores">歷年成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
-                </li>
+                <div ng-include="'navDropdownLearnInfo.html'"></div>
                 <li class="nav-item active">
                     <a class="nav-link" href="/Course_Search">課程查詢</a>
                 </li>
@@ -56,14 +38,13 @@
                 <li class="nav-item">
                     <span><span style="font-size:25px">🌞 </span><input type="checkbox"  data-toggle="toggle" data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px"> 🌛</span></span>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/logout">登出</a>
-                </li>
+                <div ng-include="'navRight.html'"></div>
             </ul>
         </div>
     </nav>
     <div id="container" class="container" style="width:100%">
         <input type="search" class="form-control" ng-model="q" placeholder="請輸入課程名稱或代碼" />
+        <br />
         <div ng-repeat="item in Sems;" style="margin-bottom:20px;" ng-init="semIndex = $index">
 
             <button id={{item.Sem}} class="btn btn-primary btn-lg darkmode-ignore" style="width:100%;isolation: isolate;" onclick="Item_Visible_Control('HStable_' + this.id)">{{item.Sem}}學年度(點我開啟or隱藏))</button>
@@ -93,10 +74,10 @@
                             <td data-th="學年" id="{{hs.Sem}}" >{{hs.Sem}}{{item.$index}}</td>
                             <td data-th="課別" id="{{hs.Sem}}_content_type">{{hs.Type}}</td>
                             <td data-th="課程代碼與課程名稱" id="{{hs.Sem}}_content_course">{{hs.Course}}</td>
-                            <td  data-th="上學期學分" id="{{hs.Sem}_content_empty_upCredit">{{hs.Up_Credit}}</td>
-                            <td  data-th="上學期成績" id="{{hs.Sem}_content_empty">{{hs.Up_Score}}</td>
-                            <td  data-th="下學期學分" id="{{hs.Sem}}_content_empty" >{{hs.Down_Credit}}</td>
-                            <td  data-th="下學期成績" id="{{hs.Sem}}_content_empty">{{hs.Down_Score}}</td>
+                            <td  data-th="上學期學分" id="{{hs.Sem}_content_empty_upCredit"  ng-show="RemoveSpace(hs.Up_Credit);">{{hs.Up_Credit}}</td>
+                            <td  data-th="上學期成績" id="{{hs.Sem}_content_empty" ng-show="RemoveSpace(hs.Up_Score);">{{hs.Up_Score}}</td>
+                            <td  data-th="下學期學分" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Credit);" >{{hs.Down_Credit}}</td>
+                            <td  data-th="下學期成績" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Score);">{{hs.Down_Score}}</td>
                         </tr>
                         <tr ng-repeat="Con_hs in Conlist" ng-if="$index == semIndex">
                             <th colspan="3" class="no-th">{{Con_hs.title}}</th>
@@ -122,9 +103,11 @@
 <script src="../externals/angularjs/angular.min.js"></script>
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="../externals/jqueryui/jquery-ui.min.js"></script>
-<script src="/atm/scripts/History_Scores.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
+<script src="/atm/scripts/ngCommon.js"></script>
+<script src="/atm/scripts/History_Scores.js"></script>
+
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
@@ -141,7 +124,7 @@
         }
     });
     window.onload = async function() {
-        commonFunc.darkModeInit();
+        commonFunc.myDarkModeInit();
         await sleep(500);
         angular.element(document.getElementById('container')).scope().Query();
         var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
@@ -161,22 +144,4 @@
         $('html, body').animate({scrollTop:0}, '300');
     });
     };
-    window.onresize = async function () {
-        let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-        if (width <= 736)
-        {
-            $("[id*='HStable_']").addClass("table-rwd");
-            TdDisplay('content');
-            $("[id*=_content_empty]").each(function () {
-                if (!$(this).text()) {
-                    $(this).hide();
-                }
-            })
-        } 
-        else 
-        {
-            $("[id*='HStable_']").removeClass("table-rwd");
-            TdDisplayNoneRWD('content');
-        }
-    }
 </script>

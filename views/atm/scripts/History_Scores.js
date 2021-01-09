@@ -1,20 +1,21 @@
 
 
-var HSApp = angular.module("HSApp" ,[]);
-HSApp.controller("HSCtrl" , function($scope , HSService)
+var HSApp = angular.module("HSApp" ,["commonApp"]);
+HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
 {
     $scope.DataList = [];
     $scope.Conlist = [];
     $scope.Sems = [];
     $scope.Currentuser = "";
-    $scope.showItemEmpty = false;
+    commonService.user.getStuInfo().then(function (res) {
+        $scope.Currentuser = res.data;
+    });
+    //$scope.showItemEmpty = false;
     let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
     $scope.Ismobile = (width <= 736) ? true : false;
-    HSService.Get_User($scope);
     $scope.Query = function ()
     {
-        HSService.Get_User($scope);
-        HSService.Get_data($scope.Currentuser).then((function(res)
+        HSService.Get_data().then((function(res)
         {
             if (res.status == 401) 
             {
@@ -40,18 +41,37 @@ HSApp.controller("HSCtrl" , function($scope , HSService)
     {
         let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         $scope.Ismobile = (width <= 736) ? true : false;
+        showItemEmpty = false;
         if ($scope.Ismobile && i_item !="")
         {
-            $scope.showItemEmpty = true;
-            return $scope.showItemEmpty;
+            showItemEmpty = true;
+            return showItemEmpty;
         }
         else if (!$scope.Ismobile)
         {
-            $scope.showItemEmpty = true;
-            return $scope.showItemEmpty;
+            showItemEmpty = true;
+            return showItemEmpty;
         }
-        $scope.showItemEmpty = false;
-        return $scope.showItemEmpty;
+        return showItemEmpty;
+    }
+    window.onresize = async function () {
+        let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        if (width <= 736)
+        {
+            $("[id*='HStable_']").addClass("table-rwd");
+            TdDisplay('content');
+            $("[id*=_content_empty]").each(function () {
+                if (!$(this).text()) {
+                    $(this).hide();
+                }
+            });
+        } 
+        else 
+        {
+            $("[id*='HStable_']").removeClass("table-rwd");
+            TdDisplayNoneRWD('content');
+            $scope.$apply();
+        }
     }
 });
 
@@ -59,28 +79,15 @@ HSApp.service("HSService" , function($http)
 {
     return (
         {
-            Get_User : Get_User   ,
             Get_data : Get_data 
         }
     );
-    function Get_User($scope)
-    {
-      var request  =$http.get('/api/user').then(function(result)
-      {
-        $scope.Currentuser = result.data;
-      });
-      return request.then(handleSuccess , handleError);
-    }
-    function Get_data(Querykey)
+    function Get_data()
     {
         var request = $http(
             {
                 method: "GET",
                 url :　"api/History_Scores",
-                params :
-                {
-                    User : Querykey
-                }
             }
         );
         return (request.then(handleSuccess , handleError));
