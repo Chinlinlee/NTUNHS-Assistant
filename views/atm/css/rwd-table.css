@@ -15,8 +15,13 @@
         cursor: pointer;
     }
     .table-th-show::after {
-        content: "\2795";
+        display: block;
+        content: ' ';
         float: right;
+        background-image: url('/images/plus_light.svg');
+        background-size: 28px 28px;
+        height: 28px;
+        width: 28px;
     }
     .table-th-hide::after {
         content: "\268A";
