@@ -18,6 +18,11 @@ module.exports =  async function (req ,res)
             delete queryParams[element];
         }    
     });
+    let authcode = await School_Auth.Auth(queryParams["username"] , queryParams["password"] , req);
+    let isAuth = authcode.split("_").length >= 2;
+    if (!isAuth) {
+        return res.redirect('/CTE_BOT?error=' + encodeURIComponent('Password_Error'));
+    }
     let first = await fetchCookie("http://system1.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp" ,{method: 'GET'});
     
 
