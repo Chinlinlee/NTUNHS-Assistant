@@ -1,14 +1,15 @@
 
 
-var ScoresApp = angular.module("ScoresApp", []);
-ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService) {
+var ScoresApp = angular.module("ScoresApp", ["commonApp"]);
+ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonService) {
     $scope.DataList = [];
     $scope.Conlist = [];
     $scope.PreRank = [];
     $scope.Currentuser = "";
-    ScoresService.Get_User($scope);
+    commonService.user.getStuInfo().then(function (res) {
+        $scope.Currentuser = res.data;
+    });
     $scope.Query = function () {
-        ScoresService.Get_User($scope);
         ScoresService.Get_data($scope.Currentuser).then((function (res) {
             if (res.status == 401) {
                 window.location.href = "/logout";

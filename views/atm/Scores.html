@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/atm/css/main.css">
-
+    <link rel="stylesheet" href="/atm/css/dark.css">
 </head>
 
 <body ng-controller="ScoresCtrl">
@@ -30,21 +30,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Course">個人修課明細</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Schedule">個人課表</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Scores">學期成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/History_Scores">歷年成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
-                </li>
+                <div ng-include="'navDropdownLearnInfo.html'"></div>
                 <li class="nav-item active">
                     <a class="nav-link" href="/Course_Search">課程查詢</a>
                 </li>
@@ -53,9 +39,7 @@
                 <li class="nav-item">
                     <span><span style="font-size:25px">🌞 </span><input type="checkbox"  data-toggle="toggle" data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px"> 🌛</span></span>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/logout">登出</a>
-                </li>
+                <div ng-include="'navRight.html'"></div>
             </ul>
         </div>
     </nav>
@@ -79,7 +63,12 @@
                         <td data-th="任課教師" id="{{Item.Name}}_content">{{Item.Teacher}}</td>
                         <td data-th="課別" id="{{Item.Name}}_content">{{Item.Type}}</td>
                         <td data-th="學分" id="{{Item.Name}}_content">{{Item.Credit}}</td>
-                        <td data-th="成績" id="{{Item.Name}}_content">{{Item.Score}}</td>
+                        <td data-th="成績" id="{{Item.Name}}_content">
+                            {{Item.Score}}
+                            <span ng-show="!Item.Score">
+                                成績還沒出來喔
+                            </span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -112,15 +101,17 @@
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="../externals/jqueryui/jquery-ui.min.js"></script>
 <script src="..//externals/jqueryui/datepicker-zh-TW.js"></script>
-<script src="/atm/scripts/Scores.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
+<script src="/atm/scripts/ngCommon.js"></script>
+<script src="/atm/scripts/Scores.js"></script>
+
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
 <script>
     window.onload = async function() {
-        commonFunc.darkModeInit();
+        commonFunc.myDarkModeInit();
         await sleep(100);
         angular.element(document.getElementById('setting')).scope().Query();
     };
