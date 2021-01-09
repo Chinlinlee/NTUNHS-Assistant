@@ -62,6 +62,7 @@ module.exports =
 
         app.get('/logout', function(req, res){
             req.logout();
+            req.session.destroy();
             res.redirect('/');
           });
 
@@ -255,6 +256,12 @@ module.exports =
                 default:
                     break;
             }
+        });
+        app.route('/*').get((req, res) => {
+            res.status(404).json({
+              status: 404,
+              message: "not found"
+            });
         });
     };
 
