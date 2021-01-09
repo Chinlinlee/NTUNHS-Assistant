@@ -1,14 +1,17 @@
 
 
-var CourseApp = angular.module("CourseApp" ,[]);
-CourseApp.controller("CourseCtrl" , function($scope , CourseService)
+var CourseApp = angular.module("CourseApp" ,["commonApp"]);
+CourseApp.controller("CourseCtrl" , function($scope , CourseService , commonService)
 {
     $scope.DataList = [];
     $scope.Currentuser = "";
-    CourseService.Get_User($scope);
+    
+    commonService.user.getStuInfo().then(function (res) {
+        $scope.Currentuser = res.data;
+    });
     $scope.Query = function ()
     {
-        CourseService.Get_User($scope);
+        
         CourseService.Get_data($scope.Currentuser).then((function(res)
         {
             if (res.data == null)
@@ -28,18 +31,9 @@ CourseApp.service("CourseService" , function($http)
 {
     return (
         {
-            Get_User : Get_User   ,
             Get_data : Get_data 
         }
     );
-    function Get_User($scope)
-    {
-      var request  =$http.get('/api/user').then(function(result)
-      {
-        $scope.Currentuser = result.data;
-      });
-      return request.then(handleSuccess , handleError);
-    }
     function Get_data(Querykey)
     {
         var request = $http(
