@@ -4,84 +4,105 @@
 <head>
   <title>台北護理健康大學-學習資訊</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <link rel="stylesheet" href="./style/index.css">
-  <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
-  <script src="./externals/jquery/jquery-1.11.1.min.js"></script>
-  <script src="./externals/jqueryui/jquery-ui.min.js"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="/atm/css/rwd-table.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="./externals/angularjs/angular.min.js"></script>
-  <script src="./index.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="/atm/css/rwd-table.css">
+
   <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:500,600,700,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script>
-      $(function () {
-      // initialize and get basic information
-      // https://developers.line.me/en/reference/liff/#initialize-liff-app
-      liff.init(function(data)
-      {
-        intializeapp(data);
-      });
-    });
-    function intializeapp(data)
-    {
-      $('#lineid').val(data.context.userId);
-      if ($('#lineid').val() !="")
-      {
-        angular.element(document.getElementById('login')).scope().LineLogin();
-      }  
-    }
-    </script>
 </head>
 
 <body ng-controller="LoginCtrl">
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="/1081New_Project/Stu_Login.php">第一次使用(建立資料)</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse"   id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
-          </li>
-          <li class="nav-item active">
-                  <a class="nav-link" href="/Course_Search">課程查詢</a>
-          </li>
-        </ul>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="/Course_Search">課程查詢</a>
+        </li>
+      </ul>
     </div>
   </nav>
   <div class="wrapper">
-    <form id="login" action="/login" method="post" class="login-form">
+    <form id="login" action="/login" method="post" class="login-form" onsubmit="return blockui();">
       <div class="header">
         <h1>北護學習資訊</h1>
         <span>歡迎來到資管系 學習系統DEMO</span>
       </div>
       <div class="content">
-        <input id="username" type="text" class="input username" name="username" placeholder="帳號" autofocus title="請輸入帳號" required>
-        <input id="password" type="password" class="input password" name="password" placeholder="密碼" title="請輸入密碼" required>
-        <input id="lineid" ng-model="lineid" type="hidden" name="lineid" value=""  />
+        <input id="username" type="text" class="input username" name="username" placeholder="帳號" autofocus title="請輸入帳號"
+          required>
+        <input id="password" type="password" class="input password" name="password" placeholder="密碼" title="請輸入密碼"
+          required>
+        <input id="lineid" ng-model="lineid" type="hidden" name="lineid" value="" />
       </div>
       <div class="footer">
         <button type="submit" class="button">登入</button>
       </div>
     </form>
   </div>
+  <div ng-include="'footer.html'"></div>
+  
 </body>
+
 </html>
+<script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+<script src="./externals/jquery/jquery-1.11.1.min.js"></script>
+<script src="./externals/jqueryui/jquery-ui.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
+<script src="./externals/angularjs/angular.min.js"></script>
+<script src="./index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+<script src="../externals/jquery/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+
 <script type="text/javascript">
-  var error = '<%= messages %>';     
-  if(error!=null) 
-  {  
-    if (error !="")
-    {
+  var error = '<%= messages %>';
+  if (error != null) {
+    if (error != "") {
       showAlert(error);
     }
   }
-  function showAlert(err)  {
+
+  function showAlert(err) {
     alert('error: ' + err);
+  }
+
+  function blockui() {
+    $.blockUI({
+      message: "<i class='fa fa-spinner fa-pulse orange' style='font-size:600%'></i>",
+      //borderWidth:'0px' 和透明背景
+      css: {
+        borderWidth: '0px',
+        backgroundColor: 'transparent'
+      },
+    });
+    return true;
+  }
+</script>
+<script>
+  $(function () {
+    // initialize and get basic information
+    // https://developers.line.me/en/reference/liff/#initialize-liff-app
+    liff.init(function (data) {
+      intializeapp(data);
+    });
+  });
+
+  function intializeapp(data) {
+    $('#lineid').val(data.context.userId);
+    if ($('#lineid').val() != "") {
+      angular.element(document.getElementById('login')).scope().LineLogin();
+    }
   }
 </script>
