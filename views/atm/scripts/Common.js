@@ -20,6 +20,31 @@ const commonFunc = {
             $("#darkModeSwitch").bootstrapToggle('on');
         }
     },
+    myDarkModeInit : function () {
+        $("#darkModeSwitch").on("change" ,function () {
+            let isActivated = $(this).prop('checked');
+            if (isActivated) {
+                $('body').addClass(`darkmode--activated`);
+                localStorage.setItem("darkMode", "true");
+            } else {
+                $('body').removeClass(`darkmode--activated`);
+                localStorage.setItem("darkMode", "false");
+            }
+        });
+        let isDarkMode = localStorage.getItem("darkMode");
+        if (isDarkMode == "true") {
+            $("#darkModeSwitch").bootstrapToggle('on');
+        }
+    } , 
+    //need to load script with jquery-blockUI
+    blockUI : function () {
+        $.blockUI({
+            message: "<i class='fa fa-spinner fa-pulse orange' style='font-size:600%'></i>", 
+            //borderWidth:'0px' 和透明背景
+            css: { borderWidth: '0px', backgroundColor: 'transparent' },
+        });
+        return true;
+    }
 }
 
 async function sleep(ms = 0) 

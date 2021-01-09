@@ -29,7 +29,7 @@
 			return true;
 		}
     </script>
-    <STYLE>
+    <style>
        @media (max-width: 736px) 
        { 
            .div-rwd p 
@@ -72,7 +72,7 @@
                 margin-bottom: 8px;
             }
         }
-    </STYLE>
+    </style>
 </head>
 
 <body ng-controller="CTE_BOTCtrl">
@@ -83,35 +83,19 @@
         </button>
         <div class="collapse navbar-collapse"   id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Course">個人修課明細</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Schedule">個人課表</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Scores">學期成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/History_Scores">歷年成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
-                </li>
+                <div ng-include="'navDropdownLearnInfo.html'"></div>
                 <li class="nav-item active">
                         <a class="nav-link" href="/Course_Search">課程查詢</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/logout" ng-show="HaveUser">登出</a>
-                </li>
+                <div ng-include="'navRight.html'"></div>
             </ul>
         </div>
     </nav>
     <div class="container">
         <form action="/api/CTE_BOT" method="POST" onsubmit="return blockui();">
-            <div class="row" ng-if="!HaveUser">
+            <div class="row">
                 <div class="col-sm-1 text-lg-center">
                     <p>學號:</p>
                 </div>
@@ -123,14 +107,6 @@
                 </div>
                 <div class="col-sm-5 text-lg-center topgap">
                     <input type="password" class="input password input-lg" id="usernmae" name="password" required>
-                </div>
-            </div>
-            <div class="row" ng-if="HaveUser" style="visibility:hidden">
-                <div class="col-sm-1 text-center">
-                    <p>學號:</p>
-                </div>
-                <div class="col-sm-5 text-center">
-                    <input type="text" class="input" id="username" name="username" value="{{Currentuser}}" readonly>
                 </div>
             </div>
             <div class="row div-rwd">
@@ -168,31 +144,46 @@
                     <div class="col-sm-2 text-center border">
                         <div class="custom-control custom-radio">
                             <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E1_{{$index+1}}" value="{{Item.E1}}"> 
-                            <label class="custom-control-label" for="E1_{{$index+1}}"><p ng-if="$index<10" data-th="非常同意"></p><p ng-if="$index ==10">不曾缺席</p><p ng-if="$index == 11">總是</p></label>
+                            <label class="custom-control-label" for="E1_{{$index+1}}">
+                                <p ng-if="$index<10" data-th="非常同意"></p>
+                                <span ng-if="$index == 13">總是</span>
+                            </label>
                         </div>
                     </div>
                     <div class="col-sm-1 text-center border">
                         <div class="custom-control custom-radio">
                             <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E2_{{$index+1}}" value="{{Item.E2}}"> 
-                            <label class="custom-control-label" for="E2_{{$index+1}}"><p ng-if="$index<10" data-th="同意"></p><p ng-if="$index ==10">缺席1~2次</p><p ng-if="$index == 11">經常</p></label>
+                            <label class="custom-control-label" for="E2_{{$index+1}}">
+                                <p ng-if="$index<10" data-th="同意"></p>
+                                <span ng-if="$index == 13">經常</span>
+                            </label>
                         </div>
                     </div>
                     <div class="col-sm-1 text-center border">
                         <div class="custom-control custom-radio">
                             <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E3_{{$index+1}}" value="{{Item.E3}}"> 
-                            <label class="custom-control-label" for="E3_{{$index+1}}"><p ng-if="$index<10" data-th="普通"></p><p ng-if="$index ==10">缺席3~4次</p><p ng-if="$index == 11">偶爾</p></label>
+                            <label class="custom-control-label" for="E3_{{$index+1}}">
+                                <p ng-if="$index<10" data-th="普通"></p>
+                                <span ng-if="$index == 13">偶爾</span>
+                            </label>
                         </div>
                     </div>
                     <div class="col-sm-1 text-center border">
                         <div class="custom-control custom-radio">
                             <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E4_{{$index+1}}" value="{{Item.E4}}"> 
-                            <label class="custom-control-label" for="E4_{{$index+1}}"><p ng-if="$index<10" data-th="不同意"></p><p ng-if="$index ==10">缺席5~6次</p><p ng-if="$index == 11">很少</p></label>
+                            <label class="custom-control-label" for="E4_{{$index+1}}">
+                                <p ng-if="$index<10" data-th="不同意"></p>
+                                <span ng-if="$index == 13">很少</span>
+                            </label>
                         </div>
                     </div>
                     <div class="col-sm-2 text-center border">
                         <div class="custom-control custom-radio">
                             <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E5_{{$index+1}}" value="{{Item.E5}}"> 
-                            <label class="custom-control-label" for="E5_{{$index+1}}"><p ng-if="$index<10" data-th="非常不同意"></p><p ng-if="$index ==10">缺席7次以上</p><p ng-if="$index == 11">從不</p></label>
+                            <label class="custom-control-label" for="E5_{{$index+1}}">
+                                <p ng-if="$index<10" data-th="非常不同意"></p>
+                                <span ng-if="$index == 13">從不 </span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -211,16 +202,20 @@
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script src="/atm/scripts/CTE_BOT.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
+<script src="/atm/scripts/ngCommon.js"></script>
+<script src="/atm/scripts/CTE_BOT.js"></script>
+
 <script>
     window.onload = async function() {
-        for (var i = 1 ; i <= 11 ; i++)
+        /*alert('此工具已不堪使用，返回主頁');
+        window.location = '/';*/
+        for (var i = 1 ; i <= 13 ; i++)
         {
             $('#E1_' + i ).prop('checked' ,true);
         }
-        $('#E5_12').prop('checked' , true);
+        $('#E5_14').prop('checked' , true);
         $('#loginAlert').hide();
         const urlParams = new URLSearchParams(window.location.search);
         const myParam = urlParams.get('error');
