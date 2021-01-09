@@ -6,20 +6,20 @@ const request = require('request');
 const myFunc = require('../../routes/My_Func');
 const cheerio = require('cheerio');
 const nodeFetch = require('node-fetch');
+require('tls').DEFAULT_MIN_VERSION = 'TLSv1'
 
 async function getSTNO (req , iFetch)
 {
   return new Promise (async (resolve)=> 
   {
-    let j = myFunc.getJar(req);
     let option = 
     {
       method : "GET" , 
       uri : `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/tab/Profile_tab_02.aspx` , 
-      followRedirect: true ,
-      jar : j
     }
-    let fetchRes = await iFetch(option.uri , {method:"GET" , redirect : "follow" , follow: 100});
+    let fetchRes = await iFetch(option.uri , {
+      method:"GET"
+    });
     let getStnoPageUri = await fetchRes.text();
     //let getStnoPageUri = await myFunc.Request_func(myReqObj  , option);
     let $ = cheerio.load(getStnoPageUri);
@@ -27,11 +27,12 @@ async function getSTNO (req , iFetch)
     option = 
     {
       method : "GET" , 
-      uri : aTags , 
-      followRedirect: true  ,
-      jar : j
+      uri : aTags
     }
-    let getStnoPageRes = await iFetch(option.uri , {method:"GET" , redirect : "follow"});
+    let getStnoPageRes = await iFetch(option.uri , {
+      method:"GET" , 
+      redirect : "follow"
+    });
     let getStnoPage = await getStnoPageRes.text();
     $ = cheerio.load(getStnoPage);
     let frameSrc = $("#DialogFrame")[0].attribs.src;
@@ -60,7 +61,6 @@ module.exports = async function(passport)
   },
   async function (req , username , password , done)
   {
-      let myReqObj = request.defaults({jar : true});
       let loginresult = await School_Auth.Auth(username , password , req);
       //req.session.myJar = myReqObj.jar;
       let logingResultCode = loginresult.split('_');
@@ -74,15 +74,14 @@ module.exports = async function(passport)
       let loginHomeOption = 
       {
         method : 'GET' , 
-        uri : `https://system8.ntunhs.edu.tw/myNTUNHS_student/Common/UserControls/loginModule.aspx?txtid=${username}&code=${logingResultCode[1]}&from=OVGfeJ71k85Va+5tUAkRpREuBeu/vj73Xq3Nr9sDoY5sDt38lS4gFsKrX0qYogYUVoxr8f++8G+yMZLEa9IDN5SWFS76zmop52j0OW69Fks=&select=student` , 
-        jar : j
+        uri : `https://system8.ntunhs.edu.tw/myNTUNHS_student/Common/UserControls/loginModule.aspx?txtid=${username}&code=${logingResultCode[1]}&from=OVGfeJ71k85Va+5tUAkRpREuBeu/vj73Xq3Nr9sDoY5sDt38lS4gFsKrX0qYogYUVoxr8f++8G+yMZLEa9IDN5SWFS76zmop52j0OW69Fks=&select=student`
       }
       let fetch  = require('fetch-cookie')(nodeFetch , j , false );
-      let homeFetchRes = await fetch(loginHomeOption.uri , {method:"GET" , redirect:"follow" , follow: 100});
+      let homeFetchRes = await fetch(loginHomeOption.uri , 
+      {
+          method:"GET" , 
+      });
       let homeBody = await homeFetchRes.text();
-
-      //console.log(homeBody);
-      //let homeBody = await myFunc.Request_func(myReqObj ,loginHomeOption);
       let $ = cheerio.load(homeBody);
       let Profile = $("#ctl00_tableProfile tr");
       let stuInfo = [];
@@ -107,19 +106,28 @@ module.exports = async function(passport)
       }
       req.session.stuInfo = stuInfoObj;
       req.session.ntunhsApp = await j.getCookieString('http://system8.ntunhs.edu.tw');
-      let loginSginOffResult = await School_Auth.signOffAuth(username , password , myReqObj);
+
+
+
+      let siginfetch = require('fetch-cookie')(nodeFetch , signOffJar , false)
+      let loginSginOffResult = await School_Auth.signOffAuth(username , password , req);
       //req.session.myJar = myReqObj.jar;
       let loginSginOffResultCode = loginSginOffResult.split('_');
       let loginSignOffoPtion = 
       {
         method : 'GET' , 
-        uri : `http://system10.ntunhs.edu.tw/Workflow/Common/UserControls/loginModule.aspx?txtid=${username}&code=${loginSginOffResultCode[1]}&from=RSj5Im20848gChj8rkdWGJFBlYl/7U1mZ4gJDdbJ5OM3j763Vu+cjUoqjRZXBp6GvBdG3Ya2QodhSYM88vhcFw==&select=student` , 
+        uri : `http://system10.ntunhs.edu.tw/Workflow/Common/UserControls/loginModule.aspx?txtid=${username}&code=${loginSginOffResultCode[1]}&from=tyg/tU01wVvnsZtbm7tPhKak44RMjpfRkFt7mKZlzW85P4GKxNNs+wfm8PCM3+Si7dJ2HijacHOvd/jmQztdSg==&select=student` , 
         jar : signOffJar , 
         followRedirect : true
       }
       //console.log(loginSignOffoPtion.uri);
-      await myFunc.Request_func(myReqObj , loginSignOffoPtion);
-      req.session.ntunhsSignOff = signOffJar.getCookieString('http://system10.ntunhs.edu.tw');
+      let signOffFetch = await siginfetch(loginSignOffoPtion.uri , {
+          method:"GET" ,
+          redirect : 'follow' ,
+          follow : 1000
+      });
+      let signOffFetchBody = await signOffFetch.text();
+      req.session.ntunhsSignOff = await signOffJar.getCookieString('http://system10.ntunhs.edu.tw');
       req.session.Course = [];
       req.session.HistoryScore = [];
       req.session.Score = [];
