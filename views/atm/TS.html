@@ -18,6 +18,7 @@
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/atm/css/main.css">
+    <link rel="stylesheet" href="/atm/css/dark.css">
 </head>
 
 <body ng-controller="TSCtrl" class="myBody">
@@ -39,37 +40,20 @@
                         <option value="7">星期日</option>
                     </select>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Course">個人修課明細</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Schedule">個人課表</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Scores">學期成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/History_Scores">歷年成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
-                </li>
+                <div ng-include="'navDropdownLearnInfo.html'"></div>
                 <li class="nav-item active">
                     <a class="nav-link" href="/Course_Search">課程查詢</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <span><span style="font-size:25px">🌞 </span><input type="checkbox"  data-toggle="toggle" data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px"> 🌛</span></span>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/logout">登出</a>
-                </li>
+                <darkmode></darkmode>
+                <div ng-include="'navRight.html'"></div>
             </ul>
         </div>
     </nav>
     <div class="container" style="width:100%; padding-top:32px;" >
-        <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}">
+        <span class="mx-auto d-flex justify-content-center" ng-show="DataList.length <= 0">今天沒課唷</span>
+        <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}" ng-show="DataList.length">
             <table id="setting" class="table table-bordered table-striped">
                 <thead class="thead-dark">
                     <tr >
@@ -92,25 +76,6 @@
             </table>
         </div>
     </div>
-    <div class="modal fade" id="ModalCenter_Update" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered custom-class" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLongTitle">輸入密碼</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input id="password" type="password" class="input password" name="password" placeholder="請輸入密碼" title="請輸入密碼" ng-model="password">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="phpupdate()" ng-disabled="!password" id="Btn_Update_Confirm">確認</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-            </div>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>
@@ -118,17 +83,22 @@
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="../externals/jqueryui/jquery-ui.min.js"></script>
 <script src="..//externals/jqueryui/datepicker-zh-TW.js"></script>
-<script src="/atm/scripts/Today_Schedule.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
+<script src="/atm/scripts/ngCommon.js"></script>
+<script src="/atm/scripts/Today_Schedule.js"></script>
+
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
 
 <script>
     window.onload = async function() {
-        commonFunc.darkModeInit();
-        window.onresize();
+        window.originH = $(window).height();
+        window.originW = $(window).width();
+        window.isMobileOrigin = false;
+        
+        //window.onresize();
         var date = new Date();
         var weekday = date.getDay();
         var week = new Array(7,1,2,3,4,5,6);
@@ -136,14 +106,17 @@
         await sleep(100);
         angular.element(document.getElementById('setting')).scope().Query(week[weekday]);
         var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-        await sleep(300);
+        await sleep(100);
         if (width <= 736)
         {
+            $("#setting").addClass("table-rwd");
+            await sleep(100);
             HideTd('content');
+            await sleep(100);
             $(`.table-th`).addClass("table-th-show");
         } 
-        
     };
+
     $( "#day_select" ).change(async function() 
     {
         var selectday = $('#day_select :selected').val();
@@ -159,10 +132,18 @@
     });
     window.onresize = async function () {
         var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        let height = $(window).height();
+        if (width == window.originW && height ==window.originH) {
+            return;
+        }
         if (width <= 736)
         {
             $("#setting").addClass("table-rwd");
             TdDisplay('content');
+            $(".table-th").each(function() {
+                let id = $(this).attr('id');
+                Item_Visible_Control(id+"_content" , id , true);
+            });
         } 
         else 
         {
