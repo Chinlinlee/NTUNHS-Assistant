@@ -1,28 +1,30 @@
-
 /*https://stackoverflow.com/questions/46083768/html-js-drop-down-checkboxes*/
-.multiselect 
-{
+
+
+
+.multiselect {
   width: 100%;
   position: relative;
   display: inline-block;
 }
 
-.selectBox
-{
+.selectBox {
   width: 100%;
   position: relative;
-  cursor:pointer;
+  cursor: pointer;
 }
 
-.selectBox select 
-{
+.darkmode--activated .checkboxes>label>span{
+  color: black;
+}
+
+.selectBox select {
   width: 100%;
   font-weight: bold;
 
 }
 
-.overSelect 
-{
+.overSelect {
   position: absolute;
   left: 0;
   right: 0;
@@ -30,49 +32,304 @@
   bottom: 0;
 }
 
-.checkboxes 
-{
+.checkboxes {
   display: none;
   border: 1px #dadada solid;
-  overflow-y:scroll;
+  overflow-y: scroll;
   max-height: 200px;
   width: 100%;
   z-index: 1;
   position: absolute;
   background-color: rgb(249, 249, 249);
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
-.checkboxes label 
-{
+.checkboxes label {
   display: block;
-  cursor:pointer;
+  cursor: pointer;
 }
 
-.checkboxes label:hover 
-{
+.checkboxes label:hover {
   background-color: #1e90ff;
 }
-.Gap-row
-{
-    margin-top: 8px;
-    margin-bottom: 8px;
+
+.Gap-row {
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
-select
-{
-    cursor:pointer;
-}
-table, td {border:1em solid black}
-table {border-collapse:collapse}
-.flowcontrol
-{
-    overflow-y:scroll;
-    max-height: 200px;
-    z-index: 1;
-    position: absolute; 
-    width:97%;
-}
-.pointer
-{
+
+select {
   cursor: pointer;
+}
+
+table,
+td {
+  border: 1em solid black
+}
+
+table {
+  border-collapse: collapse
+}
+
+.flowcontrol {
+  overflow-y: scroll;
+  max-height: 200px;
+  z-index: 1;
+  position: absolute;
+  width: 97%;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+
+.condition-button 
+{
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 4px;
+    position: fixed;
+    bottom: 10%;
+    right: 0px;
+    transition: background-color .3s, 
+      opacity .5s, visibility .5s;
+    z-index: 1000;
+    border: 1px #2f2f2f solid;
+    margin: auto;
+    background-image: url('../images/loupe.svg');
+    background-repeat: no-repeat;
+    background-size: 28px 28px;
+    background-position: center;
+    background-color: #ffc500;
+    cursor: pointer;
+}
+
+#Condition {
+  padding: 10px;
+}
+
+.preSchedule-list {
+  overflow-y: scroll;
+  height: 300px;
+  border: 1px solid#bfb7b7;
+  padding: 0.75em 0.5em;
+  margin-bottom: 10px;
+}
+.preSchedule-list span {
+  font-size: 14px;
+}
+
+.preSchedule-list p>b {
+  font-size: 18px;
+}
+
+.preSchedule-list .badge {
+  font-size: 10px;
+  color :rgba(0, 0, 0)!important;
+}
+
+.preSchedule-list-item {
+  cursor: pointer;
+}
+
+#new_PreSchedule_Added {
+  height: 200px;
+}
+
+.alert-secondary {
+  background-color: #e2e3e578!important;
+}
+
+.alert-selectedCourse {
+  background-color: #5c89e27d!important;
+}
+
+.btn-addCourse {
+  right: 0.5em;
+  position: absolute;
+  cursor: pointer;
+  vertical-align: middle;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.btn-addCourse::after {
+  display: block;
+  content: ' ';
+  background-image: url('/images/plus_light.svg');
+  background-size: 28px 28px;
+  height: 28px;
+  width: 28px;
+}
+.btn-addCourse:hover::after {
+  background-image: url('/images/plus_light_hover.svg');
+}
+
+.btn-deleteCourse {
+  right: 0.5em;
+  position: absolute;
+  cursor: pointer;
+  vertical-align: middle;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.btn-deleteCourse::after {
+  display: block;
+  content: ' ';
+  background-image: url('/images/delete_light.svg');
+  background-size: 28px 28px;
+  height: 28px;
+  width: 28px;
+}
+.btn-deleteCourse:hover::after {
+  background-image: url('/images/delete_light_hover.svg');
+}
+
+/* https://mdbootstrap.com/snippets/jquery/charkiewicz/785454#css-tab-view */
+
+#PreSchedule td{  
+  height: 60px;
+}
+
+#PreSchedule.remove-td-height td {
+  height: auto!important;
+}
+
+.btn-preSchedule {
+  display: block;
+  height:100%;
+  width:100%;
+  padding:0;
+  margin:0;
+  opacity: 0;
+}
+
+
+.btn-preSchedule:focus {
+  color: #fff;
+  box-shadow: none!important;
+}
+
+.table-responsive {
+  display: table;
+}
+
+.mw-100 {
+  min-width:100%;
+}
+
+.btn-preSchedule:hover {
+  opacity: 1;
+}
+.btn-preSchedule::before {
+  content: "\f067";
+  font-family: FontAwesome;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  top: 0;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 30px;
+  -webkit-transform: scale(0, 1);
+          transform: scale(0, 1);
+  -webkit-transition: all 0.2s linear 0s;
+  transition: all 0.2s linear 0s;
+}
+.darkmode--activated .btn-preSchedule::before {
+  color:rgb(249, 249, 249);
+}
+.btn-preSchedule:hover:before {
+  -webkit-transform: scale(1, 1);
+          transform: scale(1, 1);
+  text-indent: 0;
+}
+
+.btn-preSchedule-clicked {
+  display: block;
+  height:100%;
+  width:100%;
+  padding:0;
+  margin:0;
+  border: 0px transparent;
+}
+
+
+
+.btn-preSchedule-clicked.hide-me {
+    background-color: #29c567;
+    transition: opacity 1s ease-out;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.btn-preSchedule-clicked.show-me {
+  opacity: 1;
+  height: 100%;
+}
+
+.html2canvas-container {height: 30000px !important; }
+
+.effect {
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  text-transform: capitalize;
+  /* background-color: - add your own background-color */
+  font-family: 'Roboto', sans-serif;
+  /* put your font-family */
+  font-size: 18px;
+  padding: 20px 0px;
+  width: 150px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.effect.effect-4 {
+  -webkit-transition: all 0.2s linear 0s;
+  transition: all 0.2s linear 0s;
+}
+.effect.effect-4:before {
+  content: "\f178";
+  font-family: FontAwesome;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 30px;
+  -webkit-transform: scale(0, 1);
+          transform: scale(0, 1);
+  -webkit-transition: all 0.2s linear 0s;
+  transition: all 0.2s linear 0s;
+}
+.effect.effect-4:hover {
+  text-indent: -9999px;
+}
+.effect.effect-4:hover:before {
+  -webkit-transform: scale(1, 1);
+          transform: scale(1, 1);
+  text-indent: 0;
 }
