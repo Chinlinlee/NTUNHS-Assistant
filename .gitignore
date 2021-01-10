@@ -12,3 +12,4 @@ models/NTUNHS/courses.xls
 models/NTUNHS/plan.json
 mongo_exportandimport/
 node.exe
+temp/
