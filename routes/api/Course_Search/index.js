@@ -7,7 +7,6 @@ router.get('/Place' , require('./controller/get_Place'));
 
 router.get('/Teacher' , require('./controller/get_Teacher'));
 
-router.get('/UserInf' , require('./controller/get_UserInf'));
 
 router.get('/GetSem'  ,require('./controller/get_Sem'));
 
