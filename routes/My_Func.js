@@ -19,14 +19,18 @@ module.exports.IsLoggedIn = function(req ,res , next)
         return next();
     }
     log("Not Login" + "   IP:" + req.connection.remoteAddress);
-    res.writeHead(401,{"Content-Type" : "text/html;charset=utf8"});
-    res.write(`Unauthorized <br/>未登入(2秒後跳轉) <br/><a href='/'>Go to Login Page<a/><meta http-equiv='refresh' content='2; url='/' />
+    /*res.writeHead(401, {
+        "Content-Type" : "text/html;charset=utf8"
+    });*/
+    /*res.write(`Unauthorized <br/>未登入(2秒後跳轉) <br/><a href='/'>Go to Login Page<a/><meta http-equiv='refresh' content='2; url='/' />
     <script>
         setTimeout(() => {
             window.location = "/";
         }, 2000);
     </script>
-    `);
+    `);*/
+    res.status(401);
+    res.render('./error/401.html');
     res.end();
 }
 
