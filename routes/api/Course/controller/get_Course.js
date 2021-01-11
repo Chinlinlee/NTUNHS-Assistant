@@ -38,13 +38,17 @@ async function getCourse(req) {
     _.unset(courseJson, "0");
     let result = [];
     for (let i in courseJson) {
-        let item = courseJson[i]
+        let item = courseJson[i];
+        let courseCode = item.課程代碼與名稱_L.substr(0, 10);
+        let courseClassCode = item.上課班級_L.substr(3 ,2);
+        let courseFullCode = courseCode + courseClassCode;
         result.push({
             Name: item.課程代碼與名稱_L.substr(11),
-            Code: item.課程代碼與名稱_L.substr(0, 10),
+            Code: courseCode ,
+            FullCode : courseFullCode ,
             Place: item.教室,
             Day: item.星期,
-            Period: item.節次,
+            Period: item.節次 ,
             Credit: item.學分,
             Type: item.課程性質,
             Teacher: item.任課教師_L.replace(/<br\/>/gi, ""),
