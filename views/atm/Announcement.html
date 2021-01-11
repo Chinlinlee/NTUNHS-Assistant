@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html ng-app="announcementApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTUNHS e-Portfolio公告</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="atm/css/main.css">
+    <link rel="stylesheet" href="atm/css/dark.css">
+</head>
+
+<body ng-controller="announcementCtrl">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <nav-normal-item class="navbar-nav"></nav-normal-item>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <darkmode></darkmode>
+                <div ng-include="'navRight.html'"></div>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <input type="search" class="form-control" ng-model="q" placeholder="輸入標題或日期" />
+        <div class="my-3 p-3 rounded shadow-sm myAnnouncement">
+            <h3 class="border-bottom border-gray pb-2 mb-0 text-center">北護焦點</h3>
+            <div class="media text-muted pt-3" ng-repeat="new in news | filter:q">
+                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                    <a style="font-size: 16px;" ng-href="{{new.url}}">{{new.text}}</a>
+                    <span>{{new.time}}</span>
+                </p>
+            </div>
+        </div>
+        <div class="my-3 p-3 rounded shadow-sm myAnnouncement">
+            <h3 class="border-bottom border-gray pb-2 mb-0 text-center">在校生公告</h3>
+            <div class="media text-muted pt-3" ng-repeat="item in info | filter:q">
+                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                    <span style="font-size: 18px;">{{item.time}}</span>
+                    <a style="font-size: 16px;" ng-href="{{item.url}}">{{item.text}}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <ng-include src="'footer.html'"></ng-include>
+</body>
+
+</html>
+<script src="./externals/jquery/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+<script src="../externals/Bootstrap/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script src="./externals/angularjs/angular.min.js"></script>
+<script src="./atm/scripts/Common.js"></script>
+<script src="./atm/scripts/ngCommon.js"></script>
+<script src="./atm/scripts/Announcement.js"></script>

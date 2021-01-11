@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="learnMapApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTUNHS 學習地圖</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="atm/css/main.css">
+    <link rel="stylesheet" href="atm/css/dark.css">
+</head>
+
+<body ng-controller="learnMapCtrl">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <nav-normal-item class="navbar-nav"></nav-normal-item>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <darkmode></darkmode>
+                <div ng-include="'navRight.html'"></div>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div ng-repeat="item in userProgram">
+            <h1>{{item.key}} : {{item.credit}}</h1>
+            <ul class="list-group" ng-repeat="course in item.course">
+                <li class="list-group-item text-center">name : {{course.name}}</li>
+                <li class="list-group-item text-center">credit : {{course.credit}}</li>
+            </ul>
+        </div>
+    </div>
+    <ng-include src="'footer.html'"></ng-include>
+</body>
+
+</html>
+<script src="./externals/jquery/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+<script src="../externals/Bootstrap/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script src="./externals/angularjs/angular.min.js"></script>
+<script src="./atm/scripts/Common.js"></script>
+<script src="./atm/scripts/ngCommon.js"></script>
+<script src="./atm/scripts/learnMap.js"></script>

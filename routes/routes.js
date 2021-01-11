@@ -23,6 +23,8 @@ module.exports =
         app.use('/api/CTE_BOT' , require('./api/CTE_BOT'));
         app.use('/api/stuInfo' , require('./api/stuInfo'))
         app.use('/api/Schedule' , require('./api/Schedule')) ;
+        app.use('/api/announcement' , require('./api/announcement')) ;
+        app.use('/api/learnMap' , require('./api/learnMap')) ;
         //HTTP轉址HTTPS
        /* app.use (function (req, res, next) {
             if (req.secure) 
@@ -65,7 +67,7 @@ module.exports =
             req.session.destroy();
             res.redirect('/');
           });
-
+//#region web view
         app.get('/Schedule' , My_Func.IsLoggedIn,function (req , res)
         {
             res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
@@ -113,6 +115,20 @@ module.exports =
             res.render('./atm/CTE_BOT.html');
         });
 
+        app.get('/announcement'  , function(req, res)
+        {
+            res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+            res.set('Cache-Control', 'public, max-age=0');
+            res.render('./atm/Announcement.html');
+        });
+
+        app.get('/learnMap'  , function(req, res)
+        {
+            res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+            res.set('Cache-Control', 'public, max-age=0');
+            res.render('./atm/learnMap.html');
+        });
+//#endregion
         app.get('/api/user' , My_Func.IsLoggedIn , function(req, res)
         {
             res.send(req.user);
