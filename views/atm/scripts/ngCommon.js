@@ -69,7 +69,14 @@ commonApp.directive("darkmode" ,['$rootScope' , function ($rootScope) {
                     $rootScope.$broadcast("darkmodeInit");
                 } , 100);
             });
-            
         }
     }
 }]);
+
+commonApp.directive("navNormalItem" , function () {
+    return {
+        replace : false , 
+        restrict : 'EA' , 
+        templateUrl : "/navNormal.html"
+    }
+});
