@@ -166,6 +166,18 @@ table {
 .btn-addCourse:hover::after {
   background-image: url('/images/plus_light_hover.svg');
 }
+.darkmode--activated .btn-addCourse::after {
+  display: block;
+  content: ' ';
+  float: right;
+  background-image: url('/images/plus.svg');
+  background-size: 28px 28px;
+  height: 28px;
+  width: 28px;
+}
+.darkmode--activated .btn-addCourse:hover::after {
+  background-image: url('/images/plus_light_hover.svg');
+}
 
 .btn-deleteCourse {
   right: 0.5em;
