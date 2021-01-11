@@ -6,6 +6,12 @@ module.exports = async function (req, res) {
     let CourseTime = "";
     try {
         let data = await getSearchResult(req);
+        for (let key in data[0]) {
+            let nowData = data[0][key];
+            let dataPeriods = nowData.Course_Time.split(",");
+            nowData.startPeriod = dataPeriods[0];
+            nowData.endPeriod = dataPeriods[dataPeriods.length-1];
+        }
         return res.send(data);
     } catch (e) {
         console.error(e);
@@ -163,8 +169,12 @@ async function getSearchResult(req) {
     return new Promise (async (resolve , reject)=> {
         let CourseTime = "";
         let queryParams = _.cloneDeep(req.query);
-        if (queryParams.Course_Time) {
-            CourseTime = queryParams.Course_Time;
+        let queryCourseTime = _.get(queryParams , "Course_Time");
+        if (queryCourseTime) {
+            CourseTime = _.cloneDeep(queryParams.Course_Time);
+            if (!_.isArray(CourseTime)) {
+                CourseTime = [CourseTime];
+            }
         }
         let tempQuery = _.cloneDeep(queryParams);
         Object.keys(queryParams).forEach(element => {
@@ -193,6 +203,13 @@ async function getSearchResult(req) {
         console.log(queryParams);
         Promise.all(await data_log.Getdata("All_Courses", queryParams))
         .then(value => {
+            for (let i = 0 ; i < value.length ; i++) {
+                let nowItem = value[i];
+                let periodSplit = nowItem.Course_Time.split(",");
+                let periodStart = periodSplit[0];
+                let periodEnd = periodSplit[periodSplit.length-1];
+                nowItem.Period = `${periodStart}~${periodEnd}`;
+            }
             let Result = [];
             if (CourseTime != "") {
                 for (var i = 0; i < value.length; i++) {
@@ -200,13 +217,9 @@ async function getSearchResult(req) {
                         Result.push(value[i]);
                     }
                 }
-                console.log(Result);
-                //console.log(tempQuery);
                 return resolve([Result , tempQuery]);
             }
             else {
-                console.log(value);
-                //console.log(tempQuery);
                 return resolve([value , tempQuery]);
             }
         })
@@ -283,112 +296,20 @@ function getPartQs (queryParams) {
     }
 }
 
-module.exports.getCourseSearch = function (query) {
-    return new Promise(async (resolve) => {
-        let CourseTime = "";
-        var queryParams = query;
-        var Tempquery = Object.assign({}, queryParams);
-        if (queryParams.Course_Time) {
-            CourseTime = queryParams.Course_Time;
+module.exports.getCourseSearch = async function (req) {
+    try {
+        let data = await getSearchResult(req);
+        for (let key in data[0]) {
+            let nowData = data[0][key];
+            let dataPeriods = nowData.Course_Time.split(",");
+            nowData.startPeriod = dataPeriods[0];
+            nowData.endPeriod = dataPeriods[dataPeriods.length-1];
         }
-        Object.keys(queryParams).forEach(element => {
-            if (!queryParams[element]) {
-                delete queryParams[element];
-            }
-            else if (!Array.isArray(queryParams[element]) && typeof (queryParams[element]) == "string") {
-                queryParams[element] = [queryParams[element]];
-            }
-        });
-
-        if (queryParams.IsOnly) {
-            var Cregex = ToRegexText(queryParams, 'Course_Other'); //備註
-            var Fregex = ToRegexText(queryParams, 'Faculty_Name'); //系所
-            queryParams = {};
-            queryParams['$or'] = new Array({ $and: [{ 'Course_Other': Cregex[0] }, { 'Faculty_Name': Fregex[0] }] }, { 'Course_Other': Cregex[1] });
-        }
-        if (queryParams['Faculty'] && queryParams['EduType']) {
-            var Fregex = ToRegexText(queryParams, 'Faculty');
-            var Eregex = ToRegexText(queryParams, 'EduType');
-            queryParams['$and'] = new Array({ "Faculty_Name": { "$in": Fregex } }, { "Faculty_Name": { "$in": Eregex } });
-            delete queryParams['EduType'];
-            delete queryParams['Faculty'];
-        }
-        else if (queryParams['Faculty']) {
-            var Fregex = ToRegexText(queryParams, 'Faculty');
-            queryParams['Faculty_Name'] = { "$in": Fregex };
-            delete queryParams['Faculty'];
-        }
-        else if (queryParams['EduType']) {
-            var Eregex = ToRegexText(queryParams, 'EduType');
-            queryParams['Faculty_Name'] = { "$in": Eregex };
-            delete queryParams['EduType'];
-        }
-        try {
-            if ((queryParams['IsRootPart'][0] == "true" && queryParams['IsCityPart'][0] == "true") || (queryParams['IsRootPart'][0] == "false" && queryParams['IsCityPart'][0] == "false")) {
-                delete queryParams['IsRootPart'];
-                delete queryParams['IsCityPart'];
-                if (queryParams['Course_Other'] != undefined) {
-                    var regex = ToRegexText(queryParams, 'Course_Other');
-                    queryParams['Course_Other'] = { "$in": regex };
-                }
-            }
-            else if (queryParams['IsRootPart'][0] == "true") {
-                delete queryParams['IsRootPart'];
-                delete queryParams['IsCityPart'];
-                var City = new RegExp("城區");
-                if (queryParams['Course_Other'] != undefined) {
-                    var regex = ToRegexText(queryParams, 'Course_Other');
-                    queryParams['Course_Other'] = { "$in": regex, "$not": City };
-                }
-                else {
-                    queryParams['Course_Other'] = { "$not": City };
-                }
-            }
-            else if (queryParams['IsCityPart'][0] == "true") {
-                delete queryParams['IsRootPart'];
-                delete queryParams['IsCityPart'];
-                var City = new RegExp("城區");
-                if (queryParams['Course_Other'] != undefined) {
-                    queryParams['Course_Other'].push("城區");
-                    var regex = ToRegexText(queryParams, 'Course_Other');
-                    if (queryParams['$and'] != undefined) {
-                        queryParams['$and'].push({ "Course_Other": { "$in": [City] } })
-                    }
-                    else {
-                        queryParams['$and'] = new Array({ "Course_Other": { "$in": [City] } })
-                    }
-                }
-                else {
-                    queryParams['Course_Other'] = { "$in": [City] };
-                }
-            }
-        }
-        catch
-        {
-        }
-        Object.keys(queryParams).forEach(element => {
-            if (element != "Faculty_Name" && element != "Course_Other" && element != "$and" && element != "$or") {
-                var regex = ToRegexText(queryParams, element);
-                queryParams[element] = { "$in": regex };
-            }
-        });
-        Promise.all(await data_log.Getdata("All_Courses", queryParams)).then(
-            value => {
-                let Result = [];
-                if (CourseTime != "") {
-                    for (var i = 0; i < value.length; i++) {
-                        if (HaveTime(value[i] , CourseTime)) {
-                            Result.push(value[i]);
-                        }
-                    }
-                    return resolve([Result, Tempquery]);
-                }
-                else {
-                    return resolve([value, Tempquery]);
-                }
-            });
-    })
-
+        return data;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
 }
 function ToRegexText(i_item, i_key) {
     var result = i_item[i_key].map(e => {
@@ -400,9 +321,9 @@ function ToRegexText(i_item, i_key) {
 
 
 function HaveTime(Item , CourseTime) {
-    var alltimes = Item.Course_Time.split(',');
-    for (var x = 0; x < alltimes.length; x++) {
-        for (var i = 0; i < CourseTime.length; i++) {
+    let alltimes = Item.Course_Time.split(',');
+    for (let x = 0; x < alltimes.length; x++) {
+        for (let i = 0; i < CourseTime.length; i++) {
             if (alltimes[x] == CourseTime[i]) {
                 return true;
             }
