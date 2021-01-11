@@ -3,15 +3,23 @@ const pdfMakePrinter = require('pdfmake');
 const My_Course_Search_Func = require('./Course_Search_Func.js');
 const fs = require('fs');
 const pdfmake_func = require('./pdfmake_func.js');
+const { getData } = require('./get_storeData');
 
 module.exports = async function (req ,res)
 {
-    var data = await pdfmake_func.Get_Data(req);
-    if (data.includes('err'))
-    {
-        res.status(500).send('Error:' + data);
-        return ;
+    let data;
+    if (req.query.IsPreSchedule == "true") {
+        data = getData(req);
+        data = [data];
+    } else {
+        data = await pdfmake_func.Get_Data(req);
+        if (data.includes('err'))
+        {
+            res.status(500).send('Error:' + data);
+            return ;
+        }
     }
+    
    /* else
     {
         data = JSON.parse(data);

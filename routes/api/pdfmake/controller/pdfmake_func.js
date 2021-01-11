@@ -9,21 +9,10 @@ module.exports.Get_Data = async function(req)
     
     return new Promise (async (resolve)=>
     {
-        return resolve(await getCourseSearch(JSON.parse(query)));
-        request(
-        {
-            url : "https://www.chinstudio.icu/api/Course_Search" , 
-            method : "GET" , 
-            qs : JSON.parse(query) 
-        } , function (err , response , body)
-        {
-            if (err)
-            {
-                console.log("err : " + err);
-                return resolve("err:" + err);
-            }
-            return resolve(body);
-        })
+        let newReq = {
+            query : JSON.parse(query)
+        }
+        return resolve(await getCourseSearch(newReq));
     });
 }
 
