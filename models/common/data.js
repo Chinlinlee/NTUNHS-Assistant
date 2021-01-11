@@ -3,10 +3,10 @@ const MongoClient = require('mongodb').MongoClient;
 const config = require('../../config/config');
 
 async function MongoExe() {
-    let username = config.MONGODB.username || "";
+    let username = `${config.MONGODB.username}:` || "";
     let password = config.MONGODB.password || "";
     let at = (username || password) ? "@" : "";
-    let connection = await MongoClient.connect(`mongodb://${username}:${password}${at}${config.MONGODB.host}:${config.MONGODB.port}/${config.MONGODB.db}?ssl=${config.MONGODB.ssl}&authSource=${config.MONGODB.authDB}`, {
+    let connection = await MongoClient.connect(`mongodb://${username}${password}${at}${config.MONGODB.host}:${config.MONGODB.port}/${config.MONGODB.db}?ssl=${config.MONGODB.ssl}&authSource=${config.MONGODB.authDB}`, {
         useNewUrlParser: true, useUnifiedTopology: true,
         poolSize: 100, 'auto_reconnect': true
     });

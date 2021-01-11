@@ -29,10 +29,10 @@ app.use(bodyPareser.json({limit: '50mb'}));
 app.use(cookieParser( "myNtunhsCookieSecret"));
 
 
-let mongoUsername = config.MONGODB.username || "";
+let mongoUsername = `${config.MONGODB.username}:` || "";
 let mongoPassword = config.MONGODB.password || "";
 let at = (mongoUsername || mongoPassword) ? "@" : "";
-let mongoConnectionURL =`mongodb://${mongoUsername}:${mongoPassword}${at}${config.MONGODB.host}:${config.MONGODB.port}/${config.MONGODB.db}?ssl=${config.MONGODB.ssl}&authSource=${config.MONGODB.authDB}`;
+let mongoConnectionURL =`mongodb://${mongoUsername}${mongoPassword}${at}${config.MONGODB.host}:${config.MONGODB.port}/${config.MONGODB.db}?ssl=${config.MONGODB.ssl}&authSource=${config.MONGODB.authDB}`;
 
 app.use(session(
   {
