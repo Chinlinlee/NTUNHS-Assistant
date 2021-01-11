@@ -121,3 +121,22 @@
         background-color: #2f2f2f;
     }
 }
+
+
+/** 公告*/
+.darkmode--activated .myAnnouncement {
+    background-color: #2f2f2f;
+}
+.darkmode--activated .myAnnouncement span {
+    color: snow;
+}
+
+.darkmode--activated .myAnnouncement a:link {
+    color : #27af27;
+}
+.darkmode--activated .myAnnouncement a {
+    color : #27af27;
+}
+.darkmode--activated .myAnnouncement a:active {
+    color : #27af27;
+}
