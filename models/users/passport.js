@@ -84,6 +84,8 @@ module.exports = async function(passport)
       let homeBody = await homeFetchRes.text();
       let $ = cheerio.load(homeBody);
       let Profile = $("#ctl00_tableProfile tr");
+
+
       let stuInfo = [];
       for (let i = 0 ; i < Profile.length ; i++) 
       {
@@ -105,6 +107,30 @@ module.exports = async function(passport)
         "stuStatu" : stuInfo[6]
       }
       req.session.stuInfo = stuInfoObj;
+
+
+      let sessionStuInfo = _.get(req.session , "stuInfo");
+      let stuDeptRes = await fetch("https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Map/UserControls/ajaxCallback.aspx?type=StudAllDept" , {
+          method : 'POST'
+      });
+      let stuDeptText = await stuDeptRes.text();
+      $  = cheerio.load(stuDeptText);
+      let firstOption = $("option").eq(0);
+      let mainDeptno = firstOption.attr('deptno');
+      let mainGroupno = firstOption.attr('groupno');
+      let mainEdutype = firstOption.attr('edutype');
+      sessionStuInfo.deptno = mainDeptno;
+      sessionStuInfo.groupno = mainGroupno;
+      sessionStuInfo.edutypeCode = mainEdutype;
+      let semInfoRes = await fetch(`https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Map/UserControls/ajaxCallback.aspx?type=StudAllSemno&value=${mainDeptno}` , {
+          method : 'POST'
+      });
+      let semInfoText = await semInfoRes.text();
+      $ = cheerio.load(semInfoText);
+      let entryYear = $("input").first().attr('enteryear');
+      let lastSem = $("input").last().attr('semno');
+      sessionStuInfo.entryYear = entryYear;
+      sessionStuInfo.lastSem = lastSem;
       req.session.ntunhsApp = await j.getCookieString('http://system8.ntunhs.edu.tw');
 
 
