@@ -1,0 +1,346 @@
+<div id="Condition" class="bg-school-green">
+    <div class="row Gap-row">
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">學期:</h4>
+        </div>
+        <div class="col-sm-10">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_21')" tabindex="20">
+                    <select class="form-control">
+                        <option id="Sem">請選擇學期</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_21" class="checkboxes" tabindex="27">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="Sem_All_Select"
+                            ng-model="Checkboxes.Sem.All_Select" ng-change="CheckUnCheckItem('Sem','value','學期')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+                    <label class="custom-control custom-checkbox" ng-repeat="item in Sem">
+                        <input type="checkbox" class="custom-control-input" value={{item.name}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('Sem','value','學期')" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--學制&系所-->
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">學制:</h4>
+        </div>
+        <div class="col-sm-4">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_1');" tabindex="0">
+                    <select class="form-control">
+                        <option id="EduType">請選擇學制(可不選)</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_1" class="checkboxes" tabindex="7">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="EduType_All_Select"
+                            ng-model="Checkboxes.EduType.All_Select"
+                            ng-change="CheckUnCheckItem('EduType','value','學制');FreshFaculty()" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+                    <label class="custom-control custom-checkbox" ng-repeat="item in EduType" for={{item.id}}>
+                        <input type="checkbox" class="custom-control-input" id={{item.id}} value={{item.value}}
+                            ng-model="item.IsChecked"
+                            ng-change="onCheckChange('EduType','value','學制');FreshFaculty()" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">系所:</h4>
+        </div>
+        <div class="col-sm-4">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_2')" tabindex="1">
+                    <select class="form-control">
+                        <option id="Faculty">請選擇系所(可不選)</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_2" class="checkboxes" tabindex="8">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="Faculty_All_Select"
+                            ng-model="Checkboxes.Faculty.All_Select"
+                            ng-change="CheckUnCheckItem('Faculty','name','系所')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+                    <label class="custom-control custom-checkbox" ng-repeat="item in Faculty" ng-if="item.IsShow">
+                        <input type="checkbox" class="custom-control-input" value={{item.name}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('Faculty','name','系所')"
+                            ng-if="item.IsShow" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--年級&課別-->
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">年級:</h4>
+        </div>
+        <div class="col-sm-4">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_3')" tabindex="2">
+                    <select class="form-control">
+                        <option id="Grades">請選擇年級(可不選)</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_3" class="checkboxes" tabindex="9">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="Grades_All_Select"
+                            ng-model="Checkboxes.Grades.All_Select"
+                            ng-change="CheckUnCheckItem('Grades','value','年級')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+
+                    <label ng-repeat="item in Grades" class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" value={{item.value}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('Grades','value','年級')" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">課別:</h4>
+        </div>
+        <div class="col-sm-4">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_4')" tabindex="3">
+                    <select class="form-control">
+                        <option id="CourseTypes">請選擇課別(可不選)</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_4" class="checkboxes" tabindex="10">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="CourseTypes_All_Select"
+                            ng-model="Checkboxes.CourseTypes.All_Select"
+                            ng-change="CheckUnCheckItem('CourseTypes','value','課別')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+
+                    <label ng-repeat="item in CourseTypes" class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" value={{item.value}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('CourseTypes','value','課別')" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--星期&節次-->
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">星期:</h4>
+        </div>
+        <div class="col-sm-4">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_5')" tabindex="4">
+                    <select class="form-control">
+                        <option id="Days">請選擇星期(可不選)</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_5" class="checkboxes" tabindex="11">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="Days_All_Select"
+                            ng-model="Checkboxes.Days.All_Select" ng-change="CheckUnCheckItem('Days','value','星期')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+
+                    <label ng-repeat="item in Days" class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" value={{item.value}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('Days','value','星期')" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">節次:</h4>
+        </div>
+        <div class="col-sm-4">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_6')" tabindex="5">
+                    <select class="form-control">
+                        <option id="Times">請選擇節次(可不選)</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_6" class="checkboxes" tabindex="12">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="Times_All_Select"
+                            ng-model="Checkboxes.Times.All_Select" ng-change="CheckUnCheckItem('Times','value','節次')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+                    <label ng-repeat="item in Times" class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" value={{item.value}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('Times','value','節次')" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--課程內容分類&課程-->
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">課程內容分類:</h4>
+        </div>
+        <div class="col-sm-10">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_7')" tabindex="6">
+                    <select class="form-control">
+                        <option id="Category">請選擇課程內容分類(可不選)</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_7" class="checkboxes" tabindex="13">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="Category_All_Select"
+                            ng-model="Checkboxes.Category.All_Select"
+                            ng-change="CheckUnCheckItem('Category','name','課程內容分類')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+                    <label ng-repeat="item in Category" class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" value={{item.value}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('Category','name','課程內容分類')" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--課程-->
+        <div class="col-sm-2 ">
+            <h4 class="text-lg-center">課程:</h4>
+        </div>
+        <div class="col-sm-10 ">
+            <input type="text" class="form-control form-inline" id="txt_Course" placeholder="請輸入課程關鍵字"
+                ng-model="$parent.Course_Name">
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--教室-->
+        <div class="col-sm-2 mx-auto my-auto">
+            <h4 class="text-lg-center">教室:</h4>
+        </div>
+        <div class="col-sm-10">
+            <label class="custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" class="custom-control-input" ng-change="onPartChange()"
+                    ng-model="$parent.IsCityPart" />
+                <span class="custom-control-label">城區部</span>
+            </label>
+            <label class="custom-control custom-checkbox custom-control-inline">
+                <input type="checkbox" class="custom-control-input" ng-change="onPartChange()"
+                    ng-model="$parent.IsRootPart" />
+                <span class="custom-control-label">校本部</span>
+            </label>
+
+            <input type="search" class="form-control" id="txt_Place" placeholder="請輸入教室關鍵字"
+                ng-model="$parent.Place" ng-change="autocomplete('Place_list',Place,'Place_Filter_list')">
+            <ul class="list-group flowcontrol" id="Place_lg">
+                <li class="list-group-item" ng-repeat="placedata in Place_Filter_list"
+                    ng-click="fillTextbox('Place',placedata,'Place_Filter_list')">{{placedata}}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--老師-->
+        <div class="col-sm-2">
+            <h4 class="text-lg-center">老師:</h4>
+        </div>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="txt_Teacher" placeholder="請輸入老師姓名關鍵字"
+                ng-model="$parent.Teacher" ng-change="autocomplete('Teacher_list',Teacher,'Teacher_Filter_list')">
+            <ul class="list-group flowcontrol" id="Teacher_lg">
+                <li class="list-group-item" ng-repeat="teacherdata in Teacher_Filter_list"
+                    ng-click="fillTextbox('Teacher', teacherdata ,'Teacher_Filter_list')">{{teacherdata}}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row Gap-row" ng-if="Currentuser">
+        <!--學生功能-->
+        <div class="col-sm-2">
+            <h4 class="text-center">學生功能:</h4>
+        </div>
+        <div class="col-sm-10">
+            <button class="btn btn-dark btn-lg" ng-click="OnlyIcan()">只顯示可選課程</button>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <!--顯示欄位-->
+        <div class="col-sm-2">
+            <h4 class="text-center">顯示欄位:</h4>
+        </div>
+        <div class="col-sm-10">
+            <div class="multiselect">
+                <div class="selectBox" onclick="showCheckboxes('checkboxes_8')" tabindex="7">
+                    <select class="form-control">
+                        <option id="Columns">全選</option>
+                    </select>
+                    <div class="overSelect"></div>
+                </div>
+                <div id="checkboxes_8" class="checkboxes" tabindex="14">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="Columns_All_Select"
+                            ng-model="Checkboxes.Columns.All_Select"
+                            ng-change="CheckUnCheckItem('Columns','name','顯示欄位')" />
+                        <span class="custom-control-label">Selcet all</span>
+                    </label>
+                    <label ng-repeat="item in Columns" class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" value={{item.value}}
+                            ng-model="item.IsChecked" ng-change="onCheckChange('Columns','name','顯示欄位')" />
+                        <span class="custom-control-label">{{item.name}}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row Gap-row">
+        <div class="col-lg-12 text-center m-x-auto">
+            <button class="btn btn-success btn-lg" ng-click="Query()"><i class="fa fa-search"></i>查詢</button>
+            <button class="btn btn-danger btn-lg center-block" ng-click="ConditionClear();"><i
+                    class="fa fa-repeat"></i>清除</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <button class="btn btn-primary btn-block btn-lg"
+            onclick="FoldRegion('#Condition' , '#FoldConditionRegionBtn' , '查詢條件');"
+            id="FoldConditionRegionBtn">⤒⤒⤒⤒⤒⤒⤒⤒查詢條件(點我隱藏)⤒⤒⤒⤒⤒⤒⤒⤒</button>
+    </div>
+</div>
+<!--#endregion 查詢條件-->
+<script>
+    $("#txt_Place").blur(async function () {
+        await sleep(100);
+        $("#Place_lg").hide();
+    });
+    $("#txt_Place").focus(function () {
+        $("#Place_lg").show();
+        $(".checkboxes").hide();
+    });
+    $("#txt_Teacher").blur(async function () {
+        await sleep(100);
+        $("#Teacher_lg").hide();
+    });
+    $("#txt_Teacher").focus(function () {
+        $("#Teacher_lg").show();
+        $(".checkboxes").hide();
+    });
+</script>

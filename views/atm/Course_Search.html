@@ -9,513 +9,173 @@
     <meta content="no-cache" http-equiv="pragma">
     <meta content="0" http-equiv="expires">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/atm/css/rwd-table.css"/>
+
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,700,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/atm/css/rwd-table.css" />
     <link rel="stylesheet" href="/atm/css/main.css">
     <link rel="stylesheet" href="/atm/css/Course_Search.css">
+    <link rel="stylesheet" href="/atm/css/dark.css">
+    <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+    <style>
+        fieldset {
+            border-radius: 8px;
+            border: 1px solid;
+            box-shadow: 3px 3px 10px #666;
+            margin-bottom: 10px;
+        }
+
+        legend {
+            border-radius: 3px;
+            padding: 5px 10px;
+            background-color: #393e43;
+            color: #FFF;
+            box-shadow: 2px 2px 4px #666;
+        }
+    </style>
 </head>
 
 <body ng-controller="CSCtrl" ng-init="init();">
-    <a class="top-button"></a>
-    <a class="downloading-button" style="color:white">匯出中</a>
+
+    <a class="condition-button show" data-toggle="modal" data-target="#ModalCenter_Condition"
+        ng-click="testInclude=true;"></a>
+    <div class="alert alert-info downloading-button" role="alert">
+        <b>匯出中</b>
+    </div>
     <!--#region top navbar-->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Course">個人修課明細</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Schedule">個人課表</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Scores">學期成績</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/CTE_BOT">教學評量機器人</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/History_Scores">歷年成績</a>
-                </li>
+                <nav-normal-item class="navbar-nav"></nav-normal-item>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
+                    <span><span style="font-size:25px">🌞 </span><input type="checkbox" data-toggle="toggle"
+                            data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px">
+                            🌛</span></span>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link active" href="#" data-toggle="modal" data-target="#ModalCenter_Login"
-                    ng-show="!HaveUser">登入</a>
+                        ng-show="!Currentuser">登入</a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/logout" ng-show="HaveUser">登出</a>
-                </li>
+                <div ng-include="'navRight.html'"></div>
             </ul>
         </div>
     </nav>
     <!--#endregion-->
     <div class="container-fluid">
-    <!--#region 查詢條件-->
-        <div id="Condition" class="bg-school-green">
-            <div class="row Gap-row">
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">學期:</h4>
-                </div>
-                <div class="col-sm-10">
-                    <div class="multiselect">
-                        <div class="selectBox"  onclick="showCheckboxes('checkboxes_21')" tabindex="20">
-                            <select class="form-control bg-school-green">
-                            <option id="Sem">請選擇學期</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_21" class="checkboxes" tabindex="27">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  id="Sem_All_Select" ng-model="Checkboxes.Sem.All_Select" ng-change="CheckUnCheckItem('Sem','value','學期')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                            <label class="custom-control custom-checkbox" ng-repeat="item in Sem" >
-                                <input type="checkbox" class="custom-control-input" value={{item.name}} ng-model="item.IsChecked" ng-change="onCheckChange('Sem','value','學期')" />
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--學制&系所-->
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">學制:</h4>
-                </div>
-                <div class="col-sm-4" >
-                    <div class="multiselect" >
-                        <div class="selectBox" onclick="showCheckboxes('checkboxes_1');"  tabindex="0">
-                            <select class="form-control bg-school-green">
-                            <option id="EduType">請選擇學制(可不選)</option>
-                            </select>
-                            <div class="overSelect" ></div>
-                        </div>
-                        <div id="checkboxes_1" class="checkboxes" tabindex="7">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="EduType_All_Select" ng-model="Checkboxes.EduType.All_Select" ng-change="CheckUnCheckItem('EduType','value','學制');FreshFaculty()"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                            <label class="custom-control custom-checkbox" ng-repeat="item in EduType" for={{item.id}}>
-                                <input type="checkbox" class="custom-control-input" id={{item.id}} value={{item.value}} ng-model="item.IsChecked" ng-change="onCheckChange('EduType','value','學制');FreshFaculty()"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">系所:</h4>
-                </div>
-                <div class="col-sm-4">
-                    <div class="multiselect">
-                        <div class="selectBox"  onclick="showCheckboxes('checkboxes_2')" tabindex="1">
-                            <select class="form-control bg-school-green">
-                            <option id="Faculty">請選擇系所(可不選)</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_2" class="checkboxes" tabindex="8">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  id="Faculty_All_Select" ng-model="Checkboxes.Faculty.All_Select" ng-change="CheckUnCheckItem('Faculty','name','系所')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                            <label class="custom-control custom-checkbox" ng-repeat="item in Faculty" ng-if="item.IsShow" >
-                                <input type="checkbox" class="custom-control-input" value={{item.name}} ng-model="item.IsChecked" ng-change="onCheckChange('Faculty','name','系所')" ng-if="item.IsShow"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--年級&課別-->
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">年級:</h4>
-                </div>
-                <div class="col-sm-4">
-                    <div class="multiselect">
-                        <div class="selectBox" onclick="showCheckboxes('checkboxes_3')" tabindex="2">
-                            <select class="form-control bg-school-green">
-                            <option id="Grades">請選擇年級(可不選)</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_3" class="checkboxes" tabindex="9">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="Grades_All_Select" ng-model="Checkboxes.Grades.All_Select" ng-change="CheckUnCheckItem('Grades','value','年級')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                    
-                            <label ng-repeat="item in Grades" class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  value={{item.value}} ng-model="item.IsChecked" ng-change="onCheckChange('Grades','value','年級')"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">課別:</h4>
-                </div>
-                <div class="col-sm-4">
-                    <div class="multiselect">
-                        <div class="selectBox" onclick="showCheckboxes('checkboxes_4')" tabindex="3">
-                            <select class="form-control bg-school-green">
-                            <option id="CourseTypes">請選擇課別(可不選)</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_4" class="checkboxes" tabindex="10">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="CourseTypes_All_Select" ng-model="Checkboxes.CourseTypes.All_Select" ng-change="CheckUnCheckItem('CourseTypes','value','課別')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                    
-                            <label ng-repeat="item in CourseTypes" class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  value={{item.value}} ng-model="item.IsChecked" ng-change="onCheckChange('CourseTypes','value','課別')"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--星期&節次-->
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">星期:</h4>
-                </div>
-                <div class="col-sm-4">
-                    <div class="multiselect">
-                        <div class="selectBox" onclick="showCheckboxes('checkboxes_5')" tabindex="4">
-                            <select class="form-control bg-school-green">
-                            <option id="Days">請選擇星期(可不選)</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_5" class="checkboxes" tabindex="11">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="Days_All_Select" ng-model="Checkboxes.Days.All_Select" ng-change="CheckUnCheckItem('Days','value','星期')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                    
-                            <label ng-repeat="item in Days" class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  value={{item.value}} ng-model="item.IsChecked" ng-change="onCheckChange('Days','value','星期')"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">節次:</h4>
-                </div>
-                <div class="col-sm-4">
-                    <div class="multiselect">
-                        <div class="selectBox" onclick="showCheckboxes('checkboxes_6')" tabindex="5">
-                            <select class="form-control bg-school-green">
-                            <option id="Times">請選擇節次(可不選)</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_6" class="checkboxes" tabindex="12">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="Times_All_Select" ng-model="Checkboxes.Times.All_Select" ng-change="CheckUnCheckItem('Times','value','節次')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                            <label ng-repeat="item in Times" class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  value={{item.value}} ng-model="item.IsChecked" ng-change="onCheckChange('Times','value','節次')"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--課程內容分類&課程-->
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">課程內容分類:</h4>
-                </div>
-                <div class="col-sm-10">
-                    <div class="multiselect">
-                        <div class="selectBox" onclick="showCheckboxes('checkboxes_7')" tabindex="6">
-                            <select class="form-control bg-school-green">
-                            <option id="Category">請選擇課程內容分類(可不選)</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_7" class="checkboxes" tabindex="13">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="Category_All_Select" ng-model="Checkboxes.Category.All_Select" ng-change="CheckUnCheckItem('Category','name','課程內容分類')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                            <label ng-repeat="item in Category" class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  value={{item.value}} ng-model="item.IsChecked" ng-change="onCheckChange('Category','name','課程內容分類')"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>    
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--課程-->
-                <div class="col-sm-2 ">
-                    <h4 class="text-lg-center">課程:</h4>
-                </div>
-                <div class="col-sm-10 ">
-                    <input type="text" class="form-control bg-school-green form-inline" id="txt_Course" placeholder="請輸入課程關鍵字" ng-model="Course_Name">
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--教室-->
-                <div class="col-sm-2 mx-auto my-auto" >
-                    <h4 class="text-lg-center">教室:</h4>
-                </div>
-                <div class="col-sm-10">
-                    <label class="custom-control custom-checkbox custom-control-inline">
-                        <input type="checkbox" class="custom-control-input" ng-change="onPartChange()" ng-model="IsCityPart"/>
-                        <span class="custom-control-label" >城區部</span>
-                    </label>
-                    <label class="custom-control custom-checkbox custom-control-inline">
-                        <input type="checkbox" class="custom-control-input" ng-change="onPartChange()" ng-model="IsRootPart"/>
-                        <span class="custom-control-label">校本部</span>
-                    </label>
-                    
-                    <input type="search" class="form-control bg-school-green" id="txt_Place" placeholder="請輸入教室關鍵字"  ng-model="Place" ng-change="autocomplete('Place_list',Place,'Place_Filter_list')">
-                    <ul class="list-group flowcontrol" id="Place_lg">
-                        <li class="list-group-item" ng-repeat="placedata in Place_Filter_list" ng-click="fillTextbox('Place',placedata,'Place_Filter_list')">{{placedata}}</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--老師-->
-                <div class="col-sm-2">
-                    <h4 class="text-lg-center">老師:</h4>
-                </div>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control bg-school-green" id="txt_Teacher" placeholder="請輸入老師姓名關鍵字" ng-model="Teacher" ng-change="autocomplete('Teacher_list',Teacher,'Teacher_Filter_list')">
-                    <ul class="list-group flowcontrol" id="Teacher_lg">
-                        <li class="list-group-item" ng-repeat="teacherdata in Teacher_Filter_list" ng-click="fillTextbox('Teacher',teacherdata,'Teacher_Filter_list')">{{teacherdata}}</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row Gap-row" ng-if="HaveUser"> <!--學生功能-->
-                <div class="col-sm-2">
-                    <h4 class="text-center">學生功能:</h4>
-                </div>
-                <div class="col-sm-10">
-                    <button class="btn btn-dark btn-lg" ng-click="OnlyIcan()" >只顯示可選課程</button>
-                </div>
-            </div>
-            <div class="row Gap-row"> <!--顯示欄位-->
-                <div class="col-sm-2">
-                    <h4 class="text-center">顯示欄位:</h4>
-                </div>
-                <div class="col-sm-10">
-                    <div class="multiselect">
-                        <div class="selectBox" onclick="showCheckboxes('checkboxes_8')" tabindex="7">
-                            <select class="form-control bg-school-green">
-                            <option id="Columns">全選</option>
-                            </select>
-                            <div class="overSelect"></div>
-                        </div>
-                        <div id="checkboxes_8" class="checkboxes" tabindex="14">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="Columns_All_Select" ng-model="Checkboxes.Columns.All_Select" ng-change="CheckUnCheckItem('Columns','name','顯示欄位')"/>
-                                <span class="custom-control-label">Selcet all</span>
-                            </label>
-                            <label ng-repeat="item in Columns" class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"  value={{item.value}} ng-model="item.IsChecked" ng-change="onCheckChange('Columns','name','顯示欄位')"/>
-                                <span class="custom-control-label">{{item.name}}</span>
-                            </label> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row Gap-row">
-                <div class="col-lg-12 text-center m-x-auto">
-                        <button class="btn btn-success btn-lg" ng-click="Query()"><i class="fa fa-search"></i>查詢</button>
-                        <button class="btn btn-danger btn-lg center-block" ng-click="ConditionClear();"><i class="fa fa-repeat"></i>清除</button>
-                </div>
-            </div>
-        </div>
-        <div class="row"> 
-            <div class="col-sm-12">
-                <button class="btn btn-primary btn-block btn-lg" onclick="FoldRegion('#Condition' , '#FoldConditionRegionBtn' , '查詢條件');" id="FoldConditionRegionBtn" >⤒⤒⤒⤒⤒⤒⤒⤒查詢條件(點我隱藏)⤒⤒⤒⤒⤒⤒⤒⤒</button>
-            </div>
-        </div>
-    <!--#endregion 查詢條件-->
-    <!--#region 查詢筆數&匯出-->
+        <!--#region 查詢條件-->
+        <div id="originPageCondition" ng-include="'atm/Course_Search_Condition.html'"></div>
+        <!--#region 查詢筆數&匯出-->
         <div class="row Gap-row">
             <div class="col-md-12">
                 <div class="dropdown">
                     <span>查詢結果資料筆數: {{DataListSize}}</span>
-                    <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-if="DataListSize>0">
-                        <i class="fa fa-file-excel-o" aria-hidden="true"> 匯出報表</i>
+                    <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-if="DataListSize>0">
+                        <i class="fa fa-file-excel-o" aria-hidden="true"> 匯出查詢結果報表</i>
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"  >
-                        <a class="dropdown-item" href="#" ng-click="exportpdf();">匯出PDF</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" ng-click="exportpdf(false);">匯出PDF</a>
                         <a class="dropdown-item" href="#" ng-click="exportwordBackend();">匯出Word</a>
                         <a class="dropdown-item" href="#" ng-click="exportexcelBackend();">匯出Excel</a>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- #endregion-->
+        <!-- #endregion-->
+        <!--#endregion -->
         <!--#region 查詢結果-->
-        <div class="row" id="ResultData">
-            <div class="col-sm-12">
-                <div style="background-color:#ffffff;">
-                    <table id="Data_Table" class="table table-striped table-bordered table-sm table-rwd" cellspacing="0" width="100%" >
-                        <thead class="thead-dark" ng-if="DataListSize>0">
-                            <th class="text-center" width="1.5%" ng-show="Columns[0].IsChecked">學期</th>
-                            <th class="text-center" width="20%" ng-show="Columns[1].IsChecked">系所名稱</th>
-                            <th class="text-center" width="1.5%" ng-show="Columns[2].IsChecked">年級</th>
-                            <th class="text-center" width="7.5%" ng-show="Columns[3].IsChecked">課程代碼(14碼)</th>
-                            <th class="text-center" width="20%" ng-show="Columns[4].IsChecked">課程名稱</th>
-                            <th class="text-center" width="10%" ng-show="Columns[5].IsChecked">授課老師</th>
-                            <th class="text-center" width="5%" ng-show="Columns[6].IsChecked">上課人數/限制人數</th>
-                            <th class="text-center pointer" width="3%" ng-show="Columns[7].IsChecked" >學分數</th>
-                            <th class="text-center" width="10%" ng-show="Columns[8].IsChecked">課別</th>
-                            <th class="text-center" width="2%" ng-show="Columns[9].IsChecked">地點</th>
-                            <th class="text-center pointer" width="1.5%" ng-show="Columns[10].IsChecked" ng-click="ResultOrderBy('Course_Day')">星期(點擊排序)</th>
-                            <th class="text-center pointer" width="3%" ng-show="Columns[11].IsChecked" ng-click="ResultOrderBy('Course_Time')">節次(點擊排序)</th>
-                            <th class="text-center" width="5%" ng-show="Columns[12].IsChecked">備註</th>
-                            <th class="text-center" width="5%" ng-show="Columns[13].IsChecked">教學計劃</th>
-                            <th class="text-center" width="5%" ng-show="Columns[14].IsChecked">預排功能</th>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="Item in DataList | filter : paginate ">
-                                <td data-th="學期" ng-show="Columns[0].IsChecked">{{Item.Sem}}</td>
-                                <td data-th="系所名稱" ng-show="Columns[1].IsChecked">{{Item.Faculty_Name}}</td>
-                                <td data-th="年級" ng-show="Columns[2].IsChecked">{{Item.Grad}}</td>
-                                <td data-th="課程代碼(14碼)" ng-show="Columns[3].IsChecked">{{Item.Course_Id}}</td>
-                                <td data-th="課程名稱" ng-show="Columns[4].IsChecked">{{Item.Course_Name}}</td>
-                                <td data-th="授課老師" ng-show="Columns[5].IsChecked">{{Item.Teacher}}</td>
-                                <td data-th="上課人數/限制人數" ng-show="Columns[6].IsChecked">{{Item.Course_People}}/{{Item.Limit_People}}</td>
-                                <td data-th="學分數" ng-show="Columns[7].IsChecked">{{Item.Credits}}</td>
-                                <td data-th="課別" ng-show="Columns[8].IsChecked">{{Item.Course_Type}}</td>
-                                <td data-th="地點" ng-show="Columns[9].IsChecked">{{Item.Course_Place}}</td>
-                                <td data-th="星期(點擊排序)" ng-show="Columns[10].IsChecked" ng-click="ResultOrderBy_RWD($event.target , 'Course_Day')">{{Ch_days[Item.Course_Day-1]}}</td>
-                                <td data-th="節次(點擊排序)" ng-show="Columns[11].IsChecked" ng-click="ResultOrderBy_RWD($event.target , 'Course_Time')">{{Item.Course_Time}}</td>
-                                <td data-th="備註" ng-show="Columns[12].IsChecked" class="text-lg-center"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalCenter_{{Item.Course_Id}}">點我顯示</button>            <!-- #備註彈跳式視窗 -->
-                                    <div class="modal fade" id="ModalCenter_{{Item.Course_Id}}" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="ModalLongTitle">備註</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                {{Item.Course_Other}}
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td data-th="教學計劃" ng-show="Columns[13].IsChecked"><a href="{{Item.Class_Plan}}" target="_blank" ng-if="Item.Class_Plan.includes('http');"><i class="fa fa-download"></i>點我下載</a><span ng-if="!Item.Class_Plan.includes('http');">無教學計劃</span></td>
-                                <td data-th="預排功能" ng-show="Columns[14].IsChecked"><button class="btn btn-sm btn-success" id="PreBtn_{{Item.Course_Id}}" ng-click="PreSchedule_Add(Item , 'PreBtn_' + Item.Course_Id)" ng-disabled="PreBtn_{{Item.Course_Id}}">加入</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row" ng-show="DataListSize > 0"> 
-            <div class="col-sm-12">
-                <button class="btn btn-primary btn-block btn-lg" onclick="FoldRegion('#ResultData' , '#FoldResultDataRegionBtn' , '查詢結果');" id="FoldResultDataRegionBtn">⤒⤒⤒⤒⤒⤒⤒⤒查詢結果(點我隱藏)⤒⤒⤒⤒⤒⤒⤒⤒</button>
-            </div>
-        </div>
         <!-- #endregion-->
         <!--#region 分頁為第幾筆~第幾筆-->
         <div class="row">
             <div class="col-sm-12" ng-show="DataListSize">
                 <span>顯示資料 第{{(numPerPage*(curPage-1))+1 }}筆~第{{numPerPage*curPage}}筆</span>
-                <ul uib-pagination total-items="DataListSize" ng-model="curPage" boundary-link-numbers="false" rotate="false" max-size="0" boundary-links="true" class="pagination-sm"></ul>
+                <ul uib-pagination total-items="DataListSize" ng-model="curPage" boundary-link-numbers="false"
+                    rotate="false" max-size="0" boundary-links="true" class="pagination-sm"></ul>
             </div>
         </div>
         <!--#endregion-->
         <!--#region 預排課表表格-->
-        <div class="row Gap-row">
-            <div class="col-sm-12 bg-dark" style="color:aliceblue">
-                <p class="h1">預排課表表格</p>
-            </div>
-        </div>
-        <div class="row" id="Row_Pre_Table">
-            <div class="col-sm-12">
-                <table id="Pre_Table" class="table table-striped table-bordered table-sm table-rwd" cellspacing="0" width="100%" style="margin: 0px auto;">
-                    <thead class="thead-light" ng-if="PreScheduleSize>0">
-                        <th class="text-center" width="10%">系所名稱</th>
-                        <th class="text-center" width="1.5%">年級</th>
-                        <th class="text-center" width="10%">課程名稱</th>
-                        <th class="text-center" width="5%">授課老師</th>
-                        <th class="text-center" width="3%">學分數</th>
-                        <th class="text-center" width="5%">課別</th>
-                        <th class="text-center" width="1.5%">星期</th>
-                        <th class="text-center" width="3%">節次</th>
-                        <th class="text-center" width="5%">更多資訊</th>
-                        <th class="text-center" width="5%">移除</th>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="Item in PreScheduleList">
-                            <td data-th="系所名稱">{{Item.Faculty_Name}}</td>
-                            <td data-th="年級">{{Item.Grad}}</td>
-                            <td data-th="課程名稱">{{Item.Course_Name}}</td>
-                            <td data-th="授課老師">{{Item.Teacher}}</td>
-                            <td data-th="學分數">{{Item.Credits}}</td>
-                            <td data-th="課別">{{Item.Course_Type}}</td>
-                            <td data-th="星期">{{Item.Course_Day}}</td>
-                            <td data-th="節次">{{Item.Course_Time}}</td>
-                            <td data-th="更多資訊" class="text-lg-center">
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#PreModalCenter_{{Item.Course_Id}}">點我顯示</button>            <!-- #更多資訊 -->
-                                <div class="modal fade" id="PreModalCenter_{{Item.Course_Id}}" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="ModalLongTitle">更多資訊</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <ul class="list-group">
-                                                <li class="list-group-item">學期：{{Item.Sem}}</li>
-                                                <li class="list-group-item">課程代碼(14碼)：{{Item.Course_Id}}</li>
-                                                <li class="list-group-item">上課人數/限制人數：{{Item.Course_People}}/{{Item.Limit_People}}</li>
-                                                <li class="list-group-item">地點：{{Item.Course_Place}}</li>
-                                                <li class="list-group-item">備註：{{Item.Course_Other}}</li>
-                                                <li class="list-group-item">教學計劃：<a href="{{Item.Class_Plan}}" target="_blank"><i class="fa fa-download"></i>點我下載</a></li>
-                                            </ul>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td data-th="移除" class="text-lg-center">
-                                <button class="btn btn-sm btn-success" ng-click="PreSchedule_Remove(Item);">移除</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row Gap-row" ng-show="PreScheduleSize >0 "> 
-            <div class="col-sm-12">
-                <button class="btn btn-primary btn-block btn-lg" onclick="FoldRegion('#Row_Pre_Table' , '#FoldRow_Pre_TableRegionBtn' , '預排課表表格');" id="FoldRow_Pre_TableRegionBtn">⤒⤒⤒⤒⤒⤒⤒⤒預排課表表格(點我隱藏)⤒⤒⤒⤒⤒⤒⤒⤒</button>
-            </div>
-        </div>
+
         <!--#endregion-->
         <!--#region 模擬課表-->
-        <div class="row"  id="Row_PreSchedule">
-            <div class="col-sm-12">
-                <table id="PreSchedule" class="table table-striped table-bordered table-sm" width="100%">
+        <div class="row" id="Row_PreSchedule">
+            <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+                <div class="preSchedule-list" id="new_PreSchedule">
+                    <div class="alert preSchedule-list-item" role="alert"
+                        ng-repeat="Item in DataList | filter : paginate " ng-click="openResultDetailModal(Item)"
+                        data-target="#ResultModalCenter_New" data-toggle="modal"
+                        ng-class="ResultConflictDanger(Item.Course_Id)">
+                        <p>
+                            <b>{{Item.Course_Name}}</b>
+                            <span class="badge badge-light">{{Item.Course_Type}}</span>
+                        </p>
+                        <span>
+                            {{Item.Faculty_Name}}
+                        </span>
+                        <br />
+                        <span>
+                            {{Item.Credits}}學分
+                            <span
+                                ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.Period}}節・星期{{Ch_days[Item.Course_Day-1]}}</span>
+                        </span>
+                        <br />
+                        <span></span>
+                        <a class="btn-addCourse" id="PreBtn_{{Item.Course_Id}}"
+                            ng-click="PreSchedule_Add(Item , 'PreBtn_' + Item.Course_Id)"
+                            ng-disabled="PreBtn_{{Item.Course_Id}}" ng-show="!PreBtn_{{Item.Course_Id}}">
+                        </a>
+                    </div>
+                </div>
+                <div class="preSchedule-list" id="new_PreSchedule_Added">
+                    <div class="alert alert-selectedCourse preSchedule-list-item" role="alert"
+                        ng-repeat="Item in PreScheduleList" ng-click="openResultDetailModal(Item)"
+                        data-target="#ResultModalCenter_New" data-toggle="modal">
+                        <p>
+                            <b>{{Item.Course_Name}}</b>
+                            <span class="badge badge-light">{{Item.Course_Type}}</span>
+                        </p>
+                        <span>
+                            {{Item.Faculty_Name}}
+                        </span>
+                        <br />
+                        <span>
+                            {{Item.Credits}}學分
+                            <span
+                                ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.startPeriod}}~{{Item.endPeriod}}節・星期{{Ch_days[Item.Course_Day-1]}}</span>
+                        </span>
+                        <a class="btn-deleteCourse" ng-click="PreSchedule_Remove(Item);">
+                        </a>
+                    </div>
+                </div>
+                <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-if="PreScheduleList.length">
+                    <i class="fa fa-file-excel-o" aria-hidden="true"> 匯出報表</i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#" ng-click="exportpdf(true);">匯出清單PDF</a>
+                    <a class="dropdown-item" href="#" ng-click="exportwordBackend();">匯出清單Word</a>
+                    <a class="dropdown-item" href="#" ng-click="exportexcelBackend();">匯出清單Excel</a>
+                    <a class="dropdown-item" href="#" id="a_Export_IMG" ng-click="exportPicture();">
+                        <i class="fa fa-download" class="text-center"></i>匯出表格圖片
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12 col-sm-12 col-12">
+                <table id="PreSchedule" class="table table-striped table-bordered table-sm table-responsive w-100">
                     <thead class="thead-dark">
                         <tr>
                             <th colspan="8" class="text-center">模擬表格</th>
-                            <th><a href="#" style="color:white" id="a_Export_IMG" ng-click="exportPicture();"><i class="fa fa-download" class="text-center"></i>匯出圖片</a>
+                            <th><a href="#" style="color:white" id="a_Export_IMG" ng-click="exportPicture();"><i
+                                        class="fa fa-download" class="text-center"></i>匯出表格圖片</a>
                         </tr>
                         <tr>
                             <th style="width: 1%;">節次</th>
@@ -531,142 +191,322 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="Item in PreScheduleTable" class="text-center">
-                            <td data-th="節次">{{Item.Period}}</td>
-                            <td data-th="時間">{{Item.Time}}</td>
-                            <td data-th="星期一" id="Schedule_content"><span class="float-right mr-2" ng-if='Item.Mon!=""'><span class="text-danger pointer" ng-click="PreScheduleTable_Remove(Item.Mon , Item.Period,1);">×</span></span><P>{{Item.Mon}}</P></td>
-                            <td data-th="星期二" id="Schedule_content"><span class="float-right mr-2" ng-if='Item.Tue!=""'><span class="text-danger pointer" ng-click="PreScheduleTable_Remove(Item.Tue , Item.Period,2);">×</span></span><P>{{Item.Tue}}</P></P></td>
-                            <td data-th="星期三" id="Schedule_content"><span class="float-right mr-2" ng-if='Item.Wed!=""'><span class="text-danger pointer" ng-click="PreScheduleTable_Remove(Item.Wed , Item.Period,3);">×</span></span><P>{{Item.Wed}}</P></td>
-                            <td data-th="星期四" id="Schedule_content"><span class="float-right mr-2" ng-if='Item.Thu!=""'><span class="text-danger pointer" ng-click="PreScheduleTable_Remove(Item.Thu , Item.Period,4);">×</span></span><P>{{Item.Thu}}</P></td>
-                            <td data-th="星期五" id="Schedule_content"><span class="float-right mr-2" ng-if='Item.Fri!=""'><span class="text-danger pointer" ng-click="PreScheduleTable_Remove(Item.Fri , Item.Period,5);">×</span></span><P>{{Item.Fri}}</P></td>
-                            <td data-th="星期六" id="Schedule_content"><span class="float-right mr-2" ng-if='Item.Sat!=""'><span class="text-danger pointer" ng-click="PreScheduleTable_Remove(Item.Sat , Item.Period,6);">×</span></span><P>{{Item.Sat}}</P></td>
-                            <td data-th="星期日" id="Schedule_content"><span class="float-right mr-2" ng-if='Item.Sun!=""'><span class="text-danger pointer" ng-click="PreScheduleTable_Remove(Item.Sun , Item.Period,7);">×</span></span><P>{{Item.Sun}}</P></td>
+                            <td data-th="節次" class="align-middle">{{Item.Period}}</td>
+                            <td data-th="時間" class="align-middle">{{Item.Time}}</td>
+                            <td data-th="星期一" id="Mon{{Item.Period}}" class="align-middle td-item-fill"><span
+                                    class="float-right mr-2" ng-if='Item.Mon!=""'><span class="text-danger pointer"
+                                        ng-click="PreScheduleTable_Remove(Item.Mon , Item.Period,1);">×</span></span>
+                                <P ng-show="Item.Mon">{{Item.Mon}}</P>
+                                <button class="btn btn-preSchedule td-btn-center" ng-show="!Item.Mon"
+                                    ng-click="PreScheduleAddCondition(Item ,0);"></button>
+                            </td>
+                            <td data-th="星期二" id="Tue{{Item.Period}}" class="align-middle td-item-fill"><span
+                                    class="float-right mr-2" ng-if='Item.Tue!=""'><span class="text-danger pointer"
+                                        ng-click="PreScheduleTable_Remove(Item.Tue , Item.Period,2);">×</span></span>
+                                <P ng-show="Item.Tue">{{Item.Tue}}</P>
+                                <button class="btn btn-preSchedule td-btn-center"
+                                    ng-show="!Item.TueisClickedSearch && !Item.Tue"
+                                    ng-click="PreScheduleAddCondition(Item ,1);"></button>
+                            </td>
+                            <td data-th="星期三" id="Wed{{Item.Period}}" class="align-middle td-item-fill"><span
+                                    class="float-right mr-2" ng-if='Item.Wed!=""'><span class="text-danger pointer"
+                                        ng-click="PreScheduleTable_Remove(Item.Wed , Item.Period,3);">×</span></span>
+                                <P ng-show="Item.Wed">{{Item.Wed}}</P>
+                                <button class="btn btn-preSchedule td-btn-center"
+                                    ng-show="!Item.WedisClickedSearch && !Item.Wed"
+                                    ng-click="PreScheduleAddCondition(Item ,2);"></button>
+                            </td>
+                            <td data-th="星期四" id="Thu{{Item.Period}}" class="align-middle td-item-fill"><span
+                                    class="float-right mr-2" ng-if='Item.Thu!=""'><span class="text-danger pointer"
+                                        ng-click="PreScheduleTable_Remove(Item.Thu , Item.Period,4);">×</span></span>
+                                <P ng-show="Item.Thu">{{Item.Thu}}</P>
+                                <button class="btn btn-preSchedule td-btn-center"
+                                    ng-show="!Item.ThuisClickedSearch && !Item.Thu"
+                                    ng-click="PreScheduleAddCondition(Item ,3);"></button>
+                            </td>
+                            <td data-th="星期五" id="Fri{{Item.Period}}" class="align-middle td-item-fill"><span
+                                    class="float-right mr-2" ng-if='Item.Fri!=""'><span class="text-danger pointer"
+                                        ng-click="PreScheduleTable_Remove(Item.Fri , Item.Period,5);">×</span></span>
+                                <P ng-show="Item.Fri">{{Item.Fri}}</P>
+                                <button class="btn btn-preSchedule td-btn-center"
+                                    ng-show="!Item.FriisClickedSearch && !Item.Fri"
+                                    ng-click="PreScheduleAddCondition(Item ,4);"></button>
+                            </td>
+                            <td data-th="星期六" id="Sat{{Item.Period}}" class="align-middle td-item-fill"><span
+                                    class="float-right mr-2" ng-if='Item.Sat!=""'><span class="text-danger pointer"
+                                        ng-click="PreScheduleTable_Remove(Item.Sat , Item.Period,6);">×</span></span>
+                                <P ng-show="Item.Sat">{{Item.Sat}}</P>
+                                <button class="btn btn-preSchedule td-btn-center"
+                                    ng-show="!Item.SatisClickedSearch && !Item.Sat"
+                                    ng-click="PreScheduleAddCondition(Item ,5);"></button>
+                            </td>
+                            <td data-th="星期日" id="Sun{{Item.Period}}" class="align-middle td-item-fill"><span
+                                    class="float-right mr-2" ng-if='Item.Sun!=""'><span class="text-danger pointer"
+                                        ng-click="PreScheduleTable_Remove(Item.Sun , Item.Period,7);">×</span></span>
+                                <P ng-show="Item.Sun">{{Item.Sun}}</P>
+                                <button class="btn btn-preSchedule td-btn-center"
+                                    ng-show="!Item.SunisClickedSearch && !Item.Sun"
+                                    ng-click="PreScheduleAddCondition(Item ,6);"></button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <div class="col-lg-8 col-md-12 col-sm-12 col-12" id="table-mobile" ng-show="false">
+                <div class="row" ng-repeat="(key , item) in ['星期一'  ,'星期二' , '星期三', '星期四', '星期五', '星期六', '星期日']"
+                    id="fieldSet{{key+1}}">
+                    <div class="col-md-12 col-12">
+                        <fieldset class="p-2">
+                            <legend class="w-auto" ng-click="legend();">{{item}}</legend>
+                            <div class="row h-100 justify-content-center align-items-center">
+                                <div class="col-sm-6 col-12 " ng-repeat="(scheduleKey , scheduleItem) in scheduleList"
+                                    ng-if="scheduleItem.Day == key+1">
+                                    <div class="card mb-3 mx-auto" style="max-width: 18rem;cursor: pointer;">
+                                        <div class="card-body text-center" data-toggle="modal"
+                                            data-target="#modal{{scheduleItem.Code}}">
+                                            <p class="card-title">{{scheduleItem.Time}}</p>
+                                            <p class="card-title">{{scheduleItem.Place}}</p>
+                                            <h5 class="card-text">{{scheduleItem.Name}}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="modal{{scheduleItem.Code}}" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalCenterTitle">Other</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>教室：{{scheduleItem.Place}}</p>
+                                                    <p>節次：{{scheduleItem.Period}}</p>
+                                                    <p>學分：{{scheduleItem.Credit}}</p>
+                                                    <p>課程性質：{{scheduleItem.Type}}</p>
+                                                    <p>授課老師：{{scheduleItem.Teacher}}</p>
+                                                    <p>代碼：{{scheduleItem.Code}}</p>
+                                                    <p>備註：{{scheduleItem.Other}}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
         </div>
         <!--#endregion-->
     </div>
-    <div class="modal fade" id="ModalCenter_Login" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div ng-include="'loginModal.html'"></div>
+
+    <div class="modal fade" id="ModalCenter_Condition" tabindex="-1" role="dialog" aria-labelledby="ModalConditionTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 800px;">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLongTitle">登入</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="/login" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalConditionTitle">查詢條件</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
-                        <span>帳號:</span>
-                        <input id="username" class="input form-control" name="username" placeholder="請輸入帳號" title="請輸入帳號" ng-model="username">
-                        <span>密碼:</span>
-                        <input id="password" type="password" class="input password form-control" name="password" placeholder="請輸入密碼" title="請輸入密碼" ng-model="password">
-                    
+                    <div id="modalBodyCondition" ng-include="'atm/Course_Search_Condition.html'"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" ng-disabled="!password || !username">確認</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                 </div>
-            </form>
             </div>
         </div>
     </div>
+    <!--#regeion 查詢到的課程Modal-->
+    <div class="modal fade" id="ResultModalCenter_New" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle"
+        aria-hidden="true" style="z-index: 1000000;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="w-100 text-center modal-title" id="ModalLongTitle">{{OpenResultItem.Course_Name}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-if="showCol('學期');">學期：{{OpenResultItem.Sem}}</li>
+                        <li class="list-group-item" ng-if="showCol('系所名稱');">系所名稱：{{OpenResultItem.Faculty_Name}}</li>
+                        <li class="list-group-item" ng-if="showCol('年級');">年級：{{OpenResultItem.Grad}}</li>
+                        <li class="list-group-item" ng-if="showCol('課程代碼(14碼)');">課程代碼(14碼)：{{OpenResultItem.Course_Id}}</li>
+                        <li class="list-group-item" ng-if="showCol('授課老師');">授課老師：{{OpenResultItem.Teacher}}</li>
+                        <li class="list-group-item" ng-if="showCol('課別');">課別：{{OpenResultItem.Course_Type}}</li>
+                        <li class="list-group-item" ng-if="showCol('學分');">學分：{{OpenResultItem.Credits}}</li>
+                        <li class="list-group-item" ng-if="showCol('星期');">星期：{{Ch_days[OpenResultItem.Course_Day-1]}}</li>
+                        <li class="list-group-item" ng-if="showCol('節次');">節次：{{OpenResultItem.Course_Time}}</li>
+                        <li class="list-group-item" ng-if="showCol('上課人數/限制人數');">
+                            上課人數/限制人數：{{OpenResultItem.Course_People}}/{{OpenResultItem.Limit_People}}</li>
+                        <li class="list-group-item" ng-if="showCol('地點');">地點：{{OpenResultItem.Course_Place}}</li>
+
+                        <li class="list-group-item" ng-if="showCol('教學計劃');">教學計劃：
+                            <a href="{{OpenResultItem.Class_Plan}}" target="_blank"
+                                ng-show="OpenResultItem.Class_Plan.includes('http');" rel="noopener noreferrer nofollow"
+                                download>
+                                <span><i class="fa fa-download"></i>點我下載</span>
+                            </a>
+                            <span ng-show="!OpenResultItem.Class_Plan.includes('http');">無教學計劃</span>
+                        </li>
+                        <li class="list-group-item" ng-if="showCol('備註');">備註：{{OpenResultItem.Course_Other}}</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #endregion -->
+    <!-- #region 預排課表表格點擊資料Modal-->
+    <div class="modal fade" id="PreScheduleModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="w-100 text-center modal-title" id="ModalLongTitle">課程</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="search" class="form-control" ng-model="preModalQ" placeholder="請輸入關鍵字" />
+                    <div class="preSchedule-list" id="PreScheduleTableQuery">
+                        <div class="alert preSchedule-list-item" role="alert"
+                            ng-repeat="Item in PreScheduleQueryDataList | filter : preModalQ"
+                            ng-click="openResultDetailModal(Item)" data-target="#ResultModalCenter_New"
+                            data-toggle="modal" ng-class="ResultConflictDanger(Item.Course_Id)">
+                            <p>
+                                <b>{{Item.Course_Name}}</b>
+                                <span class="badge badge-light">{{Item.Course_Type}}</span>
+                            </p>
+                            <span>
+                                {{Item.Faculty_Name}}
+                            </span>
+                            <br />
+                            <span>
+                                {{Item.Credits}}學分
+                                <span
+                                    ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.startPeriod}}~{{Item.endPeriod}}節・星期{{Ch_days[Item.Course_Day-1]}}</span>
+                            </span>
+                            <br />
+                            <span></span>
+                            <a class="btn-addCourse" id="PreBtn_{{Item.Course_Id}}"
+                                ng-click="PreSchedule_Add(Item , 'PreBtn_' + Item.Course_Id)"
+                                ng-disabled="PreBtn_{{Item.Course_Id}}" ng-show="!PreBtn_{{Item.Course_Id}}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #endregion -->
+</div>
+
 </body>
+
 </html>
 <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous">
+</script>
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="../externals/angularjs/angular.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" defer></script>
-<script src="/atm/scripts/Course_Search.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/atm/scripts/Common.js"></script>
+<script src="/atm/scripts/ngCommon.js"></script>
+<script src="/atm/scripts/Course_Search.js"></script>
 
+<script src="../externals/Bootstrap/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script src="../externals/angularjs/ui-bootstrap-tpls-3.0.6.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
+
+
 <script>
-        
-    $(document).ready(()=>
-    {
+    $(document).ready(() => {
+        ///commonFunc.darkModeInit();
+        let darkMode = localStorage.getItem("darkMode");
+        commonFunc.myDarkModeInit();
         window.NTUNHS = {};
         window.NTUNHS.last_focused = "";
         //BLUR沒在搜尋匡時AutoComplete關閉
-        $("#txt_Place").blur(async function()
-        {
-            await sleep(100);
-            $("#Place_lg").hide();
-        });
-        $("#txt_Place").focus(function()
-        {
-            $("#Place_lg").show();
-            $(".checkboxes").hide();
-        });
-        $("#txt_Teacher").blur(async function()
-        {
-            await sleep(100);
-            $("#Teacher_lg").hide();
-        });
-        $("#txt_Teacher").focus(function()
-        {
-            $("#Teacher_lg").show();
-            $(".checkboxes").hide();
-        });
+
         //點擊旁邊隱藏下拉式選單
-        $(document).on("click" , function()
-        {
+        $(document).on("click", function () {
             var focused = $(':focus');
             var flength = focused.length;
+            let isModal = false;
             console.log(flength);
-            if (flength < 1)
-            {
-                window.NTUNHS.last_focused="";
-                $(".checkboxes").hide();
-            }
-            else if (flength >=1 && focused[0].className =="selectBox")
-            {
-                if (window.NTUNHS.last_focused!=="")
-                {
-                    if (window.NTUNHS.last_focused == focused[0].tabIndex)
-                    {
-                        $(".checkboxes").hide();
-                        window.NTUNHS.last_focused="";
-                    }
-                    else
-                    {
-                        $(".checkboxes").hide();
-                        $("#checkboxes_"  +(focused[0].tabIndex+1)).show();
-                        window.NTUNHS.last_focused = focused[0].tabIndex;    
-                    }
+            if (flength == 1) {
+                let focuseElemnet = focused.eq(0).attr('class');
+                console.log(focuseElemnet);
+                if (focuseElemnet.includes('modal')) {
+                    isModal = true;
+                    console.log(isModal)
                 }
-                else
-                {
+            }
+            if (flength < 1) {
+                window.NTUNHS.last_focused = "";
+                $(".checkboxes").hide();
+            } else if (flength >= 1 && focused[0].className == "selectBox") {
+                console.log("y");
+                if (window.NTUNHS.last_focused !== "") {
+                    if (window.NTUNHS.last_focused == focused[0].tabIndex) {
+                        $(".checkboxes").hide();
+                        window.NTUNHS.last_focused = "";
+                    } else {
+                        $(".checkboxes").hide();
+                        $("#checkboxes_" + (focused[0].tabIndex + 1)).show();
+                        window.NTUNHS.last_focused = focused[0].tabIndex;
+                    }
+                } else {
                     $(".checkboxes").hide();
-                    $("#checkboxes_"  +(focused[0].tabIndex+1)).show();
+                    $("#checkboxes_" + (focused[0].tabIndex + 1)).show();
                     window.NTUNHS.last_focused = focused[0].tabIndex;
                 }
+            } else if (flength >= 1 && isModal) {
+                window.NTUNHS.last_focused = "";
+                $(".checkboxes").hide();
             }
         });
         var btn = $('.top-button');
-        btn.on('click', function(e) {
+        btn.on('click', function (e) {
             e.preventDefault();
-            $('html, body').animate({scrollTop:0}, '300');
+            $('html, body').animate({
+                scrollTop: 0
+            }, '300');
         });
+
     });
-    
-    async function sleep(ms = 0) 
-    {
+
+    async function sleep(ms = 0) {
         return new Promise(r => setTimeout(r, ms));
     }
-    $(window).scroll(function()
-    {
-        if ($(window).scrollTop() >100)
-        {
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
             $('.top-button').addClass('show');
-        }
-        else
-        {
+        } else {
             $('.top-button').removeClass('show');
         }
     });

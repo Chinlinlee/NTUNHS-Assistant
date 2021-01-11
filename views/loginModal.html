@@ -1,0 +1,28 @@
+<div class="modal fade" id="ModalCenter_Login" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLongTitle">登入</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/login" method="post">
+                    <div class="modal-body">
+                        <span>帳號:</span>
+                        <input id="username" class="input form-control" name="username" placeholder="請輸入帳號"
+                            title="請輸入帳號" ng-model="username">
+                        <span>密碼:</span>
+                        <input id="password" type="password" class="input password form-control" name="password"
+                            placeholder="請輸入密碼" title="請輸入密碼" ng-model="password">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" ng-disabled="!password || !username">確認</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>

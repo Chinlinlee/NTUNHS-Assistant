@@ -41,9 +41,14 @@ function FoldRegion(id , btn_id , name)
         $(btn_id).text('⤒⤒⤒⤒⤒⤒⤒⤒' +name +'(點我隱藏)' +  '⤒⤒⤒⤒⤒⤒⤒⤒');
     }
 }
-var CSApp = angular.module("CSApp" ,['ui.bootstrap']);
-CSApp.controller("CSCtrl" , function($scope , CSService)
+var CSApp = angular.module("CSApp" ,['ui.bootstrap' , 'commonApp']);
+CSApp.controller("CSCtrl" , function($scope , CSService , commonService)
 {
+    commonFunc.blockUI();
+    angular.element(document).ready(function () {
+        $.unblockUI();
+    });
+
     $scope.IsLine = false;
     var gAgent = navigator.userAgent;
     if (gAgent.toLowerCase().indexOf("line") != -1)
@@ -55,6 +60,7 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
     $scope.DataListSize = 0;
     $scope.Teacher_list = []; //所有老師資料
     $scope.Place_list = []; //所有教室資料
+    $scope.OpenResultItem = {} //點擊開啟查詢到的課程
     //#region Autocomplete 提示字清單
     $scope.Place_Filter_list = []; 
     $scope.Teacher_Filter_list = [];
@@ -62,11 +68,11 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
     $scope.PreScheduleList = []; //預排課表清單
     $scope.PreScheduleSize = 0;
     $scope.PreScheduleTable = []; //模擬課表
+    $scope.PreScheduleQueryDataList = []; //點擊模擬課表表格查詢到的資料
     $scope.Currentuser = "";
     $scope.Course_Name = "";
     $scope.IsRootPart = false;
     $scope.IsCityPart  =false;
-    $scope.HaveUser = false;
     //#region 是否全選
     $scope.Edu_Type_All = false;
     $scope.Faculty_All = false;
@@ -78,10 +84,14 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
     $scope.Columns_All = true;
     $scope.Sem_All = false;
     //#endregion
+    $scope.testInclude = false;
     
     $scope.curPage = 1; //table起始頁數
     $scope.numPerPage = 10; //table每頁顯示資料
     //#region Item 查詢條件
+    commonService.user.getStuInfo().then(function (res) {
+        $scope.Currentuser = res.data;
+    });
     $scope.Iteminit = function ()
     {
         $scope.EduType = [{'id': 'cblNewEduType_0','value' : '二年' , 'name':'二技','IsChecked' : false},{'id': 'cblNewEduType_1','value' : '進修' , 'name':'二技(三年)','IsChecked' : false},{'id': 'cblNewEduType_2','value' : '四年' , 'name':'四技','IsChecked' : false},{'id': 'cblNewEduType_7','value' : '學士後' , 'name':'學士後系','IsChecked' : false},{'id': 'cblNewEduType_4','value' : '碩士' , 'name':'碩士班','IsChecked' : false},{'id': 'cblNewEduType_5','value' : '博士' , 'name':'博士班','IsChecked' : false}];
@@ -160,25 +170,21 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
         var temparr = {};
         temparr["Period"] = i+1;
         temparr["Time"] = S_Time[i];
+        
         for (var j =  0; j < 7  ; j++)
         {
             temparr[days[j]] = "";
+            temparr[days[j]+"isClickedSearch"] = false;
         }
         $scope.PreScheduleTable.push(temparr);
     }
     //initial 是否登入過
-    CSService.Get_User($scope).then((res)=>
+    
+    //登入過拿取資訊
+    CSService.Get_UserInf().then((u_res)=>
     {
-        if ($scope.Currentuser !="")
-        {
-            $scope.HaveUser = true;
-            //登入過拿取資訊
-            CSService.Get_UserInf($scope.Currentuser).then((u_res)=>
-            {
-                $scope.userinfo.faculty = u_res.data.faculty;
-                $scope.userinfo.system = u_res.system;
-            });
-        }
+        $scope.userinfo.faculty = u_res.data.faculty;
+        $scope.userinfo.system = u_res.system;
     });
     //initial 獲取所有教室
     CSService.Get_Place($scope).then((res)=>
@@ -213,6 +219,7 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
             return;
         }
         $scope.blockUI();
+        $("#ModalCenter_Condition").modal("hide");
         CSService.Get_data($scope).then((function(res)
         {
             if (res.data == null)
@@ -230,6 +237,16 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
         }));
     }
     //#endregion
+    $scope.QueryWithPreSchedule = function (time , day) {
+        window.NTUNHS.last_focused = "";
+        if ($scope.Checkboxes['Sem'].Checked_list.length == 0) {
+            alert("學期不得為空");
+            return;
+        }
+        //$scope.blockUI();
+
+    }
+
     //#region 只顯示可選課程
     $scope.OnlyIcan = function()
     {
@@ -341,6 +358,7 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
             items.IsChecked = false;
         });
         $scope.Get_Item('Faculty' ,'name','系所');
+        $scope.onCheckChange('Faculty' ,'name','系所');
     }
     //#endregion
     //#region 依照勾選學校地區(校本、城區)修改教室清單
@@ -377,6 +395,8 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
     $scope.fillTextbox=function(i_item ,i_string , i_filter)
     {
         $scope[i_item]=i_string;
+        console.log($scope[i_item]);
+        //$(`#txt_${i_item}`).val(i_string);
         $scope[i_filter]=null;
     }
     //#endregion
@@ -389,6 +409,13 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
         index = $scope.DataList.indexOf(value);
         return (start <= index && index < end);
     }
+    $scope.$watch('curPage' , function(newValue , oldValue) {
+        $("#new_PreSchedule").scrollTop(0);
+    })
+   /* $("#new_PreSchedule").on('scroll' , function () {
+        let PreScheduleScrollHeight = $(this).prop('scrollHeight') - $(this).height();
+        console.log($(this).scrollTop() / PreScheduleScrollHeight);
+    })*/
     //#endregion
     $scope.ResultOrderByName = "";
     $scope.ResultOrderByReverse = false;
@@ -424,6 +451,8 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
     //新增預排課表(表格)以及模擬課表之物件
     $scope.PreSchedule_Add = function (Item , btn)
     {
+        $(".preSchedule-list-item").removeAttr("data-toggle");
+        $("#PreScheduleModalCenter").modal('hide');
         if ($scope.PreSchedule_IsConflict(Item))
         {
             alert('衝堂，請重新選擇');
@@ -447,10 +476,14 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
             }
         }
         $scope.PreSchedule_IsConflict_Btn();
+        setTimeout(()=> {
+            $(".preSchedule-list-item").attr("data-toggle" , "modal");
+        } , 200);
     }
     //移除預排課表(表格)以及模擬課表之物件
     $scope.PreSchedule_Remove = function (item)
     {
+        $(".preSchedule-list-item").removeAttr("data-toggle");
         $scope.PreScheduleList = $scope.PreScheduleList.filter((value , index ,arr)=>
         {
             return value.Course_Id != item.Course_Id;
@@ -463,6 +496,9 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
             $scope.PreScheduleTable[i_time[j]-1][days[i_day-1]] = "";
         }
         $scope.PreSchedule_IsConflict_Btn();
+        setTimeout(()=> {
+            $(".preSchedule-list-item").attr("data-toggle" , "modal");
+        } , 200);
     }
     //在模擬預排課表上小x移除物件 (擁有相依性 要注意)
     $scope.PreScheduleTable_Remove = function (i_name , i_peroid,i_day)
@@ -516,14 +552,62 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
             }
         }
     }
+    $("#PreScheduleModalCenter").on("show.bs.modal" , function () {
+        $scope.preModalQ = "";
+    });
+    $scope.PreScheduleAddCondition = function (iItem , iDay) {
+        
+        iItem[days[iDay] + "isClickedSearch"] = true;
+        $scope['Days'][iDay].IsChecked=true;
+        $scope['Times'][iItem.Period-1].IsChecked=true;
+        CSService.PreScheduleQuery($scope , [iDay+1] ,[iItem.Period] ).then(function (res) {
+            $scope.PreScheduleQueryDataList = res.data[0];
+        });
+        $("#PreScheduleModalCenter").modal('show');
+        /*$scope.onCheckChange('Days','value','星期');
+        $scope.onCheckChange('Times','value','節次');
+        $scope.Query();*/
+    }
+
+    $scope.legend = function () {
+        console.log('test')
+    }
+   /* $scope.PreScheduleRemoveCondition = function (iItem , iDay) {
+        let dayName =days[iDay];
+        iItem[dayName + "isClickedSearch"] = false;
+        $scope['Days'][iDay].IsChecked=false;
+        $scope['Times'][iItem.Period-1].IsChecked=false;
+        for (let i = 0 ; i<14 ; i++) {
+            let isDayClicked = $scope.PreScheduleTable[i][dayName + "isClickedSearch"];
+            if (isDayClicked) {
+                $scope['Days'][iDay].IsChecked=true;
+                $scope.onCheckChange('Times','value','節次');
+                $scope.Query();
+                return;
+            }
+        }
+        $scope.onCheckChange('Days','value','星期');
+        $scope.onCheckChange('Times','value','節次');
+        $scope.Query();
+    }*/
+    $scope.ResultConflictDanger = function (iCourseID) {
+        if ($scope['PreBtn_' + iCourseID]) { //衝突
+            return {'alert-danger' : true};
+        } else {
+            return {'alert-secondary' : true};
+        }
+    }
     //#endregion
     //#region ExportFunction
-    $scope.exportpdf = async function()
+    $scope.exportpdf = async function(IsPreSchedule)
     {
         $scope.DownloadingBtn(true);
-        CSService.Create_Pdf($scope.pdfquery , $scope.IsLine , $scope.Columns).then((res)=>
-        {
-            $scope.ExportOffice(res);
+        CSService.storePreScheduleList($scope.PreScheduleList)
+        .then(function () {
+            CSService.Create_Pdf($scope.pdfquery , $scope.IsLine , $scope.Columns ,IsPreSchedule , $scope.PreScheduleList).then((res)=>
+            {
+                $scope.ExportOffice(res);
+            });
         });
     }
     $scope.exportwordBackend = function()
@@ -553,8 +637,13 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
     {
         $scope.DownloadingBtn(true);
         window.scrollTo(0,0);
-        html2canvas($('#PreSchedule')[0],
+        $('#PreSchedule').addClass('remove-td-height');
+        let tableWidth = $('#PreSchedule').width();
+        html2canvas($('#PreSchedule' ,)[0],
         {
+            width : tableWidth +30  ,
+            scrollX : 0 ,
+            scrollY : 0 ,
         }).then((canvas)=>
         {
             if ($scope.IsLine)
@@ -583,8 +672,9 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
                 var a = $("<a>").attr("href", canvas.toDataURL('image/png'))
                     .attr("download", "output.png")
                     .appendTo("body");
-                    a[0].click();
-                    a.remove();
+                a[0].click();
+                a.remove();
+                $('#PreSchedule').removeClass('remove-td-height');
             }
         });
     }
@@ -628,6 +718,66 @@ CSApp.controller("CSCtrl" , function($scope , CSService)
         });
     }
 
+    $scope.showCol = function (name) {
+        let col = $scope.Columns.find(v=> v.name == name);
+        return col.IsChecked;
+    }
+
+    $scope.openResultDetailModal = function (iItem) {
+        $scope.OpenResultItem = iItem;
+    }
+    $('#ResultModalCenter_New').on('show.bs.modal', function (e) {
+        var button = e.relatedTarget;
+        console.log(button);
+    })
+
+    $("#ModalCenter_Condition").on("show.bs.modal" , function () {
+        //$scope.testInclude = true;
+        $("#originPageCondition").remove();
+    })
+
+    $("#ModalCenter_Condition").on("shown.bs.modal" , function () {
+        $("#txt_Place").blur(async function () {
+            await sleep(100);
+            $("#Place_lg").hide();
+        });
+        $("#txt_Place").focus(function () {
+            $("#Place_lg").show();
+            $(".checkboxes").hide();
+            window.NTUNHS.last_focused = "";
+        });
+        $("#txt_Teacher").blur(async function () {
+            await sleep(100);
+            $("#Teacher_lg").hide();
+        });
+        $("#txt_Teacher").focus(function () {
+            $("#Teacher_lg").show();
+            $(".checkboxes").hide();
+            window.NTUNHS.last_focused = "";
+        });
+        $("#txt_Course").focus(function () {
+            $(".checkboxes").hide();
+            window.NTUNHS.last_focused = "";
+        });
+    })
+    $scope.$on('$includeContentLoaded',function(event,url) {
+        $scope.onCheckChange('Sem','value','學期');
+    });
+
+    $("#ModalCenter_Condition").on("shown.bs.modal" , function () {
+        $scope.onCheckChange('Sem','value','學期');
+        $scope.onCheckChange('EduType','value','學制');
+        //$scope.FreshFaculty();
+        $scope.onCheckChange('Faculty','name','系所');
+        $scope.onCheckChange('Grades','value','年級');
+        $scope.onCheckChange('CourseTypes','value','課別');
+        $scope.onCheckChange('Days','value','星期');
+        $scope.onCheckChange('Times','value','節次');
+        $scope.onCheckChange('Category','name','課程內容分類');
+        $scope.onCheckChange('Columns','name','顯示欄位');
+        console.log($scope.Checkboxes);
+    })
+
     $scope.ConditionClear = function ()
     {
         $scope.Iteminit();
@@ -661,6 +811,7 @@ CSApp.service("CSService" , function($http)
         {
             Get_User : Get_User   ,
             Get_data : Get_data ,
+            PreScheduleQuery : PreScheduleQuery ,
             Get_Place : Get_Place , 
             Get_Teacher  : Get_Teacher , 
             Get_UserInf : Get_UserInf , 
@@ -669,7 +820,8 @@ CSApp.service("CSService" , function($http)
             Create_Pdf : Create_Pdf , 
             Create_Docx : Create_Docx , 
             Create_Xlsx : Create_Xlsx , 
-            Login : Login
+            Login : Login ,
+            storePreScheduleList : storePreScheduleList
         }
     );
     function Get_User($scope)
@@ -711,6 +863,38 @@ CSApp.service("CSService" , function($http)
         );
         return (request.then(handleSuccess , handleError));
     }
+
+    function PreScheduleQuery(scope ,day , time)
+    {
+        if (scope.Place)
+        {
+            scope.Place = scope.Place.toUpperCase();
+        }
+        console.log(scope.Checkboxes['Sem'].Checked_list);
+        var request = $http(
+            {
+                method: "GET",
+                url :　"/api/Course_Search",
+                params :
+                {
+                    Sem : scope.Checkboxes['Sem'].Checked_list,
+                    Faculty : scope.Checkboxes['Faculty'].Checked_list,
+                    EduType : scope.Checkboxes['EduType'].Checked_list,
+                    Grad : scope.Checkboxes['Grades'].Checked_list,
+                    Course_Type : scope.Checkboxes['CourseTypes'].Checked_list,
+                    Course_Day : day,
+                    Course_Time : time,
+                    Course_Name : scope.Course_Name,
+                    Teacher : scope.Teacher,
+                    IsRootPart : scope.IsRootPart,
+                    IsCityPart : scope.IsCityPart,
+                    Course_Other : scope.Checkboxes['Category'].Checked_list,
+                    Course_Place : scope.Place 
+                }
+            }
+        );
+        return (request.then(handleSuccess , handleError));
+    }
     function Get_Place(scope)
     {
         var request = $http(
@@ -740,16 +924,12 @@ CSApp.service("CSService" , function($http)
         );
         return (request.then(handleSuccess , handleError));
     }
-    function Get_UserInf(user)
+    function Get_UserInf()
     {
         var request = $http(
             {
                 method : "GET" , 
-                url : "/api/Course_Search/UserInf",
-                params :
-                {
-                    user : user
-                }
+                url : "/api/stuInfo",
             }
         )
         return (request.then(handleSuccess , handleError));
@@ -779,7 +959,20 @@ CSApp.service("CSService" , function($http)
         })
         return (request.then(handleSuccess , handleError));
     }
-    function Create_Pdf(content , IsLine , Columns)
+    function storePreScheduleList (preScheduleData) {
+        var request = $http(
+            {
+                method : "POST" , 
+                url : "/api/pdfmake/storeData",
+                data :
+                {
+                    data : preScheduleData
+                }
+            }
+        )
+        return (request.then(handleSuccess , handleError));
+    }
+    function Create_Pdf(content , IsLine , Columns , IsPreSchedule , preScheduleData)
     {
         var request = $http(
             {
@@ -790,7 +983,9 @@ CSApp.service("CSService" , function($http)
                 {
                     content : content ,
                     IsLine : IsLine , 
-                    Columns : Columns
+                    Columns : Columns ,
+                    IsPreSchedule : IsPreSchedule ,
+                    data : preScheduleData
                 }
             }
         )
