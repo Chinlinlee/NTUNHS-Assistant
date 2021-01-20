@@ -252,24 +252,25 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-8 col-md-12 col-sm-12 col-12" id="table-mobile" ng-show="false">
+            <div class="col-lg-8 col-md-12 col-sm-12 col-12" id="table-mobile" ng-show="true">
                 <div class="row" ng-repeat="(key , item) in ['星期一'  ,'星期二' , '星期三', '星期四', '星期五', '星期六', '星期日']"
                     id="fieldSet{{key+1}}">
                     <div class="col-md-12 col-12">
                         <fieldset class="p-2">
-                            <legend class="w-auto" ng-click="legend();">{{item}}</legend>
+                            <legend class="w-auto" ng-click="legend(key+1);">{{item}}</legend>
                             <div class="row h-100 justify-content-center align-items-center">
-                                <div class="col-sm-6 col-12 " ng-repeat="(scheduleKey , scheduleItem) in scheduleList"
-                                    ng-if="scheduleItem.Day == key+1">
+                                <div class="col-sm-6 col-12 " ng-repeat="(scheduleKey , preScheduleItem) in PreScheduleList"
+                                    ng-if="preScheduleItem.Course_Day == key+1">
                                     <div class="card mb-3 mx-auto" style="max-width: 18rem;cursor: pointer;">
                                         <div class="card-body text-center" data-toggle="modal"
-                                            data-target="#modal{{scheduleItem.Code}}">
-                                            <p class="card-title">{{scheduleItem.Time}}</p>
-                                            <p class="card-title">{{scheduleItem.Place}}</p>
-                                            <h5 class="card-text">{{scheduleItem.Name}}</h5>
+                                            data-target="#modal{{preScheduleItem.Course_Id}}">
+                                            <p class="card-title">{{preScheduleItem.Time}}</p>
+                                            <p class="card-title">{{preScheduleItem.Period}}節</p>
+                                            <p class="card-title">{{preScheduleItem.Course_Place}}</p>
+                                            <h5 class="card-text">{{preScheduleItem.Course_Name}}</h5>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="modal{{scheduleItem.Code}}" tabindex="-1" role="dialog"
+                                    <div class="modal fade" id="modal{{preScheduleItem.Course_Id}}" tabindex="-1" role="dialog"
                                         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
@@ -281,13 +282,13 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p>教室：{{scheduleItem.Place}}</p>
-                                                    <p>節次：{{scheduleItem.Period}}</p>
-                                                    <p>學分：{{scheduleItem.Credit}}</p>
-                                                    <p>課程性質：{{scheduleItem.Type}}</p>
-                                                    <p>授課老師：{{scheduleItem.Teacher}}</p>
-                                                    <p>代碼：{{scheduleItem.Code}}</p>
-                                                    <p>備註：{{scheduleItem.Other}}</p>
+                                                    <p>教室：{{preScheduleItem.Course_Place}}</p>
+                                                    <p>節次：{{preScheduleItem.Period}}</p>
+                                                    <p>學分：{{preScheduleItem.Course_Credit}}</p>
+                                                    <p>課程性質：{{preScheduleItem.Course_Type}}</p>
+                                                    <p>授課老師：{{preScheduleItem.Teacher}}</p>
+                                                    <p>代碼：{{preScheduleItem.Course_Id}}</p>
+                                                    <p>備註：{{preScheduleItem.Course_Other}}</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
@@ -346,7 +347,7 @@
                         <li class="list-group-item" ng-if="showCol('課程代碼(14碼)');">課程代碼(14碼)：{{OpenResultItem.Course_Id}}</li>
                         <li class="list-group-item" ng-if="showCol('授課老師');">授課老師：{{OpenResultItem.Teacher}}</li>
                         <li class="list-group-item" ng-if="showCol('課別');">課別：{{OpenResultItem.Course_Type}}</li>
-                        <li class="list-group-item" ng-if="showCol('學分');">學分：{{OpenResultItem.Credits}}</li>
+                        <li class="list-group-item" ng-if="showCol('學分數');">學分：{{OpenResultItem.Credits}}</li>
                         <li class="list-group-item" ng-if="showCol('星期');">星期：{{Ch_days[OpenResultItem.Course_Day-1]}}</li>
                         <li class="list-group-item" ng-if="showCol('節次');">節次：{{OpenResultItem.Course_Time}}</li>
                         <li class="list-group-item" ng-if="showCol('上課人數/限制人數');">
@@ -383,12 +384,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <input type="search" class="form-control" ng-model="preModalPeriodQ" placeholder="請輸入節次" />
                     <input type="search" class="form-control" ng-model="preModalQ" placeholder="請輸入關鍵字" />
                     <div class="preSchedule-list" id="PreScheduleTableQuery">
                         <div class="alert preSchedule-list-item" role="alert"
-                            ng-repeat="Item in PreScheduleQueryDataList | filter : preModalQ"
+                            ng-repeat="Item in PreScheduleQueryDataList | filter : preModalQ | filter : preModalPeriodFilter "
                             ng-click="openResultDetailModal(Item)" data-target="#ResultModalCenter_New"
-                            data-toggle="modal" ng-class="ResultConflictDanger(Item.Course_Id)">
+                            data-toggle="modal" ng-class="ResultConflictDanger(Item)">
                             <p>
                                 <b>{{Item.Course_Name}}</b>
                                 <span class="badge badge-light">{{Item.Course_Type}}</span>
@@ -447,9 +449,16 @@
     $(document).ready(() => {
         ///commonFunc.darkModeInit();
         let darkMode = localStorage.getItem("darkMode");
+        window.originH = $(window).height();
+        window.originW = $(window).width();
         commonFunc.myDarkModeInit();
         window.NTUNHS = {};
         window.NTUNHS.last_focused = "";
+        if (window.originW <= 736)
+        {
+            $(`#PreSchedule`).hide();
+            $('#table-mobile').show();
+        }
         //BLUR沒在搜尋匡時AutoComplete關閉
 
         //點擊旁邊隱藏下拉式選單
@@ -497,7 +506,6 @@
                 scrollTop: 0
             }, '300');
         });
-
     });
 
     async function sleep(ms = 0) {
@@ -510,4 +518,20 @@
             $('.top-button').removeClass('show');
         }
     });
+
+    $(window).resize(function () {
+        let width = $(window).width()
+        let height = $(window).height();
+        if (width <= 736)
+        {
+            $(`#PreSchedule`).hide();
+            $('#table-mobile').show();
+        } 
+        else 
+        {
+            $(`#PreSchedule`).show();
+            $('#table-mobile').hide();
+        }
+    });
+    
 </script>

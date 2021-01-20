@@ -101,7 +101,7 @@ CSApp.controller("CSCtrl" , function($scope , CSService , commonService)
         $scope.Days = [{'name':'星期一' , 'value' : 1 , 'IsChecked':false} ,{'name':'星期二' , 'value' : 2 , 'IsChecked':false} ,{'name':'星期三' , 'value' : 3 , 'IsChecked':false} ,{'name':'星期四' , 'value' : 4 , 'IsChecked':false} ,{'name':'星期五' , 'value' : 5 , 'IsChecked':false} ,{'name':'星期六' , 'value' : 6 , 'IsChecked':false} ,{'name':'星期日' , 'value' : 7 , 'IsChecked':false}];
         $scope.Times =[{'name':'節次1(08:10~09:00)' , 'value':1, 'IsChecked':false} , {'name':'節次2(09:10~10:00)' , 'value':2, 'IsChecked':false} , {'name':'節次3(10:10~11:00)' , 'value':3  , 'IsChecked':false} , {'name' : '節次4(11:10~12:00)'  , 'value':4 , 'IsChecked':false},{'name' : '節次5(12:40~13:30)'  , 'value':5 , 'IsChecked':false},{'name' : '節次6(13:40~14:30)'  , 'value':6 , 'IsChecked':false},{'name' : '節次7(14:40~15:30)'  , 'value':7 , 'IsChecked':false},{'name' : '節次8(15:40~16:30)'  , 'value':8 , 'IsChecked':false},{'name' : '節次9(16:40~17:30)'  , 'value':9 , 'IsChecked':false},{'name' : '節次10(17:40~18:30)'  , 'value':10 , 'IsChecked':false},{'name' : '節次11(18:35~19:25)'  , 'value':11 , 'IsChecked':false},{'name' : '節次12(19:30~20:20)'  , 'value':12 , 'IsChecked':false},{'name' : '節次13(20:25~21:15)'  , 'value':13 , 'IsChecked':false},{'name' : '節次14(21:20~22:10)'  , 'value':14 , 'IsChecked':false}];
         $scope.Category = [{'name' :'跨校' , 'value':1 ,'IsChecked':false },{'name' :'跨域課程' , 'value':2 ,'IsChecked':false },{'name' :'全英語授課' , 'value':3 ,'IsChecked':false },{'name' :'同步遠距教學' , 'value':4 ,'IsChecked':false },{'name' :'非同步遠距教學' , 'value':5 ,'IsChecked':false }];
-        $scope.Columns = [{'name' :"學期", 'IsChecked': true ,'value' : 'Sem'} , { 'name':"系所名稱",'IsChecked': true,'value' : 'Faculty_Name'} , {'name':"年級" ,'IsChecked': true,'value' : 'Grad'} , {'name':"課程代碼(14碼)" , 'IsChecked': true,'value' : 'Course_Id'}, {'name' : "課程名稱" , 'IsChecked': true,'value' : 'Course_Name'}, {'name' : "授課老師" ,'IsChecked': true,'value' : 'Teacher'}, {'name' : "上課人數/限制人數" ,'IsChecked': true,'value' : 'Course_People,Limit_People'}, {'name' : "學分數" ,'IsChecked': true,'value' : 'Credits'}, {'name' : "課別" ,'IsChecked': true,'value' : 'Course_Type'}, {'name' : "地點" ,'IsChecked': true,'value' : 'Course_Place'}, {'name' : "星期" ,'IsChecked': true,'value' : 'Course_Day'}, {'name' : "節次" ,'IsChecked': true,'value' : 'Course_Time'} , {'name' : "備註" ,'IsChecked': true,'value' : 'Course_Other'}, {'name' : "教學計劃" ,'IsChecked': true,'value' : 'Class_Plan'}, {'name' : "預排功能" ,'IsChecked': true,'value' : 'none'}];    
+        $scope.Columns = [{'name' :"學期", 'IsChecked': true ,'value' : 'Sem'} , { 'name':"系所名稱",'IsChecked': true,'value' : 'Faculty_Name'} , {'name':"年級" ,'IsChecked': true,'value' : 'Grad'} , {'name':"課程代碼(14碼)" , 'IsChecked': true,'value' : 'Course_Id'}, {'name' : "課程名稱" , 'IsChecked': true,'value' : 'Course_Name'}, {'name' : "授課老師" ,'IsChecked': true,'value' : 'Teacher'}, {'name' : "上課人數/限制人數" ,'IsChecked': true,'value' : 'Course_People,Limit_People'}, {'name' : "學分數" ,'IsChecked': true,'value' : 'Credits'}, {'name' : "課別" ,'IsChecked': true,'value' : 'Course_Type'}, {'name' : "地點" ,'IsChecked': true,'value' : 'Course_Place'}, {'name' : "星期" ,'IsChecked': true,'value' : 'Course_Day'}, {'name' : "節次" ,'IsChecked': true,'value' : 'Course_Time'} , {'name' : "備註" ,'IsChecked': true,'value' : 'Course_Other'}, {'name' : "教學計劃" ,'IsChecked': true,'value' : 'Class_Plan'}];    
         $scope.Sem = [];
 
         CSService.Get_Sem().then( (res)=> 
@@ -233,7 +233,9 @@ CSApp.controller("CSCtrl" , function($scope , CSService , commonService)
                 $scope.DataListSize = $scope.DataList.length;
                 $scope.pdfquery = res.data[1];
             }
-            $.unblockUI(); 
+            $.unblockUI();
+            $scope.$apply();
+            $scope.curPage = 1;
         }));
     }
     //#endregion
@@ -461,6 +463,14 @@ CSApp.controller("CSCtrl" , function($scope , CSService , commonService)
         }
         else
         {
+            if (Item.startPeriod == Item.endPeriod) {
+                Item.Time = S_Time[Item.startPeriod-1];
+            } else {
+                
+                let start = Item.startPeriod;
+                let end = Item.endPeriod;
+                Item.Time  = `${S_Time[start-1].split("~")[0]}~${S_Time[end-1].split("~")[1]}`;
+            }
             $scope.PreScheduleList.push(Item);
             $scope.PreScheduleSize = $scope.PreScheduleList.length;
         }
@@ -554,7 +564,23 @@ CSApp.controller("CSCtrl" , function($scope , CSService , commonService)
     }
     $("#PreScheduleModalCenter").on("show.bs.modal" , function () {
         $scope.preModalQ = "";
+        $scope.preModalPeriodQ = "";
     });
+    $scope.$watch("preModalPeriodQ" , function(newValue , oldValue) {
+        console.log(newValue);
+    });
+    $scope.preModalPeriodFilter = function (item) {
+        if (item.Period.includes($scope.preModalPeriodQ)) {
+            return item;
+        } else if ($scope.preModalPeriodQ.includes('-')) {
+            let tempPeriodQ = $scope.preModalPeriodQ.replace(/-/gm , '~');
+            if (item.Period.includes(tempPeriodQ)) {
+                return item;
+            }    
+        } else if (item.Course_Time.includes($scope.preModalPeriodQ)) {
+            return item;
+        }
+    }
     $scope.PreScheduleAddCondition = function (iItem , iDay) {
         
         iItem[days[iDay] + "isClickedSearch"] = true;
@@ -569,8 +595,13 @@ CSApp.controller("CSCtrl" , function($scope , CSService , commonService)
         $scope.Query();*/
     }
 
-    $scope.legend = function () {
-        console.log('test')
+    $scope.legend = function (day) {
+        let allPeriod = [...Array(14).keys()];
+        console.log($scope.PreScheduleList);
+        CSService.PreScheduleQuery($scope , day ,allPeriod).then(function (res) {
+            $scope.PreScheduleQueryDataList = res.data[0];
+        });
+        $("#PreScheduleModalCenter").modal('show');
     }
    /* $scope.PreScheduleRemoveCondition = function (iItem , iDay) {
         let dayName =days[iDay];
@@ -590,8 +621,8 @@ CSApp.controller("CSCtrl" , function($scope , CSService , commonService)
         $scope.onCheckChange('Times','value','節次');
         $scope.Query();
     }*/
-    $scope.ResultConflictDanger = function (iCourseID) {
-        if ($scope['PreBtn_' + iCourseID]) { //衝突
+    $scope.ResultConflictDanger = function (item) {
+        if ($scope.PreSchedule_IsConflict(item)) { //衝突
             return {'alert-danger' : true};
         } else {
             return {'alert-secondary' : true};
