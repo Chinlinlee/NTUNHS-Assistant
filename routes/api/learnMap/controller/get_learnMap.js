@@ -25,6 +25,12 @@ module.exports = async function (req, res) {
     let htmlCourseRes = await fetchCookie(`https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Map/qry/Map_qry_20.aspx?action=htmlCourse&group=${sessionStuInfo.groupno}&deptno=${sessionStuInfo.deptno}&year=${sessionStuInfo.entryYear}&semno=${sessionStuInfo.lastSem}&edutype=${sessionStuInfo.edutypeCode}`);
     let htmlCourseText =  await htmlCourseRes.text();
     $ = cheerio.load(htmlCourseText);
+    let haveTdCourse = $(".tdCourse").length;
+    if (!haveTdCourse) {
+        req.flash('error' , '學校系統逾時，請重新登入');
+        req.logout();
+        return res.status(401).send();
+    }
     let passCourse = [];
         $(".tdCourse input").each(function (index, element) {
             let isChecked = $(element).attr("defaultchecked") == "true";

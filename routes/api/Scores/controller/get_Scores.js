@@ -28,6 +28,7 @@ module.exports = async function (req, res) {
     }*/
     let [Result, Result_all] = await getScore(req);
     if (!Result) {
+        req.flash('error' , '學校系統逾時，請重新登入');
         req.logout();
         return res.status(401).send();
     }
@@ -58,9 +59,6 @@ const tdFunc = {
 }
 
 async function getScore(req) {
-    if (req.session.Score.length >0) {
-        return req.session.Score;
-    }
     let ScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_24.aspx?stno=${req.session.STNO}`;
     let j = myFunc.getJar(req);
     //console.log(ScoreURL);
