@@ -166,6 +166,8 @@ table {
 .btn-addCourse:hover::after {
   background-image: url('/images/plus_light_hover.svg');
 }
+
+/* #region 加入預排按鈕*/
 .darkmode--activated .btn-addCourse::after {
   display: block;
   content: ' ';
@@ -178,7 +180,7 @@ table {
 .darkmode--activated .btn-addCourse:hover::after {
   background-image: url('/images/plus_light_hover.svg');
 }
-
+/* #endregion */
 .btn-deleteCourse {
   right: 0.5em;
   position: absolute;
