@@ -36,7 +36,7 @@ module.exports =
     MONGODB: {
         "host" : "127.0.0.1" , 
         "port" : 27017 , 
-        "db" : "dbName" , 
+        "db" : "My_ntunhs" , 
         "ssl" : false ,
         "username" : "user" , 
         "password" : "password" , 
