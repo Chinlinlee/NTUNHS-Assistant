@@ -2,6 +2,7 @@
     <h1>NTUNHS-Assistant</h1>
 北護助手
 </div>
+
 ## 初始化
 ```bash=
 npm install
