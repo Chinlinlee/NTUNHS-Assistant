@@ -259,7 +259,8 @@
                         <fieldset class="p-2">
                             <legend class="w-auto" ng-click="legend(key+1);">{{item}}</legend>
                             <div class="row h-100 justify-content-center align-items-center">
-                                <div class="col-sm-6 col-12 " ng-repeat="(scheduleKey , preScheduleItem) in PreScheduleList"
+                                <div class="col-sm-6 col-12 "
+                                    ng-repeat="(scheduleKey , preScheduleItem) in PreScheduleList"
                                     ng-if="preScheduleItem.Course_Day == key+1">
                                     <div class="card mb-3 mx-auto" style="max-width: 18rem;cursor: pointer;">
                                         <div class="card-body text-center" data-toggle="modal"
@@ -270,8 +271,8 @@
                                             <h5 class="card-text">{{preScheduleItem.Course_Name}}</h5>
                                         </div>
                                     </div>
-                                    <div class="modal fade" id="modal{{preScheduleItem.Course_Id}}" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal fade" id="modal{{preScheduleItem.Course_Id}}" tabindex="-1"
+                                        role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -344,11 +345,13 @@
                         <li class="list-group-item" ng-if="showCol('學期');">學期：{{OpenResultItem.Sem}}</li>
                         <li class="list-group-item" ng-if="showCol('系所名稱');">系所名稱：{{OpenResultItem.Faculty_Name}}</li>
                         <li class="list-group-item" ng-if="showCol('年級');">年級：{{OpenResultItem.Grad}}</li>
-                        <li class="list-group-item" ng-if="showCol('課程代碼(14碼)');">課程代碼(14碼)：{{OpenResultItem.Course_Id}}</li>
+                        <li class="list-group-item" ng-if="showCol('課程代碼(14碼)');">課程代碼(14碼)：{{OpenResultItem.Course_Id}}
+                        </li>
                         <li class="list-group-item" ng-if="showCol('授課老師');">授課老師：{{OpenResultItem.Teacher}}</li>
                         <li class="list-group-item" ng-if="showCol('課別');">課別：{{OpenResultItem.Course_Type}}</li>
                         <li class="list-group-item" ng-if="showCol('學分數');">學分：{{OpenResultItem.Credits}}</li>
-                        <li class="list-group-item" ng-if="showCol('星期');">星期：{{Ch_days[OpenResultItem.Course_Day-1]}}</li>
+                        <li class="list-group-item" ng-if="showCol('星期');">星期：{{Ch_days[OpenResultItem.Course_Day-1]}}
+                        </li>
                         <li class="list-group-item" ng-if="showCol('節次');">節次：{{OpenResultItem.Course_Time}}</li>
                         <li class="list-group-item" ng-if="showCol('上課人數/限制人數');">
                             上課人數/限制人數：{{OpenResultItem.Course_People}}/{{OpenResultItem.Limit_People}}</li>
@@ -386,9 +389,9 @@
                 <div class="modal-body">
                     <input type="search" class="form-control" ng-model="preModalPeriodQ" placeholder="請輸入節次" />
                     <input type="search" class="form-control" ng-model="preModalQ" placeholder="請輸入關鍵字" />
-                    <div class="preSchedule-list" id="PreScheduleTableQuery">
+                    <div class="preSchedule-list" id="PreScheduleTableQuery" >
                         <div class="alert preSchedule-list-item" role="alert"
-                            ng-repeat="Item in PreScheduleQueryDataList | filter : preModalQ | filter : preModalPeriodFilter "
+                            ng-repeat="Item in PreScheduleQueryDataList | filter : paginatePreModal"
                             ng-click="openResultDetailModal(Item)" data-target="#ResultModalCenter_New"
                             data-toggle="modal" ng-class="ResultConflictDanger(Item)">
                             <p>
@@ -414,13 +417,16 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <ul uib-pagination total-items="PreScheduleQueryDataList.length" ng-model="curPreModalPage" boundary-link-numbers="false"
+                        rotate="false" max-size="0" boundary-links="true" class="pagination-sm mr-auto">
+                    </ul>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
     <!-- #endregion -->
-</div>
+    </div>
 
 </body>
 
@@ -436,6 +442,9 @@
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
 <script src="/atm/scripts/ngCommon.js"></script>
+
+
+
 <script src="/atm/scripts/Course_Search.js"></script>
 
 <script src="../externals/Bootstrap/bootstrap.min.js"></script>
@@ -445,19 +454,23 @@
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
 
 
+
 <script>
     $(document).ready(() => {
         ///commonFunc.darkModeInit();
+        
         let darkMode = localStorage.getItem("darkMode");
         window.originH = $(window).height();
         window.originW = $(window).width();
         commonFunc.myDarkModeInit();
         window.NTUNHS = {};
         window.NTUNHS.last_focused = "";
-        if (window.originW <= 736)
-        {
+        if (window.originW <= 736) {
             $(`#PreSchedule`).hide();
             $('#table-mobile').show();
+        } else {
+            $(`#PreSchedule`).show();
+            $('#table-mobile').hide();
         }
         //BLUR沒在搜尋匡時AutoComplete關閉
 
@@ -522,16 +535,12 @@
     $(window).resize(function () {
         let width = $(window).width()
         let height = $(window).height();
-        if (width <= 736)
-        {
+        if (width <= 736) {
             $(`#PreSchedule`).hide();
             $('#table-mobile').show();
-        } 
-        else 
-        {
+        } else {
             $(`#PreSchedule`).show();
             $('#table-mobile').hide();
         }
     });
-    
 </script>
