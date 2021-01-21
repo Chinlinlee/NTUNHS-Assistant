@@ -2,8 +2,16 @@
     <h1>NTUNHS-Assistant</h1>
 北護助手
 </div>
+## 初始化
+```bash=
+npm install
+npm run initconfig #請先設定
+npm run build #創建課程資料用
+```
 
 ## configure
+
+
 `models/NTUNHS/config.js` 此設定檔用於登入北護入口網更新教學計畫用
 ```javascript
 module.exports  = {
