@@ -8,6 +8,9 @@ learnMapApp.controller("learnMapCtrl", function ($scope, learnMapService, common
     });
     commonFunc.blockUI();
     learnMapService.Get_data().then(function (res) {
+        if (res.status == 401) {
+            window.location.href = '/';
+        }
         console.log(res.data);
         $(".container").prepend(res.data.hitCredit);
         console.log(res.data.hitCredit);

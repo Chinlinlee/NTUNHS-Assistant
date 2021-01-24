@@ -99,6 +99,10 @@
         color: white;
     }
 
+    .darkmode--activated .static-color-white tr td{
+        color: white!important;
+    }
+
     .darkmode--activated .table-rwd tr {
         border: 1px black solid;
     }
