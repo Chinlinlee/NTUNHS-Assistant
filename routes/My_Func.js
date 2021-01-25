@@ -114,14 +114,18 @@ module.exports.Request_func= async function(req_obj  , i_option)
     });
 }
 
-module.exports.getJar = function  (req) { //system8
-    /*let jar = request.jar();
-    if (req && req.session.ntunhsApp) {
-        req.session.ntunhsApp.split(";").map(function (value) {
-            jar.setCookie(request.cookie(value) , "http://system8.ntunhs.edu.tw");
+module.exports.getILMSJar = function  (req) { //system8
+    let jar = new tough.CookieJar();
+    let sessionntunhsILMS = _.get(req.session , "ntunhsILMS");
+    if (req && sessionntunhsILMS) {
+        req.session.ntunhsILMS.split(";").map(function (value) {
+            jar.setCookieSync(value, "http://ilms.ntunhs.edu.tw");
         })
     }
-    return jar;*/
+    return jar;
+}
+
+module.exports.getJar = function  (req) { //system8
     let jar = new tough.CookieJar();
     let sessionntunhsApp = _.get(req.session , "ntunhsApp");
     if (req && sessionntunhsApp) {

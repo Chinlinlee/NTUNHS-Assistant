@@ -17,9 +17,7 @@ async function getSTNO (req , iFetch)
       method : "GET" , 
       uri : `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/tab/Profile_tab_02.aspx` , 
     }
-    let fetchRes = await iFetch(option.uri , {
-      method:"GET"
-    });
+    let fetchRes = await iFetch(option.uri);
     let getStnoPageUri = await fetchRes.text();
     //let getStnoPageUri = await myFunc.Request_func(myReqObj  , option);
     let $ = cheerio.load(getStnoPageUri);
@@ -160,6 +158,7 @@ module.exports = async function(passport)
       req.session.noPreRank = false;
       let STNO = await getSTNO(req , fetch);
       req.session.STNO = STNO;
+      await School_Auth.ilmsAuth(username , password , req);
       return done(null ,username);
   }));
 };
