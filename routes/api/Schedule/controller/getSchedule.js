@@ -6,6 +6,7 @@ const _ = require("lodash");
 module.exports = async function(req , res) {
     let course =await getCourse(req);
     if (!course) {
+        req.flash('error' , '學校系統逾時，請重新登入');
         req.logout();
         return res.status(401).send();
     }
