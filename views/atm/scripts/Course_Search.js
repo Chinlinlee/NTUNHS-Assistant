@@ -1,6 +1,7 @@
 
 
 
+
 //顯示下拉式選單
 function showCheckboxes(checkboxes_id) {
     var checkboxes = document.getElementById(checkboxes_id);
@@ -424,6 +425,14 @@ CSApp.controller("CSCtrl", function ($scope, CSService, commonService) {
             }
             $scope.PreScheduleList.push(Item);
             $scope.PreScheduleSize = $scope.PreScheduleList.length;
+            $scope.PreScheduleList = $scope.PreScheduleList.sort(function (a , b) {
+                if (a.startPeriod > b.startPeriod)  {
+                    return 1;
+                } else if (a.startPeriod < b.startPeriod) {
+                    return -1;
+                }
+                return 0;
+            });
         }
         //加到模擬課表
         for (var i = 0; i < $scope.PreScheduleSize; i++) {
@@ -471,6 +480,7 @@ CSApp.controller("CSCtrl", function ($scope, CSService, commonService) {
         $scope.PreSchedule_Remove(remove_item[0]);
         $scope.PreSchedule_IsConflict_Btn();
     }
+    //判斷是否衝堂
     $scope.PreSchedule_IsConflict = function (Item) {
         for (var i = 0; i < $scope.PreScheduleList.length; i++) {
             if ($scope.PreScheduleList[i].Course_Day == Item.Course_Day) {
@@ -634,7 +644,9 @@ CSApp.controller("CSCtrl", function ($scope, CSService, commonService) {
     $scope.exportPicture = function () {
         $scope.DownloadingBtn(true);
         window.scrollTo(0, 0);
+        $('#PreSchedule').show();
         $('#PreSchedule').addClass('remove-td-height');
+        $('#PreSchedule').removeClass('table-responsive');
         let tableWidth = $('#PreSchedule').width();
         html2canvas($('#PreSchedule',)[0],
             {
@@ -668,8 +680,73 @@ CSApp.controller("CSCtrl", function ($scope, CSService, commonService) {
                     a[0].click();
                     a.remove();
                     $('#PreSchedule').removeClass('remove-td-height');
+                    $('#PreSchedule').addClass('table-responsive');
+                    if ($(window).width() <= 764 ) {
+                        $('#PreSchedule').hide();
+                    }
                 }
             });
+    }
+
+    $scope.exportPictureMobile = function () {
+        $scope.DownloadingBtn(true);
+        window.scrollTo(0, 0);
+        let isDarkMode = localStorage.getItem('darkMode');
+        console.log(isDarkMode);
+       // $('#table-mobile').addClass('remove-td-height');
+        let domNode = $('#table-mobile')[0];
+        let option = {
+            width: domNode.scrollWidth ,
+            height: domNode.scrollHeight ,
+            style : {
+                'background-color' : "#FFF"
+            }
+        }
+        if (isDarkMode == "true") {
+            delete option.style;
+        }
+        domtoimage.toPng(domNode, option).then(function (dataUrl) {
+            var link = document.createElement('a');
+            link.download = '課程表.png';
+            link.href = dataUrl;
+            link.click();
+            $scope.DownloadingBtn(false);  
+        });
+        /*html2canvas($('#table-mobile',)[0],
+            {
+                width: tableWidth + 50,
+                height : tableheight,
+                scrollX: -10,
+                scrollY: 0,
+            }).then((canvas) => {
+                if ($scope.IsLine) {
+                    var imgdataurl = canvas.toDataURL("image/png");
+                    var imgdata = imgdataurl.replace(/^data:image\/(png|jpg);base64,/, "");
+                    $.ajax(
+                        {
+                            url: '/api/pdfmake/picture',
+                            data:
+                            {
+                                imgdata: imgdata
+                            },
+                            type: 'post',
+                            success: function (res) {
+                                $scope.DownloadingBtn(false);
+                                alert('您在line使用匯出圖片功能，請記得在瀏覽器"長按"圖片下載。');
+                                DownloadFileInLine("https://" + location.host + '/' + res, true);
+                            }
+                        });
+                }
+                else {
+                    $scope.DownloadingBtn(false);
+                    var a = $("<a>").attr("href", canvas.toDataURL('image/png'))
+                        .attr("download", "output.png")
+                        .appendTo("body");
+                    a[0].click();
+                    a.remove();
+                    //$('#PreSchedule').removeClass('remove-td-height');
+                }
+            });*/
     }
 
     $scope.DownloadingBtn = function (IsDownloading) {

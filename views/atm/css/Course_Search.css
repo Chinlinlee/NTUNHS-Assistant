@@ -347,3 +347,26 @@ table {
           transform: scale(1, 1);
   text-indent: 0;
 }
+
+.field-topright {
+  margin-top: -2rem;
+  float: right;
+}
+
+.btn-field-addCourse {
+  box-shadow : 0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149);
+  border-radius: 24px;
+  background-color: #393e43;
+  color: whitesmoke;
+  border : none;
+}
+
+.btn-field-addCourse::before {
+  background-image: url('/images/normal_white_plus.svg');
+  display: inline-block;
+  content: ' ';
+  background-size: 18px 18px;
+  height: 18px;
+  width: 18px;
+  margin-right: 0.5rem;
+}

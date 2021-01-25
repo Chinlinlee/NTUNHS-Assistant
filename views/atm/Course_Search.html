@@ -34,6 +34,14 @@
             color: #FFF;
             box-shadow: 2px 2px 4px #666;
         }
+
+        .legned-text {
+            border-radius: 3px;
+            padding: 5px 10px;
+            background-color: #393e43;
+            color: #FFF;
+            box-shadow: 2px 2px 4px #666;
+        }
     </style>
 </head>
 
@@ -158,7 +166,7 @@
                 </div>
                 <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-if="PreScheduleList.length">
-                    <i class="fa fa-file-excel-o" aria-hidden="true"> 匯出報表</i>
+                    <i class="fa fa-file-excel-o" aria-hidden="true"> 匯出預排報表</i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#" ng-click="exportpdf(true);">匯出清單PDF</a>
@@ -166,6 +174,9 @@
                     <a class="dropdown-item" href="#" ng-click="exportexcelBackend();">匯出清單Excel</a>
                     <a class="dropdown-item" href="#" id="a_Export_IMG" ng-click="exportPicture();">
                         <i class="fa fa-download" class="text-center"></i>匯出表格圖片
+                    </a>
+                    <a class="dropdown-item" href="#" id="a_Export_IMG" ng-click="exportPictureMobile();">
+                        <i class="fa fa-download" class="text-center"></i>匯出手機版圖片
                     </a>
                 </div>
             </div>
@@ -258,8 +269,11 @@
                     <div class="col-md-12 col-12">
                         <fieldset class="p-2">
                             <legend class="w-auto" ng-click="legend(key+1);">{{item}}</legend>
+                            <div class="field-topright">
+                                <button class="btn-field-addCourse" ng-click="legend(key+1);">新增</button>
+                            </div>
                             <div class="row h-100 justify-content-center align-items-center">
-                                <div class="col-sm-6 col-12 "
+                                <div class="col-sm-6 col-12"
                                     ng-repeat="(scheduleKey , preScheduleItem) in PreScheduleList"
                                     ng-if="preScheduleItem.Course_Day == key+1">
                                     <div class="card mb-3 mx-auto" style="max-width: 18rem;cursor: pointer;">
@@ -452,7 +466,7 @@
 <script src="../externals/angularjs/ui-bootstrap-tpls-3.0.6.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
 
 <script>
