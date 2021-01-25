@@ -1,9 +1,11 @@
 {
-  "name": "myexpressapp",
+  "name": "ntunhs-assistant",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./Test_mongo.js"
+    "start": "node ./server.js",
+    "build": "node ./build.js",
+    "initconfig": "node ./addConfig.js"
   },
   "dependencies": {
     "abort-controller": "^3.0.0",
