@@ -69,7 +69,9 @@ async function getCourseJson (req , semno) {
                 Credit: item.學分,
                 Type: item.課程性質,
                 Teacher: item.任課教師_L.replace(/<br\/>/gi, ""),
-                Other: item.備註_L
+                Other: item.備註_L ,
+                takeStatu : item.修業狀態 ,
+                conflictStatu : item.衝堂狀態
             });
         }
         course = result;
