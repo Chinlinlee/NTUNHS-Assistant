@@ -121,7 +121,7 @@
                     <div class="alert preSchedule-list-item" role="alert"
                         ng-repeat="Item in DataList | filter : paginate " ng-click="openResultDetailModal(Item)"
                         data-target="#ResultModalCenter_New" data-toggle="modal"
-                        ng-class="ResultConflictDanger(Item.Course_Id)">
+                        ng-class="ResultConflictDanger(Item)">
                         <p>
                             <b>{{Item.Course_Name}}</b>
                             <span class="badge badge-light">{{Item.Course_Type}}</span>
