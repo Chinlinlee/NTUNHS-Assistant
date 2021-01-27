@@ -7,7 +7,8 @@ module.exports = async function(req ,res)
         let result = {
             system : sessionStuInfo.stuType , 
             faculty : sessionStuInfo.stuFaculty ,
-            stuName : sessionStuInfo.stuName
+            stuName : sessionStuInfo.stuName ,
+            allSemno : sessionStuInfo.allSemno
         }
         return res.send(result);
     }

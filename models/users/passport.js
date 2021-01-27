@@ -129,6 +129,16 @@ module.exports = async function(passport)
       let lastSem = $("input").last().attr('semno');
       sessionStuInfo.entryYear = entryYear;
       sessionStuInfo.lastSem = lastSem;
+      let entryYearInt = parseInt(sessionStuInfo.entryYear);
+      let semno = sessionStuInfo.lastSem.substr(0 , 3);
+      let lastSemInt = parseInt(semno);
+      let allSemno = [];
+      for (let i = entryYearInt ; i <= lastSemInt ; i++) {
+          allSemno.push(`${i}1`);
+          allSemno.push(`${i}2`);
+      }
+      sessionStuInfo.allSemno = allSemno;
+      
       req.session.ntunhsApp = await j.getCookieString('http://system8.ntunhs.edu.tw');
 
 
