@@ -12,10 +12,12 @@
 
     <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
     <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
     <link rel="stylesheet" href="/atm/css/rwd-table.css">
     <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/atm/css/main.css">
     <link rel="stylesheet" href="/atm/css/dark.css">
@@ -24,8 +26,9 @@
 <body ng-controller="CourseCtrl">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
@@ -33,17 +36,25 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <span><span style="font-size:25px">🌞 </span><input type="checkbox"  data-toggle="toggle" data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px"> 🌛</span></span>
+                    <span><span style="font-size:25px">🌞 </span><input type="checkbox" data-toggle="toggle"
+                            data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px">
+                            🌛</span></span>
                 </li>
                 <div ng-include="'navRight.html'"></div>
             </ul>
         </div>
     </nav>
     <div class="container" style="width:100%">
+        <div class="form-group row">
+            <label class="col-2 mt-1" for="select-sem">學期：</label>
+            <select class="col-10 custom-select" name="select-sem" id="select-sem" ng-model="selectedSem"
+                ng-options="c for c in Currentuser.allSemno">
+            </select>
+        </div>
         <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}">
             <table id="setting" class="table table-bordered table-striped table-rwd">
                 <thead class="thead-dark">
-                    <tr >
+                    <tr>
                         <th>課程名稱</th>
                         <th>教室</th>
                         <th>星期</th>
@@ -55,7 +66,8 @@
                 </thead>
                 <tbody>
                     <tr name="DataList" ng-repeat="Item in DataList">
-                        <td class="table-th" data-th="課程名稱" id="{{Item.Name}}" onclick='Item_Visible_Control(this.id+"_content" , this.id , true)'>{{Item.Name}}</td>
+                        <td class="table-th" data-th="課程名稱" id="{{Item.Name}}"
+                            onclick='Item_Visible_Control(this.id+"_content" , this.id , true)'>{{Item.Name}}</td>
                         <td data-th="教室" id="{{Item.Name}}_content">
                             {{Item.Place}}
                             <span ng-show="!Item.Place">
@@ -69,7 +81,7 @@
                         <td data-th="任課教師" id="{{Item.Name}}_content">{{Item.Teacher}}</td>
                     </tr>
                 </tbody>
-            </table>   
+            </table>
         </div>
     </div>
 </body>
@@ -78,6 +90,7 @@
 <script src="../externals/angularjs/angular.min.js"></script>
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="../externals/jqueryui/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 <script src="..//externals/jqueryui/datepicker-zh-TW.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
@@ -89,40 +102,27 @@
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
 
 <script>
-    window.onload = async function() {
+    window.onload = async function () {
         window.originH = $(window).height();
         window.originW = $(window).width();
         commonFunc.myDarkModeInit();
-        await sleep(100);
-        angular.element(document.getElementById('setting')).scope().Query();
-        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-        await sleep(500);
-        if (width <= 736)
-        {
-            HideTd('content');
-            $(`.table-th`).addClass("table-th-show");
-        }
     };
     window.onresize = async function () {
         var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         let height = $(window).height();
-        if (width == window.originW && height ==window.originH) {
+        if (width == window.originW && height == window.originH) {
             return;
         }
-        if (width <= 736)
-        {
+        if (width <= 736) {
             $("#setting").addClass("table-rwd");
             TdDisplay('content');
-            $(".table-th").each(function() {
+            $(".table-th").each(function () {
                 let id = $(this).attr('id');
-                Item_Visible_Control(id+"_content" , id , true);
+                Item_Visible_Control(id + "_content", id, true);
             });
-        } 
-        else 
-        {
+        } else {
             $("#setting").removeClass("table-rwd");
             TdDisplayNoneRWD('content');
         }
     }
-
 </script>

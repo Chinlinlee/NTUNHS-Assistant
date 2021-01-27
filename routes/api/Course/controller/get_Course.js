@@ -1,6 +1,7 @@
 const myFunc = require("../../../My_Func");
 const fetch = require('node-fetch');
 const _ = require("lodash");
+const { isUndefined } = require("lodash");
 
 //const QueryParams = require("../../../models/common/httparams.js");
 
@@ -18,10 +19,11 @@ module.exports = async function (req, res) {
     return res.send(result);
 }
 async function getCourse(req) {
-    if (req.session.Course.length > 0) {
+    /*if (req.session.Course.length > 0) {
         return Promise.resolve(req.session.Course);
-    }
-    let courseJson = await getCourseJson(req);
+    }*/
+    let semno = req.query.semno;
+    let courseJson = await getCourseJson(req , semno);
     if (!courseJson) {
         return Promise.resolve(false);
     }
@@ -30,15 +32,15 @@ async function getCourse(req) {
 }
 
 async function getCourseJson (req , semno) {
+    if (isUndefined(semno)) {
+        semno = req.session.stuInfo.lastSem;
+    }
     let parameter = new URLSearchParams({
         st_no : req.session.STNO ,
         sem_no : semno ,
         size : 100 ,
         action : "LoadJSon"
     });
-    if (!semno) {
-        parameter.delete('sem_no');
-    }
     let courses_URL = new URL("http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_14.aspx");
     courses_URL.search = parameter;
     let reqOption = {
