@@ -1,6 +1,7 @@
 const myFunc = require('../../../My_Func');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const _ = require('lodash');
 module.exports = async function (req, res) {
     let preRankObj = [];
     //暫時將以前的排名方法去掉
@@ -76,10 +77,13 @@ async function getScore(req) {
     if (scoreTableTr.length <= 0) {
         return [false];
     }
-    scoreTableTr = scoreTableTr.slice(2);
+    let titleSemText = scoreTableTr.eq(0).find('td').eq(0).text();
+    let sem = titleSemText.match(/[0-9]/gm).join('');
+    _.set(req.session.stuInfo , "nowSem" , sem);
+    //scoreTableTr = scoreTableTr.slice(2);
     let scores = []; //分數
     let ranks = []; //排名
-    for (let i = 0 ; i < scoreTableTr.length ; i++) {
+    for (let i = 2 ; i < scoreTableTr.length ; i++) {
         const td = scoreTableTr.eq(i).find('td');
         tdFunc[td.length](td , scores , ranks);
     }
