@@ -8,7 +8,8 @@ module.exports = async function(req ,res)
             system : sessionStuInfo.stuType , 
             faculty : sessionStuInfo.stuFaculty ,
             stuName : sessionStuInfo.stuName ,
-            allSemno : sessionStuInfo.allSemno
+            stuNum : sessionStuInfo.stuNum ,
+            allSemno : sessionStuInfo.allSemno 
         }
         return res.send(result);
     }
