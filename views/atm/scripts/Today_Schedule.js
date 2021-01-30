@@ -52,7 +52,6 @@ TSApp.service("TSService", function ($http) {
                 url: "api/Today_Schedule",
                 params:
                 {
-                    semno: '1091' ,
                     User: Querykey,
                     day: weekday
                 }
