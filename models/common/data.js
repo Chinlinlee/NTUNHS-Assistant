@@ -55,26 +55,19 @@ module.exports.InsertManydata = async function (i_collection, i_data) {
 
 //mongo插入資料
 module.exports.Insertdata = async function (i_collection, i_data) {
-    const conn = await MongoExe();
-    var result = "";
-
-    var mypromise = () => {
-        return new Promise(async (resolve, reject) => {
-            conn.db('My_ntunhs').collection(i_collection, async function (err, o_collection) {
-                if (err) reject("fail");
-                o_collection.insertOne(i_data);
-
-                resolve("success");
-            });
-        });
-    };
-    result = await mypromise();
-    if (result == "fail") {
-        return Promise.reject("fail")
-    }
-    console.log("insert success");
-    await conn.close();
-    return Promise.resolve(result);
+    let conn = await MongoExe();
+    return new Promise (async (resolve , reject) => {
+        let db = conn.db('My_ntunhs');
+        let collection = db.collection(i_collection);
+        collection.insertOne(i_data , async function(docs , err) {
+            if (err) {
+                await conn.close();
+                return reject(new Error(err));
+            }
+            await conn.close();
+            return resolve(docs);
+        })
+    });
 };
 
 //mongo更新資料
