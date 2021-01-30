@@ -15,6 +15,7 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
     $scope.Ismobile = (width <= 736) ? true : false;
     $scope.Query = function ()
     {
+        commonFunc.blockUI();
         HSService.Get_data().then((function(res)
         {
             if (res.status == 401) 
@@ -25,6 +26,7 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
             {
                 $scope.DataList = [];
                 $scope.Conlsit = [];
+                $.unblockUI();
             }
             else
             {
@@ -34,8 +36,24 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
                 $scope.Conlist = HS_con;
                 var Sems = res.data[2];
                 $scope.Sems = Sems;
+                let checkDOMExist = setInterval(function () {
+                    if ($("table").length > 0 ) {
+                        console.log('yes');
+                        $.unblockUI();
+                        clearInterval(checkDOMExist);
+                    }
+                } , 100);
             }
         }))
+    }
+    $scope.uploadScore = function () {
+        commonFunc.blockUI();
+        HSService.uploadScore().then(function (res) {
+            if (res.status == 200) {
+                alert('上傳成功');
+            }
+            $.unblockUI();
+        });
     }
     $scope.RemoveSpace = function(i_item)
     {
@@ -79,7 +97,8 @@ HSApp.service("HSService" , function($http)
 {
     return (
         {
-            Get_data : Get_data 
+            Get_data : Get_data ,
+            uploadScore : uploadScore
         }
     );
     function Get_data()
@@ -87,6 +106,16 @@ HSApp.service("HSService" , function($http)
         var request = $http(
             {
                 method: "GET",
+                url :　"api/History_Scores",
+            }
+        );
+        return (request.then(handleSuccess , handleError));
+    }
+    function uploadScore()
+    {
+        var request = $http(
+            {
+                method: "POST",
                 url :　"api/History_Scores",
             }
         );

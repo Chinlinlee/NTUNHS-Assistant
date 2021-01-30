@@ -40,7 +40,18 @@
         </div>
     </nav>
     <div id="container" class="container" style="width:100%">
-        <input type="search" class="form-control" ng-model="q" placeholder="請輸入課程名稱或代碼" />
+        <div class="row">
+            <div class="col-12">
+                <input type="search" class="form-control" ng-model="q" placeholder="請輸入課程名稱或代碼" />
+            </div>
+        </div>
+        <hr />
+        <div class="row" ng-if="false">
+            <div class="col-12">
+                <button class="btn btn-secondary" ng-click="uploadScore();">upload</button>
+                <span style="background:#d9edf7;border-radius: 30px; padding: 2px .3rem"><span style="font-family:Segoe UI Emoji">ℹ️</span>您可以上傳您的歷年成績，以還原課程的成績分布圖</span>
+            </div>
+        </div>
         <br />
         <div ng-repeat="item in Sems;" style="margin-bottom:20px;" ng-init="semIndex = $index">
 
@@ -100,6 +111,7 @@
 <script src="../externals/angularjs/angular.min.js"></script>
 <script src="../externals/jquery/jquery-1.11.1.min.js"></script>
 <script src="../externals/jqueryui/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 <script src="/atm/scripts/rwd-td.js"></script>
 <script src="/atm/scripts/Common.js"></script>
 <script src="/atm/scripts/ngCommon.js"></script>
