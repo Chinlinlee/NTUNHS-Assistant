@@ -93,6 +93,20 @@ function Clear_Files()
   }
 }
 
+const { MongoExe } = require('./models/common/data');
+async function clearExpireSessions () {
+  let conn = await MongoExe();
+  let db = conn.db('My_ntunhs');
+  let collection = db.collection('sessions');
+  
+  collection.deleteMany({"expires" : { $lte :new Date}} , async function (err , docs) {
+    console.log("delete expire sessions" , docs);
+  });
+}
+
+let scheduleDeleteExpireSession = schedule.scheduleJob({rule :'0 30 0 * * *'} , async function () {
+  await clearExpireSessions();
+})
 /*let scheduleUpdateCourse = schedule.scheduleJob({rule: '0 30 0 * * *'} ,function () {
   console.log("update course");
   updateCourseMain();
