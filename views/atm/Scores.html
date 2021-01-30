@@ -41,8 +41,8 @@
         </div>
     </nav>
     <div class="container" style="width:100%">
-        <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}">
-            <table id="setting" class="table table-bordered table-striped table-rwd">
+        <div id="divScore">
+            <table id="tableScore" class="table table-bordered table-striped table-rwd">
                 <thead class="thead-dark">
                     <tr >
                         <th>課程名稱</th>
@@ -70,8 +70,8 @@
                 </tbody>
             </table>
         </div>
-        <div dw-loading="Conlist" dw-loading-options="{text: '載入清單...'}">
-            <table id="setting_2" class="table table-bordered table-striped table-rwd">
+        <div id="divRank">
+            <table id="tableRank" class="table table-bordered table-striped table-rwd">
                 <tbody>
                     <tr name="Conlist" ng-repeat="Item2 in Conlist">
                         <td class="no-th">{{Item2.id}}</td>
@@ -79,13 +79,35 @@
                     </tr>
                 </tbody>
             </table>
+            <button class="btn btn-success" ng-click="storeRank();">Store Rank Information</button>
         </div>
-        <div dw-loading="PreRank" dw-loading-options="{text: '載入清單...'}">
-            <table id="setting_2" class="table table-bordered table-striped table-rwd">
+        <hr>
+        <!--暫時不顯示-->
+        <div id="divPreRank" ng-show="false">
+            <table id="tablePreRank" class="table table-bordered table-striped table-rwd">
                 <tbody>
                     <tr name="Conlist" ng-repeat="Item in PreRank">
                         <td class="no-th">{{Item.name}}</td>
                         <td data-th={{Item.id}}>{{Item.value}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="divstoredRank" ng-show="storedRank.length > 0 ">
+            <table id="tablestoredRank" class="table table-bordered table-striped table-rwd">
+                <thead class="thead-dark">
+                    <tr >
+                        <th>學期</th>
+                        <th>排名</th>
+                        <th>班級排名百分比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(key , Item) in storedRank">
+                        <td >{{Item.sem}}</td>
+                        <td >{{Item.rank}}</td>
+                        <td >{{Item.rankPercentInClass}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -110,6 +132,8 @@
     window.onload = async function() {
         commonFunc.myDarkModeInit();
         await sleep(100);
-        angular.element(document.getElementById('setting')).scope().Query();
+        angular.element(document.getElementById('divScore')).scope().Query();
+        angular.element(document.getElementById('divScore')).scope().getStoredRank();
+        
     };
 </script>
