@@ -18,6 +18,22 @@ TSApp.controller("TSCtrl", function ($scope, TSService , commonService) {
                 $scope.DataList = Today_Schedule;
                 $scope.DataListLen = $scope.DataList.length;
                 console.log($scope.DataListLen);
+                let checkContentExist = setInterval(async function () {
+                    if ($('[id*="setting"]').length) {
+                        let width = $(window).width();
+                        if (width <= 736)
+                        {
+                            $("#setting").addClass("table-rwd");
+                            await sleep(100);
+                            HideTd('content');
+                            await sleep(100);
+                            $(`.table-th`).addClass("table-th-show");
+                        } 
+                        clearInterval(checkContentExist);
+                        //$.unblockUI();
+                    }
+                }, 100);
+                
             }
         }));
     }
@@ -36,6 +52,7 @@ TSApp.service("TSService", function ($http) {
                 url: "api/Today_Schedule",
                 params:
                 {
+                    semno: '1091' ,
                     User: Querykey,
                     day: weekday
                 }

@@ -104,14 +104,7 @@
         angular.element(document.getElementById('setting')).scope().Query(week[weekday]);
         var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         await sleep(100);
-        if (width <= 736)
-        {
-            $("#setting").addClass("table-rwd");
-            await sleep(100);
-            HideTd('content');
-            await sleep(100);
-            $(`.table-th`).addClass("table-th-show");
-        } 
+        
     };
 
     $( "#day_select" ).change(async function() 
