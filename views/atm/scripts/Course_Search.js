@@ -648,11 +648,11 @@ CSApp.controller("CSCtrl", function ($scope, CSService, commonService) {
         $('#PreSchedule').addClass('remove-td-height');
         $('#PreSchedule').removeClass('table-responsive');
         let tableWidth = $('#PreSchedule').width();
-        html2canvas($('#PreSchedule',)[0],
+        console.log(tableWidth);
+        if (tableWidth < 576) tableWidth = 576;
+        html2canvas($('#PreSchedule')[0],
             {
-                width: tableWidth + 30,
-                scrollX: 0,
-                scrollY: 0,
+                width: tableWidth +30 ,
             }).then((canvas) => {
                 if ($scope.IsLine) {
                     var imgdataurl = canvas.toDataURL("image/png");
@@ -680,7 +680,7 @@ CSApp.controller("CSCtrl", function ($scope, CSService, commonService) {
                     a[0].click();
                     a.remove();
                     $('#PreSchedule').removeClass('remove-td-height');
-                    $('#PreSchedule').addClass('table-responsive');
+                    //$('#PreSchedule').addClass('table-responsive');
                     if ($(window).width() <= 764 ) {
                         $('#PreSchedule').hide();
                     }
@@ -703,7 +703,9 @@ CSApp.controller("CSCtrl", function ($scope, CSService, commonService) {
             }
         }
         if (isDarkMode == "true") {
-            delete option.style;
+            option.style = {
+                'background-color' : "#1f1f1f"
+            }
         }
         domtoimage.toPng(domNode, option).then(function (dataUrl) {
             var link = document.createElement('a');

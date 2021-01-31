@@ -170,8 +170,8 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item" href="#" ng-click="exportpdf(true);">匯出清單PDF</a>
-                    <a class="dropdown-item" href="#" ng-click="exportwordBackend();">匯出清單Word</a>
-                    <a class="dropdown-item" href="#" ng-click="exportexcelBackend();">匯出清單Excel</a>
+                    <a class="dropdown-item" href="#" ng-click="exportwordBackend();" ng-show="false">匯出清單Word</a>
+                    <a class="dropdown-item" href="#" ng-click="exportexcelBackend();" ng-show="false">匯出清單Excel</a>
                     <a class="dropdown-item" href="#" id="a_Export_IMG" ng-click="exportPicture();">
                         <i class="fa fa-download" class="text-center"></i>匯出表格圖片
                     </a>
@@ -181,7 +181,7 @@
                 </div>
             </div>
             <div class="col-lg-8 col-md-12 col-sm-12 col-12">
-                <table id="PreSchedule" class="table table-striped table-bordered table-sm table-responsive w-100">
+                <table id="PreSchedule" class="table table-striped table-bordered table-sm table-responsive">
                     <thead class="thead-dark">
                         <tr>
                             <th colspan="8" class="text-center">模擬表格</th>
