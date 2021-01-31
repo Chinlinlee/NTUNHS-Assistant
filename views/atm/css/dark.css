@@ -3,6 +3,9 @@
     color: white
 }
 
+.darkmode--activated .bg-school-green {
+    background-color : #46565d;
+}
 
 .darkmode--activated .thead-dark th {
     background-color: #2f2f2f;
@@ -59,9 +62,7 @@
     border: 1px solid #1f1f1f;
     color: whitesmoke;
 }
-.darkmode--activated .bg-school-green {
-    background-color : #46565d;
-}
+
 
 .darkmode--activated .alert-secondary {
     background-color: #b1b5bc78!important;
@@ -83,6 +84,10 @@
     background-color: #343a40;
 }
 /* #endregion */
+
+.darkmode--activated hr {
+    border: 1px solid gray ;
+}
 
 @media (max-width: 736px) {
     .darkmode--activated .table-th-show::after {
