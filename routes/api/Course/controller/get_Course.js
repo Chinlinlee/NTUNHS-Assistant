@@ -52,40 +52,42 @@ async function getCourseJson (req , semno) {
         method: reqOption.method 
     });
     let course = "";
-    try {
-        let courseJson = await courseFetch.json();
-        _.unset(courseJson, "0");
-        let result = [];
-        for (let i in courseJson) {
-            let item = courseJson[i];
-            let courseCode = item.課程代碼與名稱_L.substr(0, 10);
-            let courseClassCode = item.上課班級_L.substr(3 ,2);
-            let courseFullCode = courseCode + courseClassCode;
-            result.push({
-                Name: item.課程代碼與名稱_L.substr(11),
-                Code: courseCode ,
-                FullCode : courseFullCode ,
-                Place: item.教室,
-                Day: item.星期,
-                Period: item.節次 ,
-                Credit: item.學分,
-                Type: item.課程性質,
-                Teacher: item.任課教師_L.replace(/<br\/>/gi, ""),
-                Other: item.備註_L ,
-                takeStatu : item.修業狀態 ,
-                conflictStatu : item.衝堂狀態
-            });
-        }
-        course = result;
-    } catch (e) {
+    let courseJson = {};
+    let courseText = await courseFetch.text();
+    if (courseText == "查無符合條件資料") {
         course = [];
+        return Promise.resolve(course); 
     }
     try {
-        return Promise.resolve(course); 
-    } catch (e) {
+        courseJson = JSON.parse(courseText);
+    } catch(e) {
         console.error(e);
         return Promise.resolve(false);
     }
+    _.unset(courseJson, "0");
+    let result = [];
+    for (let i in courseJson) {
+        let item = courseJson[i];
+        let courseCode = item.課程代碼與名稱_L.substr(0, 10);
+        let courseClassCode = item.上課班級_L.substr(3 ,2);
+        let courseFullCode = courseCode + courseClassCode;
+        result.push({
+            Name: item.課程代碼與名稱_L.substr(11),
+            Code: courseCode ,
+            FullCode : courseFullCode ,
+            Place: item.教室,
+            Day: item.星期,
+            Period: item.節次 ,
+            Credit: item.學分,
+            Type: item.課程性質,
+            Teacher: item.任課教師_L.replace(/<br\/>/gi, ""),
+            Other: item.備註_L ,
+            takeStatu : item.修業狀態 ,
+            conflictStatu : item.衝堂狀態
+        });
+    }
+    course = result;
+    return Promise.resolve(course); 
 }
 
 module.exports.getCourse = getCourse;

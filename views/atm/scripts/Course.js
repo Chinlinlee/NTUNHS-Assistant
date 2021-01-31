@@ -20,6 +20,9 @@ CourseApp.controller("CourseCtrl", function ($scope, CourseService, commonServic
     $scope.Query = function () {
         commonFunc.blockUI();
         CourseService.Get_data($scope.selectedSem).then((function (res) {
+            if (res.status == 401) {
+                location.href = "/";
+            }
             if (res.data == null || res.data.length <= 0) {
                 $scope.DataList = [];
                 $.unblockUI();
