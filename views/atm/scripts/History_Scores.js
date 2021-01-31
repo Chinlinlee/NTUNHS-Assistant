@@ -6,6 +6,9 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
     $scope.DataList = [];
     $scope.Conlist = [];
     $scope.Sems = [];
+    $scope.isOnlyAvgScore = {
+        
+    }
     $scope.Currentuser = "";
     commonService.user.getStuInfo().then(function (res) {
         $scope.Currentuser = res.data;
@@ -36,6 +39,9 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
                 $scope.Conlist = HS_con;
                 var Sems = res.data[2];
                 $scope.Sems = Sems;
+                for (let sem of $scope.Sems) {
+                    $scope.isOnlyAvgScore[sem] = false;
+                }
                 let checkDOMExist = setInterval(function () {
                     if ($("table").length > 0 ) {
                         console.log('yes');

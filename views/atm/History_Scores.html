@@ -57,8 +57,8 @@
 
             <button id={{item.Sem}} class="btn btn-primary btn-lg darkmode-ignore" style="width:100%;isolation: isolate;" onclick="Item_Visible_Control('HStable_' + this.id)">{{item.Sem}}學年度(點我開啟or隱藏))</button>
             <div id="HStable_{{item.Sem}}" class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input"  onchange="Item_Visible_Control('HStr_' +this.name)" id="custoncb_{{item.Sem}}" name="{{item.Sem}}">
-                <label class="custom-control-label" for="custoncb_{{item.Sem}}">僅顯示平均成績</label>
+                <input type="checkbox" class="custom-control-input"  id="custoncb_{{item.Sem}}" name="{{item.Sem}}" ng-model="isOnlyAvgScore[item.Sem]">
+                <label class="custom-control-label" for="custoncb_{{item.Sem}}" >僅顯示平均成績</label>
             </div>
             <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}">
                 <table id="HStable_{{item.Sem}}" class="table table-bordered table-striped table-rwd">
@@ -78,7 +78,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr name="DataList" ng-repeat="hs in DataList |orderBy :'-Up_Score' | filter:q as results track by hs.Course " ng-if="hs.Sem ==item.Sem" id="HStr_{{item.Sem}}}}">
+                        <tr name="DataList" ng-repeat="hs in DataList |orderBy :'-Up_Score' | filter:q as results track by hs.Course" ng-if="hs.Sem ==item.Sem" id="HStr_{{item.Sem}}}}" ng-show="!isOnlyAvgScore[item.Sem]">
                             <td data-th="學年" id="{{hs.Sem}}" >{{hs.Sem}}{{item.$index}}</td>
                             <td data-th="課別" id="{{hs.Sem}}_content_type">{{hs.Type}}</td>
                             <td data-th="課程代碼與課程名稱" id="{{hs.Sem}}_content_course">{{hs.Course}}</td>
