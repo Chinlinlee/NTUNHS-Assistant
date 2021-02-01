@@ -82,7 +82,7 @@
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-success" ng-click="storeRank();">Store Rank Information</button>
+            <button class="btn btn-success" ng-click="storeRank();" ng-show="DataList.length>0">Store Rank Information</button>
         </div>
         <hr>
         <div id="divstoredRank" ng-show="storedRank.length > 0 ">
