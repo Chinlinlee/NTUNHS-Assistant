@@ -29,6 +29,7 @@
     "follow-redirects": "^1.9.0",
     "form-data": "^3.0.0",
     "fs": "0.0.1-security",
+    "get-port": "^5.1.1",
     "html-screen-capture-js": "^1.0.28",
     "html-to-image": "^0.1.1",
     "iconv-lite": "^0.5.2",

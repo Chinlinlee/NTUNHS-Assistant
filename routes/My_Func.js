@@ -10,6 +10,7 @@ const moment = require('moment');
 const tough =  require('tough-cookie');
 const chrome = require('selenium-webdriver/chrome');
 const webdriver = require('selenium-webdriver');
+const getPort = require('get-port');
 
 module.exports.IsLoggedIn = function(req ,res , next)
 {  
@@ -245,9 +246,11 @@ module.exports.ntunhsApp = {
         getPreRank : async  (req , res , csrf) => {
             return new Promise (async (resolve)=> {
                 let opt = new chrome.Options();
+                let debugPort = await getPort();
                 opt.addArguments('--incognito');
-                opt.addArguments('--no-sandbox')
-                opt.addArguments('--disable-dev-shm-usage')
+                opt.addArguments(`--remote-debugging-port=${debugPort}`);
+                opt.addArguments('--no-sandbox');
+                opt.addArguments('--disable-dev-shm-usage');
                 opt.addArguments('--headless');
                 opt.addArguments('--disable-gpu');
                 opt.set('unhandledPromptBehavior' , 'accept');
@@ -261,6 +264,7 @@ module.exports.ntunhsApp = {
                     name : "ASP.NET_SessionId" , 
                     value : aspSessionID
                 });
+                console.log("go to siginoff");
                 await driver.navigate().to("https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Main/TransUrlAutoLogin.aspx?type=workflow")
                 try {
                     await driver.wait(webdriver.until.alertIsPresent());
@@ -276,13 +280,16 @@ module.exports.ntunhsApp = {
                 
                 await driver.wait(webdriver.until.elementLocated({id : 'ContentPlaceHolderQuery_QueryFrame'}) , 15000);
                 let queryFrame = await driver.findElement({id : 'ContentPlaceHolderQuery_QueryFrame'});
+                
                 await driver.switchTo().frame(queryFrame);
                 await driver.executeScript(`$("#ddlWFName").val("修課-少修申請").change();`);
+                console.log("select 少修");
                 await driver.sleep(871);
                 await driver.executeScript(`$("#ImageNew").click();`);
                 await driver.switchTo().window(driver.getWindowHandle());
                 await driver.sleep(871);
                 let applyFrame = await driver.findElement({id : 'iframeApplyFormContent'});
+                console.log("open applyform");
                 await driver.switchTo().frame(applyFrame);
                 $ = cheerio.load(await driver.getPageSource());
                 let semnoOption = $('#ddlSemNo option');
