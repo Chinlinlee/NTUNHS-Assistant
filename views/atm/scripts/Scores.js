@@ -18,14 +18,12 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
             if (res.data == null) {
                 $scope.DataList = [];
                 $scope.Conlist = [];
-                $scope.PreRank = [];
             }
             else {
                 let Scores = res.data[0];
                 $scope.DataList = Scores;
                 let Scores_Con = res.data[1];
                 $scope.Conlist = Scores_Con;
-                $scope.PreRank = res.data[2];
             }
         }))
     }
@@ -49,6 +47,19 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
             }
         });
     }
+
+    $scope.getSignOffPreRank = function () {
+        commonFunc.blockUI();
+        ScoresService.getSignOffPreRank().then(function (res) {
+            if (res.status == 200) {
+                $scope.PreRank = res.data;
+            } else if (res.status == 401) {
+                window.location.href = "/logout";
+            }
+            $.unblockUI();
+        });
+        
+    }
 });
 
 ScoresApp.service("ScoresService", function ($http) {
@@ -57,7 +68,8 @@ ScoresApp.service("ScoresService", function ($http) {
             Get_User: Get_User,
             Get_data: Get_data,
             postStoreRank : postStoreRank ,
-            getStoredRank : getStoredRank
+            getStoredRank : getStoredRank ,
+            getSignOffPreRank : getSignOffPreRank
         }
     );
     function Get_User($scope) {
@@ -95,6 +107,14 @@ ScoresApp.service("ScoresService", function ($http) {
         let request = $http({
             method : "GET" , 
             url : "api/Scores/storeRank" 
+        });
+        return (request.then(handleSuccess , handleError));
+    }
+
+    function getSignOffPreRank () {
+        let request = $http({
+            method : "GET" , 
+            url : "api/Scores/signOffPrerank" 
         });
         return (request.then(handleSuccess , handleError));
     }
