@@ -3,37 +3,13 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const _ = require('lodash');
 module.exports = async function (req, res) {
-    let preRankObj = [];
-    //暫時將以前的排名方法去掉
-    /*await myFunc.ntunhsApp.signOff.enter(req, res);
-    if (!req.session.noPreRank) {
-        let csrf = await myFunc.ntunhsApp.signOff.getPreRankCsrf(req, res);
-        if (csrf) {
-            let preRank = await myFunc.ntunhsApp.signOff.getPreRank(req, res, csrf);
-            //return res.status(401).send();
-            preRankObj = [
-                {
-                    "name": preRank[0],
-                    "value": preRank[1]
-                },
-                {
-                    "name": preRank[2],
-                    "value": preRank[3]
-                }
-            ]
-            req.session.noPreRank = false;
-        }
-        else {
-            req.session.noPreRank = true;
-        }
-    }*/
     let [Result, Result_all] = await getScore(req);
     if (!Result) {
         req.flash('error' , '學校系統逾時，請重新登入');
         req.logout();
         return res.status(401).send();
     }
-    return res.send([Result, Result_all, preRankObj]);
+    return res.send([Result, Result_all]);
 }
 
 const tdFunc = {
@@ -56,6 +32,9 @@ const tdFunc = {
         }
         result2.push(tdItem);
         return tdItem;
+    } ,
+    "1" : (td , result , result2) => {
+        return false;
     }
 }
 
