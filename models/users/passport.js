@@ -21,7 +21,15 @@ async function getSTNO (req , iFetch)
     let getStnoPageUri = await fetchRes.text();
     //let getStnoPageUri = await myFunc.Request_func(myReqObj  , option);
     let $ = cheerio.load(getStnoPageUri);
-    let aTags = $("a")[0].attribs.href;
+    let aElement = $('a');
+    let aTags = "";//$("a")[0].attribs.href;
+    for (let index in aElement) {
+      let aHref = $(aElement[index]).attr('href') || "";
+      if (aHref.includes('ShowModalDialog')) {
+        aTags = aHref;
+        break;
+      }
+    }
     option = 
     {
       method : "GET" , 
@@ -33,8 +41,26 @@ async function getSTNO (req , iFetch)
     });
     let getStnoPage = await getStnoPageRes.text();
     $ = cheerio.load(getStnoPage);
-    let frameSrc = $("#DialogFrame")[0].attribs.src;
-    let stno = frameSrc.substring(frameSrc.indexOf('stno=')+5);
+    let frame = $("iframe");
+    let stno = "";
+    try {
+      for (let index in frame) {
+        console.log(index);
+        let frameSrc = $(frame[index]).attr('src') || "";
+        console.log(frameSrc);
+        if (frameSrc.includes('stno')) {
+          stno = frameSrc.substring(frameSrc.indexOf('stno=')+5);
+          break;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    //let stno = frameSrc.substring(frameSrc.indexOf('stno=')+5);
+    if (!stno) {
+      console.error('stno 錯誤');
+      console.error(req.session.stuInfo);
+    }
     return resolve(stno);
   });
 }
@@ -105,8 +131,6 @@ module.exports = async function(passport)
         "stuStatu" : stuInfo[6]
       }
       req.session.stuInfo = stuInfoObj;
-
-
       let sessionStuInfo = _.get(req.session , "stuInfo");
       let stuDeptRes = await fetch("https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Map/UserControls/ajaxCallback.aspx?type=StudAllDept" , {
           method : 'POST'
@@ -140,34 +164,15 @@ module.exports = async function(passport)
       sessionStuInfo.allSemno = allSemno;
       
       req.session.ntunhsApp = await j.getCookieString('http://system8.ntunhs.edu.tw');
-
-
-
-      let siginfetch = require('fetch-cookie')(nodeFetch , signOffJar , false)
-      let loginSginOffResult = await School_Auth.signOffAuth(username , password , req);
-      //req.session.myJar = myReqObj.jar;
-      let loginSginOffResultCode = loginSginOffResult.split('_');
-      let loginSignOffoPtion = 
-      {
-        method : 'GET' , 
-        uri : `http://system10.ntunhs.edu.tw/Workflow/Common/UserControls/loginModule.aspx?txtid=${username}&code=${loginSginOffResultCode[1]}&from=tyg/tU01wVvnsZtbm7tPhKak44RMjpfRkFt7mKZlzW85P4GKxNNs+wfm8PCM3+Si7dJ2HijacHOvd/jmQztdSg==&select=student` , 
-        jar : signOffJar , 
-        followRedirect : true
-      }
-      //console.log(loginSignOffoPtion.uri);
-      let signOffFetch = await siginfetch(loginSignOffoPtion.uri , {
-          method:"GET" ,
-          redirect : 'follow' ,
-          follow : 1000
-      });
-      let signOffFetchBody = await signOffFetch.text();
-      req.session.ntunhsSignOff = await signOffJar.getCookieString('http://system10.ntunhs.edu.tw');
       req.session.Course = [];
       req.session.HistoryScore = [];
       req.session.Score = [];
       req.session.noPreRank = false;
       let STNO = await getSTNO(req , fetch);
       req.session.STNO = STNO;
+      if (!STNO) {
+        return done(null , false , req.flash('error',"無法取得資訊，請重新登入，若還是無法登入請聯繫作者。"));
+      }
       await School_Auth.ilmsAuth(username , password , req);
       return done(null ,username);
   }));
