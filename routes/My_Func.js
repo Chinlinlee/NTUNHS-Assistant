@@ -246,6 +246,8 @@ module.exports.ntunhsApp = {
             return new Promise (async (resolve)=> {
                 let opt = new chrome.Options();
                 opt.addArguments('--incognito');
+                opt.add_argument('--no-sandbox')
+                opt.add_argument('--disable-dev-shm-usage')
                 opt.addArguments('--headless');
                 opt.addArguments('--disable-gpu');
                 opt.set('unhandledPromptBehavior' , 'accept');
