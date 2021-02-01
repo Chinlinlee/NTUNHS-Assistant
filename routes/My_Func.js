@@ -162,9 +162,10 @@ module.exports.ntunhsApp = {
                     method : "GET"
                 });
                 let txt = await fetchRes.text();
-                req.session.ntunhsSignOff = await j.getCookieString('http://system10.ntunhs.edu.tw');
                 if (txt.includes('簽核系統')) {
+                    req.session.ntunhsSignOff = await j.getCookieString('http://system10.ntunhs.edu.tw');
                     return resolve(true);
+                    
                 }
             });
         } , 
@@ -245,44 +246,67 @@ module.exports.ntunhsApp = {
             return new Promise (async (resolve)=> {
                 let opt = new chrome.Options();
                 opt.addArguments('--incognito');
+                opt.addArguments('--headless');
+                opt.addArguments('--disable-gpu');
+                opt.set('unhandledPromptBehavior' , 'accept');
                 opt.setUserPreferences({ "download.default_directory": __dirname });
                 let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build();
-                let j = exports.getSignOffJar(req);
-                let cookieStr =j.getCookieStringSync("http://system10.ntunhs.edu.tw");
+                let j = exports.getJar(req);
+                let cookieStr =j.getCookieStringSync("http://system8.ntunhs.edu.tw");
                 let aspSessionID = cookieStr.split("=")[1];
-                await driver.navigate().to("http://system10.ntunhs.edu.tw/Workflow/Modules/Main/login.aspx?first=false&action=&info=");
+                await driver.navigate().to("http://system8.ntunhs.edu.tw/");
                 await driver.manage().addCookie({
                     name : "ASP.NET_SessionId" , 
                     value : aspSessionID
                 });
-                await driver.navigate().to("http://system10.ntunhs.edu.tw/Workflow/Modules/Main/login.aspx?first=true&action=&info=");
-                driver.quit();
-                let timestamp = moment(new Date()).format("YYYYMMDDkkmmss");
-                let url =`http://system10.ntunhs.edu.tw/Workflow/Modules/Workflow/%e4%bf%ae%e8%aa%b2%e5%8b%95%e6%85%8b%e7%94%b3%e8%ab%8b/apply_form.aspx?id=&workflowname=%e4%bf%ae%e8%aa%b2-%e5%b0%91%e4%bf%ae%e7%94%b3%e8%ab%8b&userid=${req.user}&timestamp=${timestamp}&csrf=${csrf}`;
-                let reqOption = {
-                    method : "GET"  ,
-                    uri : url , 
-                    jar : j 
+                await driver.navigate().to("https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Main/TransUrlAutoLogin.aspx?type=workflow")
+                try {
+                    await driver.wait(webdriver.until.alertIsPresent());
+                    let alert = await driver.switchTo().alert();
+                    //Press the OK button
+                    await alert.accept();
+                } catch (e) {
+
                 }
-                let fetchCookie = require('fetch-cookie')(fetch , j);
-                let fetchRes = await fetchCookie(reqOption.uri , {
-                    method : reqOption.method
-                });
-                let body = await fetchRes.text();
-                $ = cheerio.load(body);
-                let tableTr = $("table tr");
-                for (let i = 0 ; i< tableTr.length ; i++) {
-                    let text =$("table tr").eq(i).text();
-                    if (text.includes("前學期名次")) {
-                        text =text.replace(/[ |]/gi , "");
-                        text = text.split("\n");
-                        text = _.compact(text);
-                        text = await Promise.all(_.filter(text , v=> v.replace(/\s/gi , "").length));
-                        console.log(text);
-                        return resolve(text);
+                //await driver.navigate().to("http://system10.ntunhs.edu.tw/Workflow/Modules/Main/login.aspx?first=true&action=&info=");
+                //driver.quit();
+                //$ = cheerio.load(await driver.getPageSource());
+                
+                await driver.wait(webdriver.until.elementLocated({id : 'ContentPlaceHolderQuery_QueryFrame'}) , 15000);
+                let queryFrame = await driver.findElement({id : 'ContentPlaceHolderQuery_QueryFrame'});
+                await driver.switchTo().frame(queryFrame);
+                await driver.executeScript(`$("#ddlWFName").val("修課-少修申請").change();`);
+                await driver.sleep(871);
+                await driver.executeScript(`$("#ImageNew").click();`);
+                await driver.switchTo().window(driver.getWindowHandle());
+                await driver.sleep(871);
+                let applyFrame = await driver.findElement({id : 'iframeApplyFormContent'});
+                await driver.switchTo().frame(applyFrame);
+                $ = cheerio.load(await driver.getPageSource());
+                let semnoOption = $('#ddlSemNo option');
+                let formRank = [];
+                let allSemno = req.session.stuInfo.allSemno;
+                for (let index in semnoOption) {
+                    let optionVal = semnoOption.eq(index).val();
+                    if (optionVal) {
+                        await driver.executeScript(`$("#ddlSemNo").val(${optionVal}).change();`);
+                        await driver.sleep(187);
+                        $ = cheerio.load(await driver.getPageSource());
+                        let semIndexInStuInfo = allSemno.findIndex(function (value ,index) {
+                            return value == optionVal;
+                        });
+                        semIndexInStuInfo -= 1 ;
+                        if (semIndexInStuInfo < 0) semIndexInStuInfo = allSemno.length -1;
+                        formRank.push({
+                            sem : allSemno[semIndexInStuInfo] ,
+                            rank : $('#lblRANK').text() ,
+                            rankPercent : $('#lblRANKPERCENTILE').text()
+                        })
                     }
                 }
-                return resolve(false);
+                console.log(formRank);
+                driver.quit();
+                return resolve(formRank);
             });
         }
         /**
