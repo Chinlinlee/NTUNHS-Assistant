@@ -133,7 +133,7 @@
                         <span>
                             {{Item.Credits}}學分
                             <span
-                                ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.Period}}節・星期{{Ch_days[Item.Course_Day-1]}}</span>
+                                ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.Period}}節・星期{{Ch_days[Item.Course_Day-1]}}・{{Item.Course_Class}}班</span>
                         </span>
                         <br />
                         <span></span>
@@ -158,7 +158,7 @@
                         <span>
                             {{Item.Credits}}學分
                             <span
-                                ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.startPeriod}}~{{Item.endPeriod}}節・星期{{Ch_days[Item.Course_Day-1]}}</span>
+                                ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.startPeriod}}~{{Item.endPeriod}}節・星期{{Ch_days[Item.Course_Day-1]}}・{{Item.Course_Class}}班</span>
                         </span>
                         <a class="btn-deleteCourse" ng-click="PreSchedule_Remove(Item);">
                         </a>
@@ -421,7 +421,7 @@
                             <span>
                                 {{Item.Credits}}學分
                                 <span
-                                    ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.startPeriod}}~{{Item.endPeriod}}節・星期{{Ch_days[Item.Course_Day-1]}}</span>
+                                    ng-show="Item.Teacher">・{{Item.Teacher}}</span>・{{Item.startPeriod}}~{{Item.endPeriod}}節・星期{{Ch_days[Item.Course_Day-1]}}・{{Item.Course_Class}}班</span>
                             </span>
                             <br />
                             <span></span>
