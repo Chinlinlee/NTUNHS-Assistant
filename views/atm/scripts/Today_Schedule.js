@@ -12,6 +12,8 @@ TSApp.controller("TSCtrl", function ($scope, TSService , commonService) {
             if (res.data == "NoData" || res.data == null || res.data == undefined) {
                 $scope.DataList = [];
                 $scope.DataListLen = 0;
+            } else if (res.status == 401) {
+                window.location.href = '/logout';
             }
             else {
                 var Today_Schedule = res.data;
