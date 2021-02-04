@@ -2,7 +2,7 @@
 <html ng-app="CSApp">
 
 <head>
-    <title>國北護-網路課程-課程查詢系統</title>
+    <title>北護助手-課程查詢系統</title>
     <meta charset="UTF-8">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="no-cache" http-equiv="cache-control">
@@ -360,6 +360,8 @@
                         <li class="list-group-item" ng-if="showCol('系所名稱');">系所名稱：{{OpenResultItem.Faculty_Name}}</li>
                         <li class="list-group-item" ng-if="showCol('年級');">年級：{{OpenResultItem.Grad}}</li>
                         <li class="list-group-item" ng-if="showCol('課程代碼(14碼)');">課程代碼(14碼)：{{OpenResultItem.Course_Id}}
+                        </li>
+                        <li class="list-group-item" ng-if="showCol('上課班組');">上課班組：{{OpenResultItem.Course_Class}}
                         </li>
                         <li class="list-group-item" ng-if="showCol('授課老師');">授課老師：{{OpenResultItem.Teacher}}</li>
                         <li class="list-group-item" ng-if="showCol('課別');">課別：{{OpenResultItem.Course_Type}}</li>

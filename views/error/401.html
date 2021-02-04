@@ -34,7 +34,7 @@
 			</div>
 			<h2>Oops! Unauthorized</h2>
 			<p>Sorry 未登入(2秒後跳轉)或閒置過久</p>
-			<a href="/">Go To LOGINPAGE</a>
+			<a href="/logout">Go To LOGINPAGE</a>
 		</div>
 	</div>
 
@@ -43,6 +43,6 @@
 </html>
 <script>
 	setTimeout(() => {
-		window.location = "/";
+		window.location = "/logout";
 	}, 2000);
 </script>
