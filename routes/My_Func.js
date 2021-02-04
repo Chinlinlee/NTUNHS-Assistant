@@ -309,7 +309,7 @@ module.exports.ntunhsApp = {
                         formRank.push({
                             sem : allSemno[semIndexInStuInfo] ,
                             rank : $('#lblRANK').text() ,
-                            rankPercent : $('#lblRANKPERCENTILE').text()
+                            rankPercentInClass : $('#lblRANKPERCENTILE').text()
                         })
                     }
                 }

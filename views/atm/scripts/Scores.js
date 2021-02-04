@@ -7,8 +7,12 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
     $scope.PreRank = [];
     $scope.storedRank = [];
     $scope.Currentuser = "";
+    $scope.isSignOffCanUse = false;
     commonService.user.getStuInfo().then(function (res) {
         $scope.Currentuser = res.data;
+    });
+    ScoresService.getIsSignOffCanUse().then(function (res) {
+        $scope.isSignOffCanUse = res.data;
     });
     $scope.Query = function () {
         ScoresService.Get_data($scope.Currentuser).then((function (res) {
@@ -30,7 +34,20 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
 
     $scope.storeRank = function () {
         let storeData = {
-            data : $scope.Conlist
+            data : $scope.Conlist , 
+            system : "NTUNHS"
+        }
+        ScoresService.postStoreRank(storeData).then(function (res) {
+            if (res.status == 200) {
+                alert('上傳成功');
+                $scope.getStoredRank();
+            }
+        });
+    }
+    $scope.storeSignOffRank = function () {
+        let storeData = {
+            data : $scope.PreRank , 
+            system : "SignOff"
         }
         ScoresService.postStoreRank(storeData).then(function (res) {
             if (res.status == 200) {
@@ -69,6 +86,7 @@ ScoresApp.service("ScoresService", function ($http) {
             Get_data: Get_data,
             postStoreRank : postStoreRank ,
             getStoredRank : getStoredRank ,
+            getIsSignOffCanUse : getIsSignOffCanUse ,
             getSignOffPreRank : getSignOffPreRank
         }
     );
@@ -96,9 +114,7 @@ ScoresApp.service("ScoresService", function ($http) {
         let request = $http({
             method : "POST" , 
             url : "api/Scores/storeRank" , 
-            data : {
-                 data
-            }
+            data : data
         });
         return (request.then(handleSuccess , handleError));
     }
@@ -111,6 +127,14 @@ ScoresApp.service("ScoresService", function ($http) {
         return (request.then(handleSuccess , handleError));
     }
 
+    function getIsSignOffCanUse () {
+        let request = $http({
+            method : "GET" , 
+            url : "api/Scores/isSignOffCanUse" 
+        });
+        return (request.then(handleSuccess , handleError));
+    }
+
     function getSignOffPreRank () {
         let request = $http({
             method : "GET" , 
@@ -118,6 +142,7 @@ ScoresApp.service("ScoresService", function ($http) {
         });
         return (request.then(handleSuccess , handleError));
     }
+
 
     function handleSuccess(response) {
         return (response);
