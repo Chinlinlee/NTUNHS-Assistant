@@ -282,6 +282,18 @@ module.exports.ntunhsApp = {
                 let queryFrame = await driver.findElement({id : 'ContentPlaceHolderQuery_QueryFrame'});
                 
                 await driver.switchTo().frame(queryFrame);
+                let $ = cheerio.load(await driver.getPageSource());
+                let optionLen = $("#ddlWFName option").length;
+                for (let i = 0; i < optionLen ; i++) {
+                    let element = $("#ddlWFName option").eq(i);
+                    let eText = $(element).text().trim();
+                    if (eText.includes("少修申請")) {
+                        break;
+                    } else if ((optionLen-1) == i) {
+                        driver.quit();
+                        return resolve(false);
+                    }
+                }
                 await driver.executeScript(`$("#ddlWFName").val("修課-少修申請").change();`);
                 console.log("select 少修");
                 await driver.sleep(871);

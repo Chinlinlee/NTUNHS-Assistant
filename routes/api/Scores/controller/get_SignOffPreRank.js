@@ -11,5 +11,8 @@ module.exports = async function (req, res) {
         return res.status(401).send();
     }
     let preRank = await myFunc.ntunhsApp.signOff.getPreRank(req, res, "");
+    if (!preRank) {
+        return res.status(400).send("");
+    }
     return res.send(preRank);
 }

@@ -72,6 +72,8 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
                 $scope.PreRank = res.data;
             } else if (res.status == 401) {
                 window.location.href = "/logout";
+            } else if (res.status == 400) {
+                alert("無法取得資料，系統錯誤或無少修申請。");
             }
             $.unblockUI();
         });

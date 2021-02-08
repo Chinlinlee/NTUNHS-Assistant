@@ -9,6 +9,7 @@ module.exports = async function (req , res) {
         let collection = db.collection('Scores');
         let stuNum = req.session.stuInfo.stuNum;
         let storedScoreList = await collection.find({stuNum : stuNum}).toArray();
+        storedScoreList = _.orderBy(storedScoreList , ["sem"] , ['asc']);
         res.status(200).send(storedScoreList);
     } catch (e) {
         console.error(e);
