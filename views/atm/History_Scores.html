@@ -12,8 +12,10 @@
 
     <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
     <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/atm/css/rwd-table.css">
     <link rel="stylesheet" href="/atm/css/main.css">
@@ -24,8 +26,9 @@
     <a class="top-button"></a>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
@@ -33,7 +36,9 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <span><span style="font-size:25px">🌞 </span><input type="checkbox"  data-toggle="toggle" data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px"> 🌛</span></span>
+                    <span><span style="font-size:25px">🌞 </span><input type="checkbox" data-toggle="toggle"
+                            data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px">
+                            🌛</span></span>
                 </li>
                 <div ng-include="'navRight.html'"></div>
             </ul>
@@ -46,29 +51,34 @@
             </div>
         </div>
         <hr />
-        <div class="row" ng-if="false">
+        <div class="row" ng-show="DataList.length">
             <div class="col-12">
-                <button class="btn btn-secondary" ng-click="uploadScore();">upload</button>
-                <span style="background:#d9edf7;border-radius: 30px; padding: 2px .3rem"><span style="font-family:Segoe UI Emoji">ℹ️</span>您可以上傳您的歷年成績，以還原課程的成績分布圖</span>
+                <button class="btn btn-secondary" data-toggle="modal" data-target="#ModalCenter_Confirm">上傳歷年成績</button>
+                <span style="background:#d9edf7;border-radius: 30px; padding: 2px .3rem"><span
+                        style="font-family:Segoe UI Emoji">ℹ️</span>您可以上傳您的歷年成績，以還原課程的成績分布圖</span>
             </div>
         </div>
         <br />
         <div ng-repeat="item in Sems;" style="margin-bottom:20px;" ng-init="semIndex = $index">
 
-            <button id={{item.Sem}} class="btn btn-primary btn-lg darkmode-ignore" style="width:100%;isolation: isolate;" onclick="Item_Visible_Control('HStable_' + this.id)">{{item.Sem}}學年度(點我開啟or隱藏))</button>
+            <button id={{item.Sem}} class="btn btn-primary btn-lg darkmode-ignore"
+                style="width:100%;isolation: isolate;"
+                onclick="Item_Visible_Control('HStable_' + this.id)">{{item.Sem}}學年度(點我開啟or隱藏))</button>
             <div id="HStable_{{item.Sem}}" class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input"  id="custoncb_{{item.Sem}}" name="{{item.Sem}}" ng-model="isOnlyAvgScore[item.Sem]">
-                <label class="custom-control-label" for="custoncb_{{item.Sem}}" >僅顯示平均成績</label>
+                <input type="checkbox" class="custom-control-input" id="custoncb_{{item.Sem}}" name="{{item.Sem}}"
+                    ng-model="isOnlyAvgScore[item.Sem]">
+                <label class="custom-control-label" for="custoncb_{{item.Sem}}">僅顯示平均成績</label>
             </div>
-            <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}">
+            <div>
                 <table id="HStable_{{item.Sem}}" class="table table-bordered table-striped table-rwd">
                     <thead class="thead-dark">
-                        <tr >
+                        <tr>
                             <th rowspan="2" class="text-center">學年</th>
                             <th rowspan="2" class="text-center">課別</th>
                             <th rowspan="2" class="text-center">課程代碼與課程名稱</th>
                             <th colspan="2" class="text-center">上學期</th>
                             <th colspan="2" class="text-center">下學期</th>
+                            <th rowspan="2">成績分佈圖</th>
                         </tr>
                         <tr>
                             <th class="text-center">學分</th>
@@ -78,14 +88,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr name="DataList" ng-repeat="hs in DataList |orderBy :'-Up_Score' | filter:q as results track by hs.Course" ng-if="hs.Sem ==item.Sem" id="HStr_{{item.Sem}}}}" ng-show="!isOnlyAvgScore[item.Sem]">
-                            <td data-th="學年" id="{{hs.Sem}}" >{{hs.Sem}}{{item.$index}}</td>
+                        <tr name="DataList"
+                            ng-repeat="hs in DataList |orderBy :'-Up_Score' | filter:q as results track by hs.Course"
+                            ng-if="hs.Sem ==item.Sem" id="HStr_{{item.Sem}}}}" ng-show="!isOnlyAvgScore[item.Sem]">
+                            <td data-th="學年" id="{{hs.Sem}}">{{hs.Sem}}{{item.$index}}</td>
                             <td data-th="課別" id="{{hs.Sem}}_content_type">{{hs.Type}}</td>
                             <td data-th="課程代碼與課程名稱" id="{{hs.Sem}}_content_course">{{hs.Course}}</td>
-                            <td  data-th="上學期學分" id="{{hs.Sem}_content_empty_upCredit"  ng-show="RemoveSpace(hs.Up_Credit);">{{hs.Up_Credit}}</td>
-                            <td  data-th="上學期成績" id="{{hs.Sem}_content_empty" ng-show="RemoveSpace(hs.Up_Score);">{{hs.Up_Score}}</td>
-                            <td  data-th="下學期學分" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Credit);" >{{hs.Down_Credit}}</td>
-                            <td  data-th="下學期成績" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Score);">{{hs.Down_Score}}</td>
+                            <td data-th="上學期學分" id="{{hs.Sem}_content_empty_upCredit"  ng-show="RemoveSpace(hs.Up_Credit);">{{hs.Up_Credit}}</td>
+                            <td  data-th=" 上學期成績" id="{{hs.Sem}_content_empty" ng-show="RemoveSpace(hs.Up_Score);">{{hs.Up_Score}}</td>
+                            <td  data-th=" 下學期學分" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Credit);">
+                                {{hs.Down_Credit}}</td>
+                            <td data-th="下學期成績" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Score);">
+                                {{hs.Down_Score}}</td>
+                            <td dath-th="成績分佈圖">
+                                <button class="btn btn-secondary" ng-click="getCourseScoreChart(hs);">顯示</button>
+                            </td>
                         </tr>
                         <tr ng-repeat="Con_hs in Conlist" ng-if="$index == semIndex">
                             <th colspan="3" class="no-th">{{Con_hs.title}}</th>
@@ -93,17 +110,57 @@
                             <td data-th="上學期平均成績">{{Con_hs.Up_Score}}</td>
                             <td data-th="下學期實得學分">{{Con_hs.Down_Credit}}</td>
                             <td data-th="下學期平均成績">{{Con_hs.Down_Score}}</td>
+                            <td ng-show="!Ismobile"></td>
                         </tr>
                     </tbody>
-                </table>   
+                </table>
             </div>
         </div>
         <table class="table table-bordered table-striped table-rwd">
-                <tr ng-repeat="Con_hs in Conlist" ng-if="$index >=Sems.length">
-                    <th colspan="6" class="no-th">{{Con_hs.title}}</th>
-                    <td data-th={{Con_hs.title}}>{{Con_hs.Up_Credit}}</td>
-                </tr>
+            <tr ng-repeat="Con_hs in Conlist" ng-if="$index >=Sems.length">
+                <th colspan="6" class="no-th">{{Con_hs.title}}</th>
+                <td data-th={{Con_hs.title}}>{{Con_hs.Up_Credit}}</td>
+            </tr>
         </table>
+    </div>
+    <div class="modal fade" id="ModalCenter_Chart" tabindex="-1" role="dialog" aria-labelledby="ModalChartTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalChartTitle">圖表</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="scoreChart" width="400" height="400"></canvas>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="ModalCenter_Confirm" tabindex="-1" role="dialog" aria-labelledby="ModalConfirmTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalConfirmTitle">提示</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>您的成績將會被上傳到雲端儲存，以方便統計出圖表，請您同意此操作後在按上傳。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-click="uploadScore();">上傳成績</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
@@ -120,26 +177,22 @@
 <script src="../externals/Bootstrap/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script>
-    $(window).scroll(function()
-    {
-        if ($(window).scrollTop() >100)
-        {
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
             $('.top-button').addClass('show');
-        }
-        else
-        {
+        } else {
             $('.top-button').removeClass('show');
         }
     });
-    window.onload = async function() {
+    window.onload = async function () {
         commonFunc.myDarkModeInit();
         await sleep(500);
         angular.element(document.getElementById('container')).scope().Query();
         var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         await sleep(200);
-        if (width <= 736)
-        {
+        if (width <= 736) {
             HideTd('HStable');
             $("[id*=_content_empty]").each(function () {
                 if (!$(this).text()) {
@@ -147,10 +200,12 @@
                 }
             })
         }
-    var btn = $('.top-button');
-    btn.on('click', function(e) {
-        e.preventDefault();
-        $('html, body').animate({scrollTop:0}, '300');
-    });
+        var btn = $('.top-button');
+        btn.on('click', function (e) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: 0
+            }, '300');
+        });
     };
 </script>
