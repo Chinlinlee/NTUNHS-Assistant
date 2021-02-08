@@ -4,6 +4,7 @@ const myFunc = require("../../../My_Func");
 const cheerio = require('cheerio');
 const _ = require('lodash');
 const fetch = require('node-fetch');
+const { getTookCourse } = require('../../learnMap/controller/get_tookCourse');
 module.exports = async function(req, res)
 {
     let crawlerHistoryScore = await getHistoryScores(req);
@@ -87,6 +88,27 @@ async function getHistoryScores (req) {
         sem_no = newSem;
     }
     //res.cookie("test" , "123" , {signed: true});
+    let historyScore = _.cloneDeep(result);
+    for (let i in historyScore) {
+        let v = historyScore[i];
+        v.score = v.Up_Score | v.Down_Score;
+        v.Course = v.Course.substring(9);
+        if (v.Up_Score) {
+            v.Sem = v.Sem + "1";
+        } else if (v.Down_Score) {
+            v.Sem = v.Sem + "2";
+        }
+    }
+    let tookCourses = await getTookCourse(req);
+    if (tookCourses) {
+        for (let key in historyScore) {
+            let data = historyScore[key];
+            let hitCourse = _.find(tookCourses , v=> v.courseName.includes(data.Course) && v.courseSem == data.Sem);
+            if (hitCourse) {
+                result[key].courseNormalId = hitCourse.courseNormalId;
+            }
+        }
+    }
     req.session.HistoryScore = [result , result2 , sems];
     return Promise.resolve([result , result2 , sems]);
 }
