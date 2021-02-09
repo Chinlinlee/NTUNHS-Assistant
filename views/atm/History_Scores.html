@@ -54,8 +54,8 @@
         <div class="row" ng-show="DataList.length">
             <div class="col-12">
                 <button class="btn btn-secondary" data-toggle="modal" data-target="#ModalCenter_Confirm">上傳歷年成績</button>
-                <span style="background:#d9edf7;border-radius: 30px; padding: 2px .3rem"><span
-                        style="font-family:Segoe UI Emoji">ℹ️</span>您可以上傳您的歷年成績，以還原課程的成績分布圖</span>
+                <span style="background:#d9edf7;color:black!important;border-radius: 30px; padding: 2px .3rem"><span
+                        style="font-family:Segoe UI Emoji;">ℹ️</span>您可以上傳您的歷年成績，以還原課程的成績分布圖</span>
             </div>
         </div>
         <br />
@@ -100,7 +100,7 @@
                                 {{hs.Down_Credit}}</td>
                             <td data-th="下學期成績" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Score);">
                                 {{hs.Down_Score}}</td>
-                            <td dath-th="成績分佈圖">
+                            <td data-th="成績分佈圖">
                                 <button class="btn btn-secondary" ng-click="getCourseScoreChart(hs);">顯示</button>
                             </td>
                         </tr>
