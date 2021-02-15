@@ -94,7 +94,7 @@ module.exports = async function (req , res) {
 }
 
 function getScoreCategory (iScore) {
-    if (iScore >= 90 && iScore < 100)  {
+    if (iScore >= 90 && iScore <= 100)  {
         return '90~100';
     } else if (iScore >= 80 && iScore < 90) {
         return '80~90';
@@ -115,4 +115,5 @@ function getScoreCategory (iScore) {
     } else if (iScore >= 0 && iScore < 10) {
         return '0~10';
     }
+    return 'exception';
 }
