@@ -26,9 +26,21 @@ const commonFunc = {
             if (isActivated) {
                 $('body').addClass(`darkmode--activated`);
                 localStorage.setItem("darkMode", "true");
+                if (Chart) {
+                    Chart.defaults.global.defaultFontColor = 'white';
+                    Chart.helpers.each(Chart.instances, function(instance){
+                        instance.chart.update();
+                    });
+                }
             } else {
                 $('body').removeClass(`darkmode--activated`);
                 localStorage.setItem("darkMode", "false");
+                if (Chart) {
+                    Chart.defaults.global.defaultFontColor = 'black';
+                    Chart.helpers.each(Chart.instances, function(instance){
+                        instance.chart.update();
+                    });
+                }
             }
         });
         let isDarkMode = localStorage.getItem("darkMode");

@@ -1,0 +1,7 @@
+.darkmode--activated .dropdown-menu {
+    background-color: #2f2f2f!important;
+}
+
+.darkmode--activated ul>li>a{
+    color: white!important;
+}

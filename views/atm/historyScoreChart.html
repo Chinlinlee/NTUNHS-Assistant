@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/atm/css/rwd-table.css">
     <link rel="stylesheet" href="/atm/css/main.css">
     <link rel="stylesheet" href="/atm/css/dark.css">
+    <link rel="stylesheet" href="/atm/css/historyScoreChart.css">
 </head>
 
 <body ng-controller="historyScoreChartCtrl">
@@ -47,17 +48,17 @@
     </nav>
     <div id="container" class="container" style="width:100%">
         <div class="row">
-            <div class="col-6">
-                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" ng-options="item as (item.courseSem+'-'+item.courseName+'-'+item.courseTeacher) for item in courseList" ng-model="selectedCourse">
+            <div class="col-lg-6 col-md-6 col-12">
+                <select class="selectpicker w-100" multiple data-live-search="true" data-actions-box="true" ng-options="item as (item.courseSem+'-'+item.courseName+'-'+item.courseTeacher) for item in courseList" ng-model="selectedCourse">
                 </select>
             </div>
-            <div class="col-6">
-               <div class="form-check">
-                 <label class="form-check-label">
-                   <input type="checkbox" class="form-check-input" name="check_isWatchAnotherTeacher" id="check_isWatchAnotherTeacher" ng-model="isWatchAnotherTeacher">
-                   查看同課程所有老師
-                 </label>
-               </div>
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="check_isWatchAnotherTeacher" id="check_isWatchAnotherTeacher" ng-model="isWatchAnotherTeacher">
+                    <label class="custom-control-label" for="check_isWatchAnotherTeacher">
+                        查看同課程所有老師
+                      </label>
+                </div>
             </div>
         </div>
         <hr />
