@@ -14,22 +14,13 @@ const getPort = require('get-port');
 
 module.exports.IsLoggedIn = function(req ,res , next)
 {  
+    let userIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if (req.isAuthenticated())
     {
-        log("IsLoggedIn:" + req.isAuthenticated() +"  帳號:" +req.user  + "   IP" + req.connection.remoteAddress);
+        log("IsLoggedIn:" + req.isAuthenticated() +"  帳號:" +req.user  + "   IP" + userIP);
         return next();
     }
-    log("Not Login" + "   IP:" + req.connection.remoteAddress);
-    /*res.writeHead(401, {
-        "Content-Type" : "text/html;charset=utf8"
-    });*/
-    /*res.write(`Unauthorized <br/>未登入(2秒後跳轉) <br/><a href='/'>Go to Login Page<a/><meta http-equiv='refresh' content='2; url='/' />
-    <script>
-        setTimeout(() => {
-            window.location = "/";
-        }, 2000);
-    </script>
-    `);*/
+    log("Not Login" + "   IP:" + userIP);
     res.status(401);
     res.render('./error/401.html');
     res.end();

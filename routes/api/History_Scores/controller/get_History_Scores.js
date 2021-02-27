@@ -106,6 +106,7 @@ async function getHistoryScores (req) {
             let hitCourse = _.find(tookCourses , v=> v.courseName.includes(data.Course) && v.courseSem == data.Sem);
             if (hitCourse) {
                 result[key].courseNormalId = hitCourse.courseNormalId;
+                result[key].courseTeacher = hitCourse.courseTeacher;
             }
         }
     }

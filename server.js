@@ -113,3 +113,22 @@ let scheduleDeleteExpireSession = schedule.scheduleJob({rule :'0 30 0 * * *'} , 
 });*/
 
 //updateCourseMain();
+mongodb.MongoExe().then((conn)=> {
+  conn.db('My_ntunhs').collection("storedHistoryScore").createIndex(
+    {
+        "courseName": 1
+    }
+    , function (err, result) {
+        if (err) console.error(err);
+        conn.db('My_ntunhs').collection("storedHistoryScore").createIndex(
+          {
+              "courseTeacher": 1 
+          }
+          , function (err, result) {
+              if (err) console.error(err);
+              console.log(result);
+          }
+        );
+    }
+  );
+});
