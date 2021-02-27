@@ -48,7 +48,7 @@
     <div id="container" class="container" style="width:100%">
         <div class="row">
             <div class="col-6">
-                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" ng-options="item as (item.courseSem + '-' + item.courseName + '-' + item.courseTeacher ) for item in courseList" ng-model="selectedCourse">
+                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" ng-options="item as (item.courseSem+'-'+item.courseName+'-'+item.courseTeacher) for item in courseList" ng-model="selectedCourse">
                 </select>
             </div>
             <div class="col-6">
@@ -68,7 +68,7 @@
         </div>
         <div class="row" ng-repeat= "item in courseList">
             <div class="col-12">
-                <h4 class="h4" id="chartTitle_{{item.courseSem}}_{{item.courseNormalId}}">{{item.courseSem + '-' + i tem.courseName + '-' + item.courseTeacher }}</h2>
+                <h4 class="h4" id="chartTitle_{{item.courseSem}}_{{item.courseNormalId}}">{{item.courseSem + '-' + item.courseName + '-' + item.courseTeacher }}</h2>
             </div>
             <div class="col-12">
                 <canvas id="scoreChart_{{item.courseSem}}_{{item.courseNormalId}}" width="400" height="400"></canvas>
