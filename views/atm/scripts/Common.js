@@ -26,7 +26,7 @@ const commonFunc = {
             if (isActivated) {
                 $('body').addClass(`darkmode--activated`);
                 localStorage.setItem("darkMode", "true");
-                if (Chart) {
+                if (window.Chart) {
                     Chart.defaults.global.defaultFontColor = 'white';
                     Chart.helpers.each(Chart.instances, function(instance){
                         instance.chart.update();
@@ -35,7 +35,7 @@ const commonFunc = {
             } else {
                 $('body').removeClass(`darkmode--activated`);
                 localStorage.setItem("darkMode", "false");
-                if (Chart) {
+                if (window.Chart) {
                     Chart.defaults.global.defaultFontColor = 'black';
                     Chart.helpers.each(Chart.instances, function(instance){
                         instance.chart.update();
