@@ -128,6 +128,13 @@ module.exports =
             res.set('Cache-Control', 'public, max-age=0');
             res.render('./atm/learnMap.html');
         });
+
+        app.get('/historyScoreChart'  , function(req, res)
+        {
+            res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+            res.set('Cache-Control', 'public, max-age=0');
+            res.render('./atm/historyScoreChart.html');
+        });
 //#endregion
         app.get('/api/user' , My_Func.IsLoggedIn , function(req, res)
         {

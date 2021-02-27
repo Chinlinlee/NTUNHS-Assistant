@@ -83,8 +83,16 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
     }
 
     $scope.getCourseScoreChart = function (iItem) {
+        console.log(iItem);
+        let sem = "";
+        if (iItem.Up_Score) {
+            sem = `${iItem.Sem}1`;
+        } else {
+            sem = `${iItem.Sem}2`;
+        }
         let queryData = {
-            courseNormalId : iItem.courseNormalId
+            courseNormalId : iItem.courseNormalId ,
+            courseSem : sem
         }
         HSService.getCourseScoreChart(queryData).then(function (res) {
             $scope.scoreChartData = res.data;
@@ -159,8 +167,12 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
                 myChart.destroy();
             })
         });
+    }
 
-       
+    $scope.getCourseScoreChartByTeacher = function (item) {
+        let courseName = item.Course.substring(9);
+        console.log(courseName);
+        window.open(`/historyScoreChart?courseName=${courseName}&courseTeacher=${item.courseTeacher}` , "_blank");
     }
     window.onresize = async function () {
         let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;

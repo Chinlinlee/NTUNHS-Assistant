@@ -101,7 +101,8 @@
                             <td data-th="下學期成績" id="{{hs.Sem}}_content_empty" ng-show="RemoveSpace(hs.Down_Score);">
                                 {{hs.Down_Score}}</td>
                             <td data-th="成績分佈圖">
-                                <button class="btn btn-secondary" ng-click="getCourseScoreChart(hs);">顯示</button>
+                                <button class="btn btn-secondary btn-block" ng-click="getCourseScoreChart(hs);">顯示班上分佈圖</button>
+                                <button class="btn btn-secondary btn-block" ng-click="getCourseScoreChartByTeacher(hs);">相關課程分佈圖</button>
                             </td>
                         </tr>
                         <tr ng-repeat="Con_hs in Conlist" ng-if="$index == semIndex">

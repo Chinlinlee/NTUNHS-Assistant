@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html ng-app="historyScoreChartApp">
+
+<head>
+    <title>歷年成績分佈圖</title>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="no-cache" http-equiv="cache-control">
+    <meta content="no-cache" http-equiv="pragma">
+    <meta content="0" http-equiv="expires">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="../externals/jqueryui/jquery-ui.min.css">
+    <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC:300,500,600,700,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/atm/css/rwd-table.css">
+    <link rel="stylesheet" href="/atm/css/main.css">
+    <link rel="stylesheet" href="/atm/css/dark.css">
+</head>
+
+<body ng-controller="historyScoreChartCtrl">
+    <a class="top-button"></a>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="/Today_Schedule">今日課表</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <nav-normal-item class="navbar-nav"></nav-normal-item>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span><span style="font-size:25px">🌞 </span><input type="checkbox" data-toggle="toggle"
+                            data-onstyle="info" data-offstyle="light" id="darkModeSwitch"><span style="font-size:25px">
+                            🌛</span></span>
+                </li>
+                <div ng-include="'navRight.html'"></div>
+            </ul>
+        </div>
+    </nav>
+    <div id="container" class="container" style="width:100%">
+        <div class="row">
+            <div class="col-6">
+                <select class="selectpicker" multiple data-live-search="true" data-actions-box="true" ng-options="item as (item.courseSem + '-' + item.courseName + '-' + item.courseTeacher ) for item in courseList" ng-model="selectedCourse">
+                </select>
+            </div>
+            <div class="col-6">
+               <div class="form-check">
+                 <label class="form-check-label">
+                   <input type="checkbox" class="form-check-input" name="check_isWatchAnotherTeacher" id="check_isWatchAnotherTeacher" ng-model="isWatchAnotherTeacher">
+                   查看同課程所有老師
+                 </label>
+               </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row" ng-if="courseList.length <= 0">
+            <div class="col-12 text-center">
+                <span>查無此課程</span>
+            </div>
+        </div>
+        <div class="row" ng-repeat= "item in courseList">
+            <div class="col-12">
+                <h4 class="h4" id="chartTitle_{{item.courseSem}}_{{item.courseNormalId}}">{{item.courseSem + '-' + i tem.courseName + '-' + item.courseTeacher }}</h2>
+            </div>
+            <div class="col-12">
+                <canvas id="scoreChart_{{item.courseSem}}_{{item.courseNormalId}}" width="400" height="400"></canvas>
+            </div>
+        </div>
+        
+    </div>
+</body>
+
+</html>
+<script src="../externals/angularjs/angular.min.js"></script>
+<script src="../externals/jquery/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+<script src="/atm/scripts/rwd-td.js"></script>
+<script src="/atm/scripts/Common.js"></script>
+<script src="/atm/scripts/ngCommon.js"></script>
+<script src="/atm/scripts/historyScoreChart.js"></script>
+
+<script src="../externals/Bootstrap/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.6/lib/darkmode-js.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+<script>
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
+            $('.top-button').addClass('show');
+        } else {
+            $('.top-button').removeClass('show');
+        }
+    });
+    window.onload = async function () {
+        commonFunc.myDarkModeInit();
+        angular.element(document.getElementById('container')).scope().query();
+        await sleep(500);
+        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        await sleep(200);
+        var btn = $('.top-button');
+        btn.on('click', function (e) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: 0
+            }, '300');
+        });
+    };
+</script>
