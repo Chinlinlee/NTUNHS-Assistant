@@ -1,4 +1,3 @@
-const { getTookCourse } = require('../../learnMap/controller/get_tookCourse');
 const { MongoExe } = require('../../../../models/common/data');
 const _ = require('lodash');
 
@@ -14,7 +13,14 @@ module.exports = async function (req , res) {
     let collection = db.collection('storedHistoryScore');
     try {
         let doc = await collection.findOne({
-            courseNormalId : queryParams.courseNormalId
+            $and : [
+                {
+                    courseNormalId : queryParams.courseNormalId
+                } , 
+                {
+                    courseSem : queryParams.courseSem
+                }
+            ]
         });
         return res.send(doc);
     } catch (e) {
