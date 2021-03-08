@@ -22,8 +22,10 @@ module.exports = async function (req , res) {
                 }
             ]
         });
+        await conn.close()
         return res.send(doc);
     } catch (e) {
+        await conn.close();
         return res.status(500).send(e);
     }
 }

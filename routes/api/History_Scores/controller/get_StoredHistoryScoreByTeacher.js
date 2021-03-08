@@ -49,8 +49,10 @@ module.exports = async function (req , res) {
             }
         }
         let doc = await collection.find(queryString).toArray();
+        await conn.close();
         return res.send(doc);
     } catch (e) {
+        await conn.close();
         return res.status(500).send(e);
     }
 }
