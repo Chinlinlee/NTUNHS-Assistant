@@ -1,4 +1,4 @@
-const data_log = require("../../../../models/common/data.js");
+const {MongoExe} = require("../../../../models/common/data.js");
 const {ntunhsApp}  = require("../../../My_Func");
 const myFunc = require("../../../My_Func");
 const cheerio = require('cheerio');
@@ -109,7 +109,40 @@ async function getHistoryScores (req) {
                 result[key].courseTeacher = hitCourse.courseTeacher;
             }
         }
+    } else {
+        return false;
     }
+    let conn  = await MongoExe();
+    for (let key in result) {
+        let historyCourseScoreObj = result[key];
+        let courseName = historyCourseScoreObj.Course.substring(9);
+        
+        let db = conn.db('My_ntunhs');
+        let collection = db.collection('storedHistoryScore');
+        try {
+            let queryString = {
+                    $and : [
+                        {
+                            courseName : courseName
+                        } ,  
+                        {
+                            courseTeacher : new RegExp(historyCourseScoreObj.courseTeacher , "gi")
+                        }
+                    ]
+                }
+            let docCount = await collection.countDocuments(queryString);
+            if (docCount > 0 ) {
+                result[key].haveStoredScore = true;
+            } else {
+                result[key].haveStoredScore = false;
+            }
+
+        } catch (e) {
+            console.error(e);
+            return Promise.resolve(false);
+        }
+    }
+    await conn.close();
     req.session.HistoryScore = [result , result2 , sems];
     return Promise.resolve([result , result2 , sems]);
 }

@@ -36,6 +36,22 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
             {
                 var History_Scores= res.data[0]
                 $scope.DataList = History_Scores;
+                for (let key in $scope.DataList) {
+                    let data = $scope.DataList[key];
+                    let course = data.Course.substring(9);
+                    let checkDOMExist = setInterval(function () {
+                        if ($(`#${course}-btn-chart-inClass`).length > 0 ) {
+                            if (!data.haveStoredScore) {
+                                addChartBtnDisable(`#${course}-btn-chart-inClass`);
+                                addChartBtnDisable(`#${course}-btn-chart-relateCourse`);
+                            } else {
+                                removeChartBtnDisable(`#${course}-btn-chart-inClass`);
+                                removeChartBtnDisable(`#${course}-btn-chart-relateCourse`);
+                            }
+                            clearInterval(checkDOMExist);
+                        }
+                    } , 100);
+                }
                 var HS_con = res.data[1];
                 $scope.Conlist = HS_con;
                 var Sems = res.data[2];
@@ -53,6 +69,14 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
                 
             }
         }))
+    }
+    function addChartBtnDisable (id) {
+        $(id).prop("disabled" , true);
+        $(id).removeClass("btn-secondary");
+        $(id).addClass("btn-danger");
+    }
+    function removeChartBtnDisable (id) {
+        $(id).removeProp("disabled");
     }
     $scope.uploadScore = function () {
         $("#ModalCenter_Confirm").modal('hide');
