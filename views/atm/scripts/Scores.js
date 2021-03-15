@@ -26,6 +26,21 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
             else {
                 let Scores = res.data[0];
                 $scope.DataList = Scores;
+                for (let key in $scope.DataList) {
+                    let data = $scope.DataList[key];
+                    let checkDOMExist = setInterval(function () {
+                        if ($(`#${data.Name}-score-chart-btn`).length > 0 ) {
+                            if (!data.haveStoredScore) {
+                                $(`#${data.Name}-score-chart-btn`).prop("disabled" , true);
+                                $(`#${data.Name}-score-chart-btn`).removeClass("btn-secondary");
+                                $(`#${data.Name}-score-chart-btn`).addClass("btn-danger");
+                            } else {
+                                $(`#${data.Name}-score-chart-btn`).removeProp("disabled");
+                            }
+                            clearInterval(checkDOMExist);
+                        }
+                    } , 100);
+                }
                 let Scores_Con = res.data[1];
                 $scope.Conlist = Scores_Con;
             }
@@ -76,8 +91,12 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
                 alert("無法取得資料，系統錯誤或無少修申請。");
             }
             $.unblockUI();
-        });
-        
+        });   
+    }
+
+    $scope.getCourseScoreChartByTeacher = function (item) {
+        let courseName = item.Name.substring(8);
+        window.open(`/historyScoreChart?courseName=${courseName}&courseTeacher=${item.Teacher}` , "_blank");
     }
 });
 

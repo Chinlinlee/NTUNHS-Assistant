@@ -2,6 +2,7 @@ const myFunc = require('../../../My_Func');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const _ = require('lodash');
+const {MongoExe} = require("../../../../models/common/data.js");
 module.exports = async function (req, res) {
     let [Result, Result_all] = await getScore(req);
     if (!Result) {
@@ -15,12 +16,12 @@ module.exports = async function (req, res) {
 const tdFunc = {
     "7" : (td , result  , result2) => {  //課程分數
         const tdItem = {
-            Name:td.eq(1).text() ,
-            Class:td.eq(2).text(),
-            Teacher:td.eq(3).text(),
-            Type:td.eq(4).text(),
-            Credit:td.eq(5).text() , 
-            Score:td.eq(6).text() , 
+            Name:td.eq(1).text().trim() ,
+            Class:td.eq(2).text().trim(),
+            Teacher:td.eq(3).text().trim(),
+            Type:td.eq(4).text().trim(),
+            Credit:td.eq(5).text().trim() , 
+            Score:td.eq(6).text().trim() , 
         }
         result.push(tdItem);
         return tdItem;
@@ -66,7 +67,36 @@ async function getScore(req) {
         const td = scoreTableTr.eq(i).find('td');
         tdFunc[td.length](td , scores , ranks);
     }
-    req.session.Score = [scores , ranks];
+    let conn  = await MongoExe();
+    for (let key in scores) {
+        let courseScoreObj = scores[key];
+        let courseName = courseScoreObj.Name.substring(8).trim();
+        let teacher = courseScoreObj.Teacher.trim();
+        let db = conn.db('My_ntunhs');
+        let collection = db.collection('storedHistoryScore');
+        try {
+            let queryString = {
+                    $and : [
+                        {
+                            courseName : courseName
+                        } ,  
+                        {
+                            courseTeacher : new RegExp(teacher , "gi")
+                        }
+                    ]
+                }
+            let docCount = await collection.countDocuments(queryString);
+            if (docCount > 0 ) {
+                scores[key].haveStoredScore = true;
+            } else {
+                scores[key].haveStoredScore = false;
+            }
+        } catch (e) {
+            console.error(e);
+            return Promise.resolve(false);
+        }
+    }
+    await conn.close();
     return [scores , ranks];
 }
 
