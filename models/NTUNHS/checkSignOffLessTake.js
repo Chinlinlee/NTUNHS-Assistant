@@ -14,7 +14,7 @@ async function main () {
     opt.addArguments(`--remote-debugging-port=${debugPort}`);
     opt.addArguments('--no-sandbox');
     opt.addArguments('--disable-dev-shm-usage');
-    opt.addArguments('--headless');
+    //opt.addArguments('--headless');
     opt.addArguments('--disable-gpu');
     opt.set('unhandledPromptBehavior' , 'accept');
     let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build();
@@ -26,12 +26,20 @@ async function main () {
     await driver.executeScript(`$("#btnLogin").click()`);
     await driver.sleep(1000);
     try {
-        await driver.wait(webdriver.until.alertIsPresent());
+        await driver.wait(webdriver.until.elementLocated(webdriver.By.id("ddlSystype")));
+        //await driver.executeScript(`$("#ctl00_loginModule1_hidSystype").val("student").change();`);
+        await driver.executeScript(`$("#ddlSystype").val("student").change();`);
+        await driver.executeScript(`$("#btnLogin").click()`);
+    } catch (e) { 
+    }
+    await driver.sleep(1000);
+    try {
+       
+        await driver.wait(webdriver.until.alertIsPresent() ,5000);
         let alert = await driver.switchTo().alert();
         //Press the OK button
         await alert.accept();
     } catch (e) {
-
     }
     await driver.wait(webdriver.until.elementLocated({ id : 'ContentPlaceHolderQuery_QueryFrame'}) , 15000);
     let queryFrame = await driver.findElement({id : 'ContentPlaceHolderQuery_QueryFrame'});
@@ -39,6 +47,7 @@ async function main () {
     /*await driver.executeScript(`$("#ddlWFName").val("修課-少修申請").change();`);*/
     let $ = cheerio.load(await driver.getPageSource());
     let optionLen = $("#ddlWFName option").length;
+    console.log(optionLen);
     for (let i = 0; i < optionLen ; i++) {
         let element = $("#ddlWFName option").eq(i);
         let eText = $(element).text().trim();
@@ -53,6 +62,7 @@ async function main () {
         }
     }
 }
+
 
 
 let scheduleCheckSignOffLessTake = schedule.scheduleJob({rule :'0 30 17 * * *'} , async function () {
