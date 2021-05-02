@@ -90,10 +90,10 @@ module.exports = async function(passport)
       let logingResultCode = loginresult.split('_');
       let j = myFunc.getJar(req);
       let signOffJar = myFunc.getSignOffJar(req);
-      if (logingResultCode.length < 2)
+      if (!logingResultCode.includes("true"))
       {
         console.log("error pwd");
-        return done(null , false , req.flash('error',"帳號或密碼錯誤(Invalid user or password)"));
+        return done(null , false , {message : "帳號或密碼錯誤(Invalid user or password)"});
       }
       let loginHomeOption = 
       {
@@ -166,7 +166,6 @@ module.exports = async function(passport)
       req.session.ntunhsApp = await j.getCookieString('http://system8.ntunhs.edu.tw');
       req.session.Course = [];
       req.session.HistoryScore = [];
-      req.session.Score = [];
       req.session.noPreRank = false;
       let STNO = await getSTNO(req , fetch);
       req.session.STNO = STNO;
