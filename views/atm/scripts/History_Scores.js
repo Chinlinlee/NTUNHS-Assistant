@@ -84,6 +84,7 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
         HSService.uploadScore().then(function (res) {
             if (res.status == 200) {
                 alert('上傳成功');
+                location.reload();
             }
             $.unblockUI();
         });

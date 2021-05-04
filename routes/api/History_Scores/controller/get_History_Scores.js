@@ -57,9 +57,9 @@ const tdFunc = {
 }
 
 async function getHistoryScores (req) {
-    if (req.session.HistoryScore.length > 0) {
+    /*if (req.session.HistoryScore.length > 0) {
         return req.session.HistoryScore;
-    }
+    }*/
     let j  = myFunc.getJar(req);
     let historyScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_25.aspx?stno=${req.session.STNO}`;
     let reqOption = {
