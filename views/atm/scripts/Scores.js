@@ -18,6 +18,8 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
         ScoresService.Get_data($scope.Currentuser).then((function (res) {
             if (res.status == 401) {
                 window.location.href = "/logout";
+            } else if (res.status == 400) {
+                alert("請填寫期中/期末評量，感謝。");
             }
             if (res.data == null) {
                 $scope.DataList = [];

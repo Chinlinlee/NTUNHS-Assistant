@@ -9,6 +9,8 @@ module.exports = async function (req, res) {
         req.flash('error' , '學校系統逾時，請重新登入');
         req.logout();
         return res.status(401).send();
+    } else if (Result_all == "CTE") {
+        return res.status(400).send();
     }
     return res.send([Result, Result_all]);
 }
@@ -38,7 +40,13 @@ const tdFunc = {
         return false;
     }
 }
-
+function checkNeedWriteCTE(jq) {
+    let webTxt = jq('body').text();
+    if (webTxt.includes("本學期的教學評量")) {
+        return true;
+    }
+    return false;
+}
 async function getScore(req) {
     let ScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_24.aspx?stno=${req.session.STNO}`;
     let j = myFunc.getJar(req);
@@ -53,6 +61,9 @@ async function getScore(req) {
     });
     let ScorePage = await ScorePageFetch.text();
     let $ = cheerio.load(ScorePage);
+    if (checkNeedWriteCTE($)) {
+        return [true , "CTE"];
+    }
     let scoreTableTr = $('.FormView tr');
     if (scoreTableTr.length <= 0) {
         return [false];
