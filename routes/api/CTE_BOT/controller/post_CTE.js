@@ -23,7 +23,7 @@ module.exports =  async function (req ,res)
     if (!isAuth) {
         return res.redirect('/CTE_BOT?error=' + encodeURIComponent('Password_Error'));
     }
-    let first = await fetchCookie("http://system1.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp" ,{method: 'GET'});
+    let first = await fetchCookie("http://system8.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp" ,{method: 'GET'});
     
 
     var requestOptions = {
@@ -31,7 +31,7 @@ module.exports =  async function (req ,res)
     redirect: 'follow'
     };
 
-    let ctePageFetch = await fetchCookie(`http://system1.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp?txtSTNO=${queryParams["username"]}&txtPW=${queryParams["password"]}`, requestOptions);
+    let ctePageFetch = await fetchCookie(`http://system8.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp?txtSTNO=${queryParams["username"]}&txtPW=${queryParams["password"]}`, requestOptions);
     //console.log(await ctePageFetch.text());
     var headers2 = 
     {
@@ -40,7 +40,7 @@ module.exports =  async function (req ,res)
     };
     var option_2 = 
     {
-        url : "http://system1.ntunhs.edu.tw/intranetasp/evaMain/stDeal.asp", 
+        url : "http://system8.ntunhs.edu.tw/intranetasp/evaMain/stDeal.asp", 
         method : "GET" , 
         followAllRedirects : true ,
         headers : headers2 
@@ -48,7 +48,7 @@ module.exports =  async function (req ,res)
     //var Deal_Table =await Request_func(_request , option_2);
     fetchCookie = require('fetch-cookie')(nodeFetch , jar);
     let Deal_TableFetch = await fetchCookie(option_2.url , {method: option_2.method ,headers: option_2.headers ,encoding : null ,
-        referrer: "http://system1.ntunhs.edu.tw/intranetasp/evaMain/stEval.asp"});
+        referrer: "http://system8.ntunhs.edu.tw/intranetasp/evaMain/stEval.asp"});
     let Deal_Table = await Deal_TableFetch.text();
     //console.log(iconv.decode(new Buffer(Deal_Table) , 'BIG5').toString());
     $ = cheerio.load(Deal_Table);
@@ -56,7 +56,7 @@ module.exports =  async function (req ,res)
     var Class_links = [];
     $(links).each((index  , element)=>
     {
-        Class_links.push($(element).attr('href'));
+        Class_links.push($(element).attr('href').trim());
     });
     for (var i = 0 ; i < Class_links.length ; i++)
     {
@@ -66,7 +66,7 @@ module.exports =  async function (req ,res)
         };
         var option_3 = 
         {
-            url : "http://system1.ntunhs.edu.tw/intranetasp/evaMain/" + Class_links[i]
+            url : "http://system8.ntunhs.edu.tw/intranetasp/evaMain/" + Class_links[i]
             ,
             method : "GET" , 
             followAllRedirects :true , 
@@ -79,13 +79,14 @@ module.exports =  async function (req ,res)
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36'
             }
         });
+        console.log(JSON.stringify(Class_links[i]));
         var headers4 ={
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36'
             ,'referer' : "http://system1.ntunhs.edu.tw/intranetasp/evaMain/" + Class_links[i],'Content-Type': 'application/x-www-form-urlencoded'};
-        let postChoicedata = `rb1=${queryParams['Q_1']}&rb2=${queryParams['Q_2']}&rb3=${queryParams['Q_3']}&rb4=${queryParams['Q_4']}&rb5=${queryParams['Q_5']}&rb6=${queryParams['Q_6']}&rb7=${queryParams['Q_7']}&rb8=${queryParams['Q_8']}&rb9=${queryParams['Q_9']}&rb10=${queryParams['Q_10']}&rb11=${queryParams['Q_11']}&rb12=${queryParams['Q_12']}&rb13=${queryParams['Q_13']}&rb14=${queryParams['Q_14']}&OPN_REM=`
+        let postChoicedata = `rb1=${queryParams['Q_1']}&rb2=${queryParams['Q_2']}&rb3=${queryParams['Q_3']}&rb4=${queryParams['Q_4']}&rb5=${queryParams['Q_5']}&rb6=${queryParams['Q_6']}&rb7=${queryParams['Q_7']}&rb8=${queryParams['Q_8']}&rb9=${queryParams['Q_9']}&rb10=${queryParams['Q_10']}&rb11=${queryParams['Q_11']}&rb12=${queryParams['Q_12']}&rb13=${queryParams['Q_13']}&rbA=${queryParams['Q_14']}&OPN_REM=`
         var option_4 =
         {
-        url : "http://system1.ntunhs.edu.tw/intranetasp/evaMain/stEditCdo.asp"  , 
+        url : "http://system8.ntunhs.edu.tw/intranetasp/evaMain/stEditCdo.asp"  , 
         method : "POST" , 
         followAllRedirects : true , 
         headers : headers4 , 
@@ -96,7 +97,7 @@ module.exports =  async function (req ,res)
             redirect : 'follow' ,
             headers : {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36' ,
-                Referer : "http://system1.ntunhs.edu.tw/intranetasp/evaMain/" + Class_links[i] ,
+                Referer : "http://system8.ntunhs.edu.tw/intranetasp/evaMain/" + Class_links[i] ,
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
