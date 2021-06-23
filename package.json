@@ -31,6 +31,7 @@
     "iconv-lite": "^0.5.2",
     "lodash": "^4.17.21",
     "log-to-file": "^2.0.2",
+    "mkdirp": "^1.0.4",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "mongodb": "^3.6.9",

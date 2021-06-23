@@ -10,10 +10,13 @@ const _ = require("lodash");
 const mongodb = require("../common/data");
 const config = require("./config");
 const path = require('path');
+
+
+
 async function getCourseExcel(driver) {
     return new Promise(async (resolve) => {
         await driver.navigate().to("http://system10.ntunhs.edu.tw/AcadInfoSystem/Modules/QueryCourse/QueryCourse.aspx");
-        await driver.executeScript(`$("#ContentPlaceHolder1_ddlSem").children().eq(1).attr("selected" ,true).change()`); //高到低 0>當前 1> 上學期
+        await driver.executeScript(`$("#ContentPlaceHolder1_ddlSem").children().eq(1).attr("selected" ,true).change()`); //高到低 1>當前 2> 上學期
         await driver.executeScript(`$("#ContentPlaceHolder1_btnQuery").click()`);
         driver.wait(webdriver.until.elementIsVisible(driver.findElement(webdriver.By.id("ContentPlaceHolder1_imgExcel"))), 150000).then(async (p) => {
             await driver.executeScript(`$("#ContentPlaceHolder1_imgExcel").click()`);
@@ -26,15 +29,15 @@ async function getCourseExcel(driver) {
                 }
                 console.log(matches);
                 for (let match of matches) {
-                    if (match.includes("課程查詢")) {
+                    if (match.includes("_")) {
                         let matchDirname = path.dirname(match);
                         let storePath = path.join(matchDirname , "courses.xls");
                         fs.renameSync(match, storePath);
                         return resolve(true);
-                    } else {
-                        return resolve(true);
                     }
                 }
+                console.error("未下載Excel檔案");
+                process.exit(1);
             });
         })
     })
@@ -72,14 +75,13 @@ async function seleSchoolLogin(iDriver, acc, pwd) {
 }
 
 async function getCoursePlanPageUrl(driver) {
-    /*let opt = new chrome.Options();
-    opt.addArguments('--headless');
-    opt.addArguments('--disable-gpu');
-    opt.addArguments('--incognito');
-    opt.setUserPreferences({"download.default_directory" :  __dirname});
-    let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例*/
     [___, driver] = await seleSchoolLogin(driver, config.stuNum, config.stuPwd);
     await driver.navigate().to("https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Teachplan/qry/Teachplan_qry_01.aspx");
+    let currentUrl = await driver.getCurrentUrl();
+    while(!currentUrl.includes("Teachplan")) {
+        currentUrl = await driver.getCurrentUrl();
+        await driver.navigate().to("https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Teachplan/qry/Teachplan_qry_01.aspx");
+    }
     await driver.sleep(2000);
     let queryFrame = await driver.findElement({ id: 'ctl00_ContentPlaceHolderQuery_QueryFrame' });
     await driver.switchTo().frame(queryFrame);
@@ -98,13 +100,6 @@ async function getCoursePlanPageUrl(driver) {
 }
 
 async function crawlCoursePlan(driver) {
-
-    /*let opt = new chrome.Options();
-    opt.addArguments('--headless');
-    opt.addArguments('--disable-gpu');
-    opt.addArguments('--incognito');
-    opt.setUserPreferences({"download.default_directory" :  __dirname});
-    let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例*/
     let url = await getCoursePlanPageUrl(driver);
     await driver.navigate().to(url);
     await driver.sleep(1500);
@@ -141,7 +136,6 @@ async function crawlCoursePlan(driver) {
         });
     }
     fs.writeFileSync(path.join(__dirname, "plan.json"), JSON.stringify(coursePlanObjList, null, 4));
-    //driver.quit();
 }
 
 
@@ -157,6 +151,7 @@ async function getFaculties() {
     return itemJson;
 }
 async function updateCourse() {
+    const mongoConn = await mongodb.MongoExe();
     let courseXlsData = xlsx.readFile(path.join(__dirname, "./courses.xls"));
     let sheetsName = courseXlsData.SheetNames[0];
     let dataJson = xlsx.utils.sheet_to_json(courseXlsData.Sheets[sheetsName], { range: 4 }); //The couese excel header row is 5
@@ -206,8 +201,7 @@ async function updateCourse() {
         newObj._id = `${newObj.Sem}_${newObj.Course_Id}`;
         result.push(newObj);
     }
-    const conn = await mongodb.MongoExe();
-    conn.db('My_ntunhs').collection("All_Courses").createIndex(
+    mongoConn.db('My_ntunhs').collection("All_Courses").createIndex(
         {
             "Course_Name": 1
         }
@@ -222,37 +216,40 @@ async function updateCourse() {
         let id = course._id;
         await (async () => {
             return new Promise((resolve) => {
-                conn.db('My_ntunhs').collection("All_Courses").findOneAndUpdate({ _id: id }, { $set: course }, { upsert: true }, async function (err, doc) {
+                mongoConn.db('My_ntunhs').collection("All_Courses").findOneAndUpdate({ _id: id }, { $set: course }, { upsert: true }, async function (err, doc) {
                     if (err) {
                         console.error(err);
                         return resolve(false);
                     }
                     //console.log(doc);
-                    await conn.close();
                     return resolve(doc);
-                })
+                });
             })
         })();
     }
     console.log(result.length);
-    return true;
+    await mongoConn.close();
+    return Promise.resolve(true);
 }
 async function updateCourseMain() {
-    let opt = new chrome.Options();
-    opt.addArguments('--headless');
-    opt.addArguments('--disable-gpu');
-    opt.addArguments('--incognito');
-    opt.setUserPreferences({ "download.default_directory": __dirname });
-    let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例
-    crawlCoursePlan(driver).then(() => {
-        getCourseExcel(driver).then(() => {
-            driver.quit();
-            //driver.quit();
-            updateCourse().then(() => {
-                console.log("success");
+    return new Promise(async (resolve) => {
+        let opt = new chrome.Options();
+        opt.addArguments('--headless');
+        opt.addArguments('--disable-gpu');
+        opt.addArguments('--incognito');
+        opt.setUserPreferences({ "download.default_directory": __dirname });
+        let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例
+        crawlCoursePlan(driver).then(() => {
+            getCourseExcel(driver).then(() => {
+                driver.quit();
+                //driver.quit();
+                updateCourse().then(() => {
+                    console.log("success");
+                    resolve(true);
+                });
             });
         });
-    });
+    })
 }
 module.exports = {
     crawlCoursePlan: crawlCoursePlan,

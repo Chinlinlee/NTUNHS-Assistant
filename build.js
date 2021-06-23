@@ -6,6 +6,7 @@ for (let item of needFolder) {
     mkdirp.sync(`./${item}`);
 }
 
-updateCourseMain().then(function (res) {
-    console.log("success");
-});
+(async()=> {
+    await updateCourseMain()
+    process.exit(0);
+})();
