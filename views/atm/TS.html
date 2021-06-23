@@ -29,17 +29,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <select class="custom-select" id="day_select">
-                        <option value="1">星期一</option>
-                        <option value="2">星期二</option>
-                        <option value="3">星期三</option>
-                        <option value="4">星期四</option>
-                        <option value="5">星期五</option>
-                        <option value="6">星期六</option>
-                        <option value="7">星期日</option>
-                    </select>
-                </li>
                 <nav-normal-item class="navbar-nav"></nav-normal-item>
             </ul>
             <ul class="navbar-nav ml-auto">
@@ -49,6 +38,19 @@
         </div>
     </nav>
     <div class="container" style="width:100%; padding-top:32px;" >
+        <div class="col-lg-12 col-md-12 col-12">
+            <select class="custom-select" id="day_select">
+                <option value="1">星期一</option>
+                <option value="2">星期二</option>
+                <option value="3">星期三</option>
+                <option value="4">星期四</option>
+                <option value="5">星期五</option>
+                <option value="6">星期六</option>
+                <option value="7">星期日</option>
+            </select>
+        </div>
+        <br />
+        <br />
         <span class="mx-auto d-flex justify-content-center" ng-show="DataList.length <= 0">今天沒課唷</span>
         <div dw-loading="DataList" dw-loading-options="{text: '載入清單...'}" ng-show="DataList.length">
             <table id="setting" class="table table-bordered table-striped">
@@ -96,23 +98,22 @@
         window.isMobileOrigin = false;
         
         //window.onresize();
-        var date = new Date();
-        var weekday = date.getDay();
-        var week = new Array(7,1,2,3,4,5,6);
+        let date = new Date();
+        let weekday = date.getDay();
+        let week = new Array(7,1,2,3,4,5,6);
         $('#day_select option[value=' + week[weekday] +']').attr('selected','selected');
         await sleep(100);
         angular.element(document.getElementById('setting')).scope().Query(week[weekday]);
-        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         await sleep(100);
         
     };
 
     $( "#day_select" ).change(async function() 
     {
-        var selectday = $('#day_select :selected').val();
+        let selectday = $('#day_select :selected').val();
         angular.element(document.getElementById('setting')).scope().Query(selectday);
-        $("#navbutton").click();
-        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         await sleep(400);
         if (width <= 736)
         {
@@ -121,7 +122,7 @@
         }
     });
     window.onresize = async function () {
-        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        let width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         let height = $(window).height();
         if (width == window.originW && height ==window.originH) {
             return;
