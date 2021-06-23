@@ -7,6 +7,7 @@ const myFunc = require('../../routes/My_Func');
 const cheerio = require('cheerio');
 const nodeFetch = require('node-fetch');
 require('tls').DEFAULT_MIN_VERSION = 'TLSv1'
+const _ = require('lodash');
 
 async function getSTNO (req , iFetch)
 {

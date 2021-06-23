@@ -11,6 +11,7 @@ const tough =  require('tough-cookie');
 const chrome = require('selenium-webdriver/chrome');
 const webdriver = require('selenium-webdriver');
 const getPort = require('get-port');
+const _ = require("lodash");
 
 module.exports.IsLoggedIn = function(req ,res , next)
 {  
