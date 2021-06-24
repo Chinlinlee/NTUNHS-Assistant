@@ -38,7 +38,7 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
                 $scope.DataList = History_Scores;
                 for (let key in $scope.DataList) {
                     let data = $scope.DataList[key];
-                    let course = data.Course.substring(9);
+                    let course = data.Course.substring(0,8);
                     let checkDOMExist = setInterval(function () {
                         if ($(`#${course}-btn-chart-inClass`).length > 0 ) {
                             if (!data.haveStoredScore) {
