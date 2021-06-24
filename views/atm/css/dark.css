@@ -50,7 +50,7 @@
     color: #fff;
 }
 
-.darkmode--activated .myBg-dark {
+.darkmode--activated .labelBg-dark {
     background-color: #4f5656;
     color: whitesmoke;
     border-radius: 10px;
@@ -132,7 +132,7 @@
 }
 
 
-/** 公告*/
+/* #region 公告*/ 
 .darkmode--activated .myAnnouncement {
     background-color: #2f2f2f;
 }
@@ -149,3 +149,4 @@
 .darkmode--activated .myAnnouncement a:active {
     color : #27af27;
 }
+/* #endregion 公告*/ 

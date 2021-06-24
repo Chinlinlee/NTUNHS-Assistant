@@ -29,7 +29,6 @@ module.exports =
     {
         "viewsRoot": "./views",
         "httpPort": 30087,
-        "httpsPort": 7878, //這個應該沒用
         "host" : "127.0.0.1" ,
         "timeout": 30000
     },
@@ -43,4 +42,9 @@ module.exports =
         "authDB" : "admin"
     }
 };
+```
+
+## 啟動
+```bash=
+node server.js
 ```

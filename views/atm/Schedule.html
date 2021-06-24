@@ -221,7 +221,7 @@
             if ($('[id*="Schedule_content"]').length) {
                 $('[id*="Schedule_content"]').each(function () {
                     if ($(this).children().text().trim() !== "") {
-                        $(this).children().addClass("label border myBg-dark text-center my-0");
+                        $(this).children().addClass("label border labelBg-dark text-center my-0");
                     } else {
                         $(this).children().remove();
                     }

@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
+    <link rel="stylesheet" href="/atm/css/loading.css">
     <style>
         fieldset {
             border-radius: 8px;
@@ -46,6 +47,13 @@
 </head>
 
 <body ng-controller="CSCtrl" ng-init="init();">
+    
+    <div class="wrap loading-div">
+        <div class="loading">
+            <div class="bounceball"></div>
+            <div class="text">NOW LOADING</div>
+        </div>
+    </div>
 
     <a class="condition-button show" data-toggle="modal" data-target="#ModalCenter_Condition"
         ng-click="testInclude=true;"></a>
@@ -279,6 +287,8 @@
                                     <div class="card mb-3 mx-auto" style="max-width: 18rem;cursor: pointer;">
                                         <div class="card-body text-center" data-toggle="modal"
                                             data-target="#modal{{preScheduleItem.Course_Id}}">
+                                            <span class="text-danger pointer" 
+                                        ng-click="PreSchedule_Remove(preScheduleItem);">×</span>
                                             <p class="card-title">{{preScheduleItem.Time}}</p>
                                             <p class="card-title">{{preScheduleItem.Period}}節</p>
                                             <p class="card-title">{{preScheduleItem.Course_Place}}</p>
@@ -473,6 +483,13 @@
 
 <script>
     $(document).ready(() => {
+        $('body').css("overflow" , "hidden");
+        setTimeout(function () {
+            $(".loading-div").hide();
+            $('body').css("overflow" , "auto");
+        } , 2000);        
+        
+
         ///commonFunc.darkModeInit();
         
         let darkMode = localStorage.getItem("darkMode");

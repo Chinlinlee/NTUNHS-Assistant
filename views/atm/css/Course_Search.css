@@ -135,6 +135,13 @@ table {
   cursor: pointer;
 }
 
+.card-body > .text-danger{
+  position: absolute;
+  top:0;
+  right: .05rem;
+  font-size: 2.5rem;
+}
+
 #new_PreSchedule_Added {
   height: 200px;
 }

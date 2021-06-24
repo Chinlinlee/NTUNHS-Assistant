@@ -23,7 +23,12 @@ app.use(compression());
 //app.set('views', config.HTTPServer.viewsRoot);
 app.use(express.static(config.HTTPServer.viewsRoot));
 app.use(flash());
-app.use(cors());
+app.use(cors({
+  origin : [
+    "http://localhost:4200"
+  ] ,
+  credentials : true
+}));
 app.use(bodyPareser.urlencoded({extended: true , limit : '50mb'}));
 app.use(bodyPareser.json({limit: '50mb'}));
 app.use(cookieParser( "myNtunhsCookieSecret"));

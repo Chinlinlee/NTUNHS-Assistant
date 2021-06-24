@@ -19,9 +19,6 @@ module.exports = async function (req, res) {
     return res.send(result);
 }
 async function getCourse(req) {
-    /*if (req.session.Course.length > 0) {
-        return Promise.resolve(req.session.Course);
-    }*/
     let semno = req.query.semno;
     let courseJson = await getCourseJson(req , semno);
     if (!courseJson) {
