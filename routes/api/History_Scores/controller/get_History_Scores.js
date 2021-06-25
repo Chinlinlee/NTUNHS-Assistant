@@ -143,8 +143,46 @@ async function getHistoryScores (req) {
         }
     }
     await conn.close();
-    req.session.HistoryScore = [result , result2 , sems];
-    return Promise.resolve([result , result2 , sems]);
+    //result -> 歷年成績
+    //result2 -> 平均分數 , 累計學分、排名...
+    //sems -> 所有學年
+    let scoresItem = _.compact(result.map(v=> {
+        if (Number(v.Up_Score)) {
+            let score = Number(v.Up_Score.trim());
+            let semCredit = Number(v.Up_Credit.trim());
+            let obj = {
+                score : score , 
+                credit : semCredit
+            }
+            return obj;
+        } else if (Number(v.Down_Score)) {
+            let score = Number(v.Down_Score.trim());
+            let semCredit = Number(v.Down_Credit.trim());
+            let obj = {
+                score : score , 
+                credit : semCredit
+            }
+            return obj;
+        }
+    }));
+    let creditSum = _.sumBy(scoresItem , "credit");
+    let sumOfCreditMulPoint = 0;
+    scoresItem.map(v=> {
+        if (v.score >= 80 && v.score <=100) {
+            sumOfCreditMulPoint += v.credit * 4;
+        } else if (v.score >= 70 && v.score <=79) {
+            sumOfCreditMulPoint += v.credit * 3;
+        } else if (v.score >= 60 && v.score <=69) {
+            sumOfCreditMulPoint += v.credit * 2;
+        } else if (v.score >= 50 && v.score <=59) {
+            sumOfCreditMulPoint += v.credit * 1;
+        } else if (v.score >= 0 && v.score <=49) {
+            sumOfCreditMulPoint += v.credit * 0;
+        }
+    });
+    const GPA = (sumOfCreditMulPoint / creditSum).toFixed(2);
+    req.session.HistoryScore = [result, result2, sems, GPA];
+    return Promise.resolve([result, result2, sems, GPA]);
 }
 
 module.exports.getHistoryScores = getHistoryScores;

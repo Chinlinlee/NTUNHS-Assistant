@@ -6,6 +6,7 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
     $scope.DataList = [];
     $scope.Conlist = [];
     $scope.Sems = [];
+    $scope.GPA = 0;
     $scope.scoreChartData = {};
     $scope.isOnlyAvgScore = {
         
@@ -56,6 +57,7 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
                 $scope.Conlist = HS_con;
                 var Sems = res.data[2];
                 $scope.Sems = Sems;
+                $scope.GPA = res.data[3];
                 for (let sem of $scope.Sems) {
                     $scope.isOnlyAvgScore[sem] = false;
                 }
