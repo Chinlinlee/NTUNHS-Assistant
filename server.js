@@ -25,7 +25,8 @@ app.use(express.static(config.HTTPServer.viewsRoot));
 app.use(flash());
 app.use(cors({
   origin : [
-    "http://localhost:4200"
+    "http://localhost:4200" ,
+    "http://127.0.0.1:3001"
   ] ,
   credentials : true
 }));
