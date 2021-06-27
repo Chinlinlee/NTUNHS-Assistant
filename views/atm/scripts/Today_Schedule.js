@@ -8,7 +8,7 @@ TSApp.controller("TSCtrl", function ($scope, TSService , commonService) {
     })
     $scope.Query = function (day) {
         //TSService.Get_User($scope);
-        TSService.Get_data($scope.Currentuser, day).then((function (res) {
+        TSService.getScheduleOfDay(day).then((function (res) {
             if (res.data == "NoData" || res.data == null || res.data == undefined) {
                 $scope.DataList = [];
                 $scope.DataListLen = 0;
@@ -44,17 +44,16 @@ TSApp.controller("TSCtrl", function ($scope, TSService , commonService) {
 TSApp.service("TSService", function ($http) {
     return (
         {
-            Get_data: Get_data
+            getScheduleOfDay: getScheduleOfDay
         }
     );
-    function Get_data(Querykey, weekday) {
+    function getScheduleOfDay(weekday) {
         var request = $http(
             {
                 method: "GET",
                 url: "api/Today_Schedule",
                 params:
                 {
-                    User: Querykey,
                     day: weekday
                 }
             }
