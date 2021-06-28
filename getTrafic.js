@@ -52,7 +52,6 @@ function getTrafic () {
               }
             );
             console.log("today trafic log finished");
-            process.exit(0);
         } catch (e) {
             console.error(e);
             process.exit(1);
