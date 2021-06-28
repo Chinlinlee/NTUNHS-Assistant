@@ -10,13 +10,15 @@ const _ = require("lodash");
 const mongodb = require("../common/data");
 const config = require("./config");
 const path = require('path');
+const getPort = require('get-port');
 
-
-
+let semVal = "";
 async function getCourseExcel(driver) {
     return new Promise(async (resolve) => {
         await driver.navigate().to("http://system10.ntunhs.edu.tw/AcadInfoSystem/Modules/QueryCourse/QueryCourse.aspx");
         await driver.executeScript(`$("#ContentPlaceHolder1_ddlSem").children().eq(1).attr("selected" ,true).change()`); //高到低 1>當前 2> 上學期
+        let $ = cheerio.load(await driver.getPageSource());
+        semVal = $("#ContentPlaceHolder1_ddlSem").val();
         await driver.executeScript(`$("#ContentPlaceHolder1_btnQuery").click()`);
         driver.wait(webdriver.until.elementIsVisible(driver.findElement(webdriver.By.id("ContentPlaceHolder1_imgExcel"))), 150000).then(async (p) => {
             await driver.executeScript(`$("#ContentPlaceHolder1_imgExcel").click()`);
@@ -87,7 +89,9 @@ async function getCoursePlanPageUrl(driver) {
     await driver.switchTo().frame(queryFrame);
     await driver.sleep(1000);
     //await driver.executeScript(`$("#ddlSemNo").children().eq(9).attr("selected" ,true).change()`); //低到高
-    await driver.executeScript(`$("#ddlSemNo").children().last().attr("selected" ,true).change()`);
+    //await driver.executeScript(`$("#ddlSemNo").children().last().attr("selected" ,true).change()`);
+    console.log(semVal);
+    await driver.executeScript(`$("#ddlSemNo").val("${semVal}").change()`);
     await driver.executeScript(`$("#btnQuery").click();`);
     await driver.switchTo().window(driver.getWindowHandle());
     let listFrame = await driver.findElement({ id: "ctl00_ContentPlaceHolderList_ListFrame" });
@@ -113,7 +117,8 @@ async function crawlCoursePlan(driver) {
         let $ = cheerio.load(await driver.getPageSource());
         $("a").each((index, element) => {
             let href = element.attribs.href;
-            if (href.includes("140.131")) {
+            if ( (href.includes("system8") && href.includes(semVal)) 
+                 || (href.includes("140.131")) ) {
                 console.log(href);
                 let filenameSplit = href.split("-");
                 if (filenameSplit.length == 4) {
@@ -158,7 +163,6 @@ async function updateCourse() {
     let coursePlans = await getCoursePlan();
     let faculties = await getFaculties();
     let result = [];
-    console.log(dataJson[0]);
     for (let item of dataJson) {
         let hitCourse = _.filter(coursePlans, v => {
             if (_.get(v, "secondCode")) {
@@ -197,6 +201,7 @@ async function updateCourse() {
         newObj.Course_Code = item["科目代碼(舊碼)"];
         newObj.Open_Teacher_Code = item["主開課教師代碼(舊碼)"];
         newObj.Schedule_Code = item["課表代碼(舊碼)"];
+        newObj.Course_Class = item["上課班組"];
         newObj.Class_Plan = item.Class_Plan;
         newObj._id = `${newObj.Sem}_${newObj.Course_Id}`;
         result.push(newObj);
@@ -232,24 +237,26 @@ async function updateCourse() {
     return Promise.resolve(true);
 }
 async function updateCourseMain() {
-    return new Promise(async (resolve) => {
-        let opt = new chrome.Options();
-        opt.addArguments('--headless');
-        opt.addArguments('--disable-gpu');
-        opt.addArguments('--incognito');
-        opt.setUserPreferences({ "download.default_directory": __dirname });
-        let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例
+    let opt = new chrome.Options();
+    //opt.addArguments('--no-sandbox');
+    //opt.addArguments('--disable-dev-shm-usage');
+    opt.addArguments('--headless');
+    opt.addArguments('--disable-gpu');
+    opt.addArguments('--incognito');
+    let debugPort = await getPort();
+    opt.addArguments(`--remote-debugging-port=${debugPort}`);
+    opt.setUserPreferences({ "download.default_directory": __dirname });
+    let driver = await new webdriver.Builder().forBrowser('chrome').setChromeOptions(opt).build(); //创建一个chrome 浏览器实例
+    getCourseExcel(driver).then(() => {
         crawlCoursePlan(driver).then(() => {
-            getCourseExcel(driver).then(() => {
-                driver.quit();
-                //driver.quit();
-                updateCourse().then(() => {
-                    console.log("success");
-                    resolve(true);
-                });
+            driver.quit();
+            //driver.quit();
+            updateCourse().then(() => {
+                console.log("success :" + semVal);
+                Promise.resolve(true);
             });
         });
-    })
+    });
 }
 module.exports = {
     crawlCoursePlan: crawlCoursePlan,

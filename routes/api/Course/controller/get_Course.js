@@ -30,7 +30,7 @@ async function getCourse(req) {
 
 async function getCourseJson (req , semno) {
     if (isUndefined(semno)) {
-        semno = req.session.stuInfo.lastSem;
+        semno = _.get(req.session , "stuInfo.lastSem");
     }
     let parameter = new URLSearchParams({
         st_no : req.session.STNO ,
