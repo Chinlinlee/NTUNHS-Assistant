@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0 (2021-06-28)
+
+
+### Features
+* 紀錄當天登入的人數 ([69e2417](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/69e24177adc4d679420e7439466d8274f3b5ca3c))
+* Add GA(goolge analytics) ([be81f8a](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/be81f8ab4dc2a3100dcf5a7de391669fb0abedad))
+
+
+### Bug Fixes
+* 防止pm2重啟，刪除process.exit ([ab29461](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/ab29461c7fa301c408be71d2a343b6eeb3fd9a68))
+* **getCourse:** `req.session.stuInfo.lastSem` is undefined ([65ccd18](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/65ccd18b938fa6c3d75b0f900f6f186cf347fea5))
+
 ## 1.0.0 (2021-06-26)
 
 
