@@ -1,17 +1,17 @@
-<div>
-    <h1>NTUNHS-Assistant</h1>
+# NTUNHS-Assistant
 北護助手
-</div>
+
+[手機版各頁面DEMO](https://hackmd.io/@a5566qq123/rkAIK72Jd)
+
+[電腦版各頁面DEMO](https://hackmd.io/@a5566qq123/rk-822YJu)
 
 ## 初始化
 ```bash=
 npm install
-npm run initconfig #請先設定
-npm run build #創建課程資料用
+npm run initconfig #這個會創建config檔，請先設定
 ```
 
 ## configure
-
 
 `models/NTUNHS/config.js` 此設定檔用於登入北護入口網更新教學計畫用
 ```javascript
@@ -44,7 +44,13 @@ module.exports =
 };
 ```
 
-## 啟動
+
+## 建置與啟動
+- 本地設定完畢後，如果要測試課程查詢可以跑下面這條
+```bash=
+npm run build #創建當學期課程查詢資料用
+```
+- 啟動
 ```bash=
 node server.js
 ```
