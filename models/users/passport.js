@@ -1,8 +1,5 @@
 var LocalStrategy = require('passport-local').Strategy;
-const fs = require('fs');
-const DBdata = require('../common/data.js')
 const School_Auth = require('./School_Auth.js');
-const request = require('request');
 const myFunc = require('../../routes/My_Func');
 const cheerio = require('cheerio');
 const nodeFetch = require('node-fetch');
@@ -90,7 +87,6 @@ module.exports = async function(passport)
       //req.session.myJar = myReqObj.jar;
       let logingResultCode = loginresult.split('_');
       let j = myFunc.getJar(req);
-      let signOffJar = myFunc.getSignOffJar(req);
       if (!logingResultCode.includes("true"))
       {
         console.log("error pwd");
@@ -109,7 +105,6 @@ module.exports = async function(passport)
       let homeBody = await homeFetchRes.text();
       let $ = cheerio.load(homeBody);
       let Profile = $("#ctl00_tableProfile tr");
-
 
       let stuInfo = [];
       for (let i = 0 ; i < Profile.length ; i++) 
@@ -173,6 +168,7 @@ module.exports = async function(passport)
       if (!STNO) {
         return done(null , false , req.flash('error',"無法取得資訊，請重新登入，若還是無法登入請聯繫作者。"));
       }
+      
       await School_Auth.ilmsAuth(username , password , req);
       return done(null ,username);
   }));
