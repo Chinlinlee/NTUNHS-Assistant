@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## 1.0.0 (2021-06-26)
+## 1.0.0 (2021-06-28)
 
 
 ### Features
@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file. See [standa
 * 更改export function ([fe9f6a4](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/fe9f6a437fb754ab730b0ae1b640d7e28b7168fe))
 * 更改mongodb 連線字串 ([4490d91](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/4490d919693e32efec79263b031761484a761775))
 * 更改selenium為fetch ([9566e39](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/9566e39b5ae8661afc3260216d1575c9bd41de0e))
+* 紀錄當天登入的人數 ([69e2417](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/69e24177adc4d679420e7439466d8274f3b5ca3c))
 * 修改登入邏輯 ([acf4567](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/acf45671cc964cc039c3fac8e44fb89f72e8e2b9))
 * 修課明細增加課程14碼 ([5b4e712](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/5b4e712be8d0377a6099cb707f3a018dd271d8c2))
 * 個人修課明細增加學期選項 ([54f8641](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/54f8641f5d7f0ee737be6dfaf47125f9ff604b75))
@@ -59,6 +60,7 @@ All notable changes to this project will be documented in this file. See [standa
 * 歷年成績與ilms歷年課程連結 ([8a780aa](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/8a780aa0113c6972b8e5f7a7d79e54cb083a4f38))
 * 歷年成績增加老師欄位 ([46acfc8](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/46acfc83e51b4b4dc0293d2b277e317f7cee13e5))
 * 歷年成績增加GPA分數 ([542d590](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/542d59016932c4ddceec8388f3c3ca253cb669bd))
+* Add GA(goolge analytics) ([be81f8a](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/be81f8ab4dc2a3100dcf5a7de391669fb0abedad))
 * Added 401 error page ([5df1e98](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/5df1e98aa9855968a1ddf03bb345a63728054845))
 * Added footer ([f70e642](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/f70e642401cf3112a08c196e294619d81fdd1c2a))
 * API資料增加是否已有儲存成績欄位 ([f75c3d3](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/f75c3d38c43a5033a04ccac4c17d2ec58353c41a))
@@ -72,6 +74,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
+* 防止pm2重啟，刪除process.exit ([ab29461](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/ab29461c7fa301c408be71d2a343b6eeb3fd9a68))
+* **getCourse:** `req.session.stuInfo.lastSem` is undefined ([65ccd18](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/65ccd18b938fa6c3d75b0f900f6f186cf347fea5))
 * 手機板未顯示欄位名稱 ([6868adc](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/6868adc22685b5c342fc6c70131150b8418c1aea))
 * 未require schdule套件 ([27ed648](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/27ed648906b740c1038bfb92ecbd20c6d2765601))
 * 多打空白 ([37c638e](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/37c638e2c93f95f8b4394c2f77ba20a8cd0c2643))

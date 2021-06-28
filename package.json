@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node ./server.js",
     "build": "node ./build.js",
-    "initconfig": "node ./addConfig.js" , 
-    "release" : "standard-version"
+    "initconfig": "node ./addConfig.js",
+    "release": "standard-version"
   },
   "standard-version": {
     "skip": {
