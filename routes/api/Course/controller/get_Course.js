@@ -65,12 +65,12 @@ async function getCourseJson (req , semno) {
     let result = [];
     for (let i in courseJson) {
         let item = courseJson[i];
-        let courseCode = item.課程代碼與名稱_L.substr(0, 10);
-        let courseClassCode = item.上課班級_L.substr(3 ,2);
-        let courseFullCode = courseCode + courseClassCode;
+        //let courseCode = item.課程全碼與名稱_L.substr(0, 21);
+        //let courseClassCode = item.上課班級_L.substr(3 ,2);
+        let courseFullCode = item.課程全碼與名稱_L.substr(0, 14);
         result.push({
-            Name: item.課程代碼與名稱_L.substr(11),
-            Code: courseCode ,
+            Name: item.課程全碼與名稱_L.substr(19),
+            //Code: courseCode ,
             FullCode : courseFullCode ,
             Place: item.教室,
             Day: item.星期,
