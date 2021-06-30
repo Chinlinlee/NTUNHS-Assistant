@@ -4,19 +4,19 @@ const cheerio = require('cheerio');
 const _ = require('lodash');
 const {MongoExe} = require("../../../../models/common/data.js");
 module.exports = async function (req, res) {
-    let [Result, Result_all] = await getScore(req);
-    if (!Result) {
+    let scoreItem = await getScore(req);
+    if (!scoreItem.scores) {
         req.flash('error' , '學校系統逾時，請重新登入');
         req.logout();
         return res.status(401).send();
-    } else if (Result_all == "CTE") {
+    } else if (scoreItem.ranks == "CTE") {
         return res.status(400).send();
     }
-    return res.send([Result, Result_all]);
+    return res.send(scoreItem);
 }
 
 const tdFunc = {
-    "7" : (td , result  , result2) => {  //課程分數
+    "7" : (td , scores  , ranks) => {  //課程分數
         const tdItem = {
             Name:td.eq(1).text().trim() ,
             Class:td.eq(2).text().trim(),
@@ -25,18 +25,18 @@ const tdFunc = {
             Credit:td.eq(5).text().trim() , 
             Score:td.eq(6).text().trim() , 
         }
-        result.push(tdItem);
+        scores.push(tdItem);
         return tdItem;
     } , 
-    "2" : (td , result , result2) => { //平均、排名
+    "2" : (td , scores , ranks) => { //平均、排名
         const tdItem = {
             id:td.eq(0).text() ,
             name:td.eq(1).text(),
         }
-        result2.push(tdItem);
+        ranks.push(tdItem);
         return tdItem;
     } ,
-    "1" : (td , result , result2) => {
+    "1" : (td , scores , ranks) => { //查無成績資料
         return false;
     }
 }
@@ -108,7 +108,10 @@ async function getScore(req) {
         }
     }
     await conn.close();
-    return [scores , ranks];
+    return {
+        scores : scores ,
+        ranks : ranks
+    };
 }
 
 module.exports.getScore = getScore;

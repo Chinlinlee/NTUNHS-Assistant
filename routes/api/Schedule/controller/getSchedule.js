@@ -26,9 +26,9 @@ module.exports = async function(req , res) {
     }
     course = _.orderBy(course , ["Day" , "startPeriod"] ,["asc" , "asc"]);
     let day = ["Mon" , "Tue" , "Wed" , "Thu" , "Fri" , "Sat" , "Sun"];
-    let newItems = [];
+    let scheduleList = [];
     for (let i = 0  ; i < 14  ; i++) {
-        newItems.push({
+        scheduleList.push({
             "Period" : i+1 , 
             "Time" : Class_timearray[i] , 
             "Mon" : "" ,
@@ -37,8 +37,7 @@ module.exports = async function(req , res) {
             "Thu" : "" ,
             "Fri" : "" ,
             "Sat" : "" ,
-            "Sun" : "" , 
-            haveCode : []
+            "Sun" : "" 
         })
     }
     for (let key in course) {
@@ -51,13 +50,16 @@ module.exports = async function(req , res) {
             nowCoursePeriod.push(nowCoursePeriod[0]);
         }
         for (let i = nowCoursePeriod[0] ; i<= nowCoursePeriod[nowCoursePeriod.length-1] ; i++) {
-            let hitPeriod = _.find(newItems , v => v.Period==i);
+            let hitPeriod = _.find(scheduleList , v => v.Period==i);
             let courseDay = day[nowCourse.Day-1];
             hitPeriod[courseDay] = nowCourse.Name;
-            hitPeriod[`${courseDay}_detail`] = nowCourse;
+            hitPeriod['detail'] = nowCourse;
         }
     }
-    res.send([newItems,course]);
+    res.send({
+        schedule : scheduleList,
+        courses : course
+    });
 } 
 
 function isOnePeriod (item) {

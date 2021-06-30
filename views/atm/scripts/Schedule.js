@@ -23,7 +23,7 @@ ScheduleApp.controller("ScheduleCtrl", function ($scope, ScheduleService , commo
     $scope.isMobile = false;
   }
   $scope.Query = function () {
-    ScheduleService.Load_Trans($scope.Currentuser).then(function (res , err) 
+    ScheduleService.getSchedule().then(function (res , err) 
     {
       if (res.data == "" || res.data == null || res.data == undefined) 
       {
@@ -31,9 +31,8 @@ ScheduleApp.controller("ScheduleCtrl", function ($scope, ScheduleService , commo
       } 
       else 
       {
-        var Schedule = res.data[0];
-        $scope.LogList = Schedule;
-        $scope.scheduleList = res.data[1];
+        $scope.LogList = res.data.schedule;
+        $scope.scheduleList = res.data.courses;
         angular.element(document).ready(function () {
           for (let day = 1 ; day <=7 ; day++) {
             let todayItem = $scope.scheduleList.filter(v=> v.Day == day);
@@ -72,16 +71,12 @@ ScheduleApp.controller("ScheduleCtrl", function ($scope, ScheduleService , commo
 
 ScheduleApp.service('ScheduleService', function ($http) {
   return ({
-    Load_Trans: Load_Trans
+    getSchedule: getSchedule
   });
-  function Load_Trans(QueryKeys) {
+  function getSchedule() {
     var request = $http({
       method: "GET",
-      url: "/api/Schedule",
-      params :
-      {
-        User : QueryKeys
-      }
+      url: "/api/Schedule"
     });
     return (request.then(handleSuccess, handleError));
   }

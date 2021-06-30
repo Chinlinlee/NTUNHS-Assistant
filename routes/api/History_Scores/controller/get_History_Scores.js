@@ -17,7 +17,7 @@ module.exports = async function(req, res)
 }
 
 const tdFunc = {
-    "7" : function (td , sem_no , sems, result ,result2) { //課程成績
+    "7" : function (td , sem_no , sems, historyScores ,historyScoresRanks) { //課程成績
         const tdSem = td.eq(0).text();
         (tdSem)? (() => {
             sem_no = tdSem;
@@ -32,10 +32,10 @@ const tdFunc = {
             Down_Credit:td.eq(5).text() , 
             Down_Score:td.eq(6).text()
         }
-        result.push(tdItem);
+        historyScores.push(tdItem);
         return [tdItem , sem_no];
     } , 
-    "5" : function (td , sem_no , sems , result ,result2) { //平均分數
+    "5" : function (td , sem_no , sems , historyScores ,historyScoresRanks) { //平均分數
         const tdItem = {
             title:td.eq(0).text() , 
             Up_Credit:td.eq(1).text() ,
@@ -43,23 +43,20 @@ const tdFunc = {
             Down_Credit:td.eq(3).text() ,
             Down_Score:td.eq(4).text()
         }
-        result2.push(tdItem);
+        historyScoresRanks.push(tdItem);
         return [tdItem];
     } , 
-    "2" : function (td, sem_no , sems , result ,result2) { //累計排名，累計平均
+    "2" : function (td, sem_no , sems , historyScores ,historyScoresRanks) { //累計排名，累計平均
         const tdItem = {
             title:td.eq(0).text() , 
             Up_Credit:td.eq(1).text() ,
         }
-        result2.push(tdItem);
+        historyScoresRanks.push(tdItem);
         return [tdItem];
     }
 }
 
 async function getHistoryScores (req) {
-    /*if (req.session.HistoryScore.length > 0) {
-        return req.session.HistoryScore;
-    }*/
     let j  = myFunc.getJar(req);
     let historyScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_25.aspx?stno=${req.session.STNO}`;
     let reqOption = {
@@ -73,8 +70,8 @@ async function getHistoryScores (req) {
     let historyScorePage = await historyScorePageFetch.text();
     let $ = cheerio.load(historyScorePage);
     let scoreTableTr = $('.FormView tr');
-    let result = [];
-    let result2 = [];
+    let historyScores = [];
+    let historyScoresRanks = [];
     let sems = [];
     let sem_no = "";
     scoreTableTr = scoreTableTr.slice(3);
@@ -84,13 +81,13 @@ async function getHistoryScores (req) {
     }
     for (let i = 0 ; i < scoreTableTr.length ; i++) {
         const td = scoreTableTr.eq(i).find('td');
-        let [item , newSem ] = tdFunc[td.length](td , sem_no , sems,result,result2);
+        let [item , newSem ] = tdFunc[td.length](td, sem_no, sems, historyScores, historyScoresRanks);
         sem_no = newSem;
     }
     //res.cookie("test" , "123" , {signed: true});
-    let historyScore = _.cloneDeep(result);
-    for (let i in historyScore) {
-        let v = historyScore[i];
+    let historyScoresClone = _.cloneDeep(historyScores);
+    for (let i in historyScoresClone) {
+        let v = historyScoresClone[i];
         v.score = v.Up_Score | v.Down_Score;
         v.Course = v.Course.substring(9);
         if (v.Up_Score) {
@@ -101,20 +98,20 @@ async function getHistoryScores (req) {
     }
     let tookCourses = await getTookCourse(req);
     if (tookCourses) {
-        for (let key in historyScore) {
-            let data = historyScore[key];
+        for (let key in historyScoresClone) {
+            let data = historyScoresClone[key];
             let hitCourse = _.find(tookCourses , v=> v.courseName.includes(data.Course) && v.courseSem == data.Sem);
             if (hitCourse) {
-                result[key].courseNormalId = hitCourse.courseNormalId;
-                result[key].courseTeacher = hitCourse.courseTeacher;
+                historyScores[key].courseNormalId = hitCourse.courseNormalId;
+                historyScores[key].courseTeacher = hitCourse.courseTeacher;
             }
         }
     } else {
         return false;
     }
     let conn  = await MongoExe();
-    for (let key in result) {
-        let historyCourseScoreObj = result[key];
+    for (let key in historyScores) {
+        let historyCourseScoreObj = historyScores[key];
         let courseName = historyCourseScoreObj.Course.substring(9);
         
         let db = conn.db('My_ntunhs');
@@ -132,9 +129,9 @@ async function getHistoryScores (req) {
                 }
             let docCount = await collection.countDocuments(queryString);
             if (docCount > 0 ) {
-                result[key].haveStoredScore = true;
+                historyScores[key].haveStoredScore = true;
             } else {
-                result[key].haveStoredScore = false;
+                historyScores[key].haveStoredScore = false;
             }
 
         } catch (e) {
@@ -146,7 +143,7 @@ async function getHistoryScores (req) {
     //result -> 歷年成績
     //result2 -> 平均分數 , 累計學分、排名...
     //sems -> 所有學年
-    let scoresItem = _.compact(result.map(v=> {
+    let scoresItem = _.compact(historyScores.map(v=> {
         if (Number(v.Up_Score)) {
             let score = Number(v.Up_Score.trim());
             let semCredit = Number(v.Up_Credit.trim());
@@ -181,8 +178,13 @@ async function getHistoryScores (req) {
         }
     });
     const GPA = (sumOfCreditMulPoint / creditSum).toFixed(2);
-    req.session.HistoryScore = [result, result2, sems, GPA];
-    return Promise.resolve([result, result2, sems, GPA]);
+    //return Promise.resolve([historyScores, historyScoresRanks, sems, GPA]);
+    return Promise.resolve({
+        historyScores : historyScores , 
+        historyScoresRanks : historyScoresRanks , 
+        sems : sems , 
+        GPA : GPA
+    });
 }
 
 module.exports.getHistoryScores = getHistoryScores;

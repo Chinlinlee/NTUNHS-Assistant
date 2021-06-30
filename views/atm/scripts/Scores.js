@@ -2,8 +2,8 @@
 
 var ScoresApp = angular.module("ScoresApp", ["commonApp"]);
 ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonService) {
-    $scope.DataList = [];
-    $scope.Conlist = [];
+    $scope.scores = [];
+    $scope.rankList = [];
     $scope.PreRank = [];
     $scope.storedRank = [];
     $scope.Currentuser = "";
@@ -15,21 +15,20 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
         $scope.isSignOffCanUse = res.data;
     });
     $scope.Query = function () {
-        ScoresService.Get_data($scope.Currentuser).then((function (res) {
+        ScoresService.getScore().then((function (res) {
             if (res.status == 401) {
                 window.location.href = "/logout";
             } else if (res.status == 400) {
                 alert("請填寫期中/期末評量，感謝。");
             }
             if (res.data == null) {
-                $scope.DataList = [];
-                $scope.Conlist = [];
+                $scope.scores = [];
+                $scope.rankList = [];
             }
             else {
-                let Scores = res.data[0];
-                $scope.DataList = Scores;
-                for (let key in $scope.DataList) {
-                    let data = $scope.DataList[key];
+                $scope.scores = res.data.scores;
+                for (let key in $scope.scores) {
+                    let data = $scope.scores[key];
                     let checkDOMExist = setInterval(function () {
                         if ($(`#${data.Name}-score-chart-btn`).length > 0 ) {
                             if (!data.haveStoredScore) {
@@ -43,15 +42,14 @@ ScoresApp.controller("ScoresCtrl", function ($scope, ScoresService , commonServi
                         }
                     } , 100);
                 }
-                let Scores_Con = res.data[1];
-                $scope.Conlist = Scores_Con;
+                $scope.rankList = res.data.ranks;
             }
         }))
     }
 
     $scope.storeRank = function () {
         let storeData = {
-            data : $scope.Conlist , 
+            data : $scope.rankList , 
             system : "NTUNHS"
         }
         ScoresService.postStoreRank(storeData).then(function (res) {
@@ -106,7 +104,7 @@ ScoresApp.service("ScoresService", function ($http) {
     return (
         {
             Get_User: Get_User,
-            Get_data: Get_data,
+            getScore: getScore,
             postStoreRank : postStoreRank ,
             getStoredRank : getStoredRank ,
             getIsSignOffCanUse : getIsSignOffCanUse ,
@@ -114,20 +112,16 @@ ScoresApp.service("ScoresService", function ($http) {
         }
     );
     function Get_User($scope) {
-        var request = $http.get('/api/user').then(function (result) {
+        let request = $http.get('/api/user').then(function (result) {
             $scope.Currentuser = result.data;
         });
         return request.then(handleSuccess, handleError);
     }
-    function Get_data(Querykey) {
-        var request = $http(
+    function getScore() {
+        let request = $http(
             {
                 method: "GET",
                 url: "api/Scores",
-                params:
-                {
-                    User: Querykey
-                }
             }
         );
         return (request.then(handleSuccess, handleError));

@@ -4,8 +4,9 @@ const cheerio = require('cheerio');
 const _ = require('lodash');
 const { getScore } = require('./get_Scores');
 module.exports = async function (req, res) {
-    let [Result, Result_all] = await getScore(req);
-    if (!Result) {
+    //用獲取成績來判斷登入的cookie是否有效
+    let {scores, ranks} = await getScore(req);
+    if (!scores) {
         req.flash('error' , '學校系統逾時，請重新登入');
         req.logout();
         return res.status(401).send();

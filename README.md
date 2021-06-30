@@ -5,6 +5,7 @@
 
 [電腦版各頁面DEMO](https://hackmd.io/@a5566qq123/rk-822YJu)
 
+[定時抓取及更新課程查詢資料 NTUNHS-CourseUpdate](https://github.com/Chinlinlee/NTUNHS-CourseUpdate)
 ## 初始化
 ```bash=
 npm install

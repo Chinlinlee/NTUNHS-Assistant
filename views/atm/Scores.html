@@ -55,7 +55,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr name="DataList" ng-repeat="Item in DataList">
+                    <tr name="scores" ng-repeat="Item in scores">
                         <td data-th="課程名稱" id="{{Item.Name}}" >{{Item.Name}}</td>
                         <td data-th="上課班級" id="{{Item.Name}}_content">{{Item.Class}}</td>
                         <td data-th="任課教師" id="{{Item.Name}}_content">{{Item.Teacher}}</td>
@@ -71,7 +71,7 @@
                             <button class="btn btn-secondary" id="{{Item.Name}}-score-chart-btn" ng-click="getCourseScoreChartByTeacher(Item);">相關課程成績分佈圖</button>
                         </td>
                     </tr>
-                    <tr ng-if="DataList.length == 0">
+                    <tr ng-if="scores.length == 0">
                         <td colspan="6">查無成績</td>
                     </tr>
                 </tbody>
@@ -80,13 +80,13 @@
         <div id="divRank">
             <table id="tableRank" class="table table-bordered table-striped table-rwd">
                 <tbody>
-                    <tr name="Conlist" ng-repeat="Item2 in Conlist">
+                    <tr name="rankList" ng-repeat="Item2 in rankList">
                         <td class="no-th">{{Item2.id}}</td>
                         <td data-th={{Item2.id}}>{{Item2.name}}</td>
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-success" ng-click="storeRank();" ng-show="DataList.length>0">儲存排名資訊</button>
+            <button class="btn btn-success" ng-click="storeRank();" ng-show="scores.length>0">儲存排名資訊</button>
         </div>
         <hr>
         <div id="divSignOffRank" ng-if="isSignOffCanUse">

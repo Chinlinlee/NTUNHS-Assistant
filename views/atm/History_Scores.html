@@ -51,7 +51,7 @@
             </div>
         </div>
         <hr />
-        <div class="row" ng-show="DataList.length">
+        <div class="row" ng-show="historyScoreList.length">
             <div class="col-12">
                 <button class="btn btn-secondary" data-toggle="modal" data-target="#ModalCenter_Confirm">上傳歷年成績</button>
                 <span style="background:#d9edf7;color:black!important;border-radius: 30px; padding: 2px .3rem"><span
@@ -88,8 +88,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr name="DataList"
-                            ng-repeat="hs in DataList |orderBy :'-Up_Score' | filter:q as results track by hs.Course"
+                        <tr name="historyScoreList"
+                            ng-repeat="hs in historyScoreList |orderBy :'-Up_Score' | filter:q as results track by hs.Course"
                             ng-if="hs.Sem ==item.Sem" id="HStr_{{item.Sem}}}}" ng-show="!isOnlyAvgScore[item.Sem]">
                             <td data-th="學年" id="{{hs.Sem}}">{{hs.Sem}}{{item.$index}}</td>
                             <td data-th="課別" id="{{hs.Sem}}_content_type">{{hs.Type}}</td>
@@ -105,12 +105,12 @@
                                 <button class="btn btn-secondary btn-block" id="{{hs.Course.substring(0,8)}}-btn-chart-relateCourse"  ng-click="getCourseScoreChartByTeacher(hs);">相關課程分佈圖</button>
                             </td>
                         </tr>
-                        <tr ng-repeat="Con_hs in Conlist" ng-if="$index == semIndex">
-                            <th colspan="3" class="no-th">{{Con_hs.title}}</th>
-                            <td data-th="上學期實得學分">{{Con_hs.Up_Credit}}</td>
-                            <td data-th="上學期平均成績">{{Con_hs.Up_Score}}</td>
-                            <td data-th="下學期實得學分">{{Con_hs.Down_Credit}}</td>
-                            <td data-th="下學期平均成績">{{Con_hs.Down_Score}}</td>
+                        <tr ng-repeat="hsRank in historyScoresRankList" ng-if="$index == semIndex">
+                            <th colspan="3" class="no-th">{{hsRank.title}}</th>
+                            <td data-th="上學期實得學分">{{hsRank.Up_Credit}}</td>
+                            <td data-th="上學期平均成績">{{hsRank.Up_Score}}</td>
+                            <td data-th="下學期實得學分">{{hsRank.Down_Credit}}</td>
+                            <td data-th="下學期平均成績">{{hsRank.Down_Score}}</td>
                             <td ng-show="!Ismobile"></td>
                         </tr>
                     </tbody>
@@ -118,9 +118,9 @@
             </div>
         </div>
         <table class="table table-bordered table-striped table-rwd">
-            <tr ng-repeat="Con_hs in Conlist" ng-if="$index >=Sems.length">
-                <th colspan="6" class="no-th">{{Con_hs.title}}</th>
-                <td data-th={{Con_hs.title}}>{{Con_hs.Up_Credit}}</td>
+            <tr ng-repeat="hsRank in historyScoresRankList" ng-if="$index >=Sems.length">
+                <th colspan="6" class="no-th">{{hsRank.title}}</th>
+                <td data-th={{hsRank.title}}>{{hsRank.Up_Credit}}</td>
             </tr>
             <tr>
                 <th colspan="6" class="no-th">GPA</th>

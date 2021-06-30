@@ -3,8 +3,8 @@
 var HSApp = angular.module("HSApp" ,["commonApp"]);
 HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
 {
-    $scope.DataList = [];
-    $scope.Conlist = [];
+    $scope.historyScoreList = [];
+    $scope.historyScoresRankList = [];
     $scope.Sems = [];
     $scope.GPA = 0;
     $scope.scoreChartData = {};
@@ -21,7 +21,7 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
     $scope.Query = function ()
     {
         commonFunc.blockUI();
-        HSService.Get_data().then((function(res)
+        HSService.getHistoryScores().then((function(res)
         {
             if (res.status == 401) 
             {
@@ -29,16 +29,15 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
             }
             if (res.data == null)
             {
-                $scope.DataList = [];
-                $scope.Conlsit = [];
+                $scope.historyScoreList = [];
+                $scope.historyScoresRankList = [];
                 $.unblockUI();
             }
             else
             {
-                var History_Scores= res.data[0]
-                $scope.DataList = History_Scores;
-                for (let key in $scope.DataList) {
-                    let data = $scope.DataList[key];
+                $scope.historyScoreList =  res.data.historyScores;
+                for (let key in $scope.historyScoreList) {
+                    let data = $scope.historyScoreList[key];
                     let course = data.Course.substring(0,8);
                     let checkDOMExist = setInterval(function () {
                         if ($(`#${course}-btn-chart-inClass`).length > 0 ) {
@@ -53,11 +52,10 @@ HSApp.controller("HSCtrl" , function($scope , HSService , commonService)
                         }
                     } , 100);
                 }
-                var HS_con = res.data[1];
-                $scope.Conlist = HS_con;
-                var Sems = res.data[2];
+                $scope.historyScoresRankList = res.data.historyScoresRanks;
+                var Sems = res.data.sems;
                 $scope.Sems = Sems;
-                $scope.GPA = res.data[3];
+                $scope.GPA = res.data.GPA;
                 for (let sem of $scope.Sems) {
                     $scope.isOnlyAvgScore[sem] = false;
                 }
@@ -228,12 +226,12 @@ HSApp.service("HSService" , function($http)
 {
     return (
         {
-            Get_data : Get_data ,
+            getHistoryScores : getHistoryScores ,
             uploadScore : uploadScore ,
             getCourseScoreChart : getCourseScoreChart
         }
     );
-    function Get_data()
+    function getHistoryScores()
     {
         var request = $http(
             {
