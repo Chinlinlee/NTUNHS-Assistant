@@ -74,7 +74,7 @@
         </div>
         <div class="row" ng-repeat= "item in courseList">
             <div class="col-md-12 col-12">
-                <h4 class="h4" id="chartTitle_{{item.courseSem}}_{{item.courseNormalId}}">{{item.courseSem + '-' + item.courseName + '-' + item.courseTeacher }}</h2>
+                <h4 class="h4" id="chartTitle_{{item.courseSem}}_{{item.courseNormalId}}">{{item.courseSem + '-' + item.courseName + '-' + item.courseTeacher + '-' + item.courseClass}}</h2>
                     <canvas id="scoreChart_{{item.courseSem}}_{{item.courseNormalId}}" width="400" height="200"></canvas>
             </div>
         </div>
