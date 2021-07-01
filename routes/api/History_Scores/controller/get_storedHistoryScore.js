@@ -22,7 +22,12 @@ module.exports = async function (req , res) {
                 }
             ]
         });
-        await conn.close()
+        await conn.close();
+        if (doc) {
+            for(let scoreRange in doc.scoreCategory) {
+                _.set(doc.scoreCategory , scoreRange , doc.scoreCategory[scoreRange].length);
+            }
+        }
         return res.send(doc);
     } catch (e) {
         await conn.close();

@@ -49,8 +49,16 @@ module.exports = async function (req , res) {
             }
         }
         let doc = await collection.find(queryString).toArray();
+        
+        let storedHistoryScoreList = doc.map(v => {
+            for (let scoreRange in v.scoreCategory) {
+                _.set(v.scoreCategory , scoreRange , v.scoreCategory[scoreRange].length);    
+            }
+            return v;
+        });
+        storedHistoryScoreList = _.sortBy(storedHistoryScoreList , "courseSem");
         await conn.close();
-        return res.send(doc);
+        return res.send(storedHistoryScoreList);
     } catch (e) {
         await conn.close();
         return res.status(500).send(e);
