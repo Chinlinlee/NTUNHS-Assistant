@@ -47,11 +47,23 @@ module.exports =
 
 
 ## 建置與啟動
+### 建置
 - 本地設定完畢後，如果要測試課程查詢可以跑下面這條
 ```bash=
 npm run build #創建當學期課程查詢資料用
 ```
-- 啟動
+
+### 啟動
 ```bash=
 node server.js
+```
+或使用`pm2`(使用cluster模式)
+```bash=
+pm2 start ecosystem.config.js
+```
+
+### 記錄登入的人數
+登入時會記錄到`default.log`，並使用`getTrafic.js`定時於`23:58`記錄當天登入的人數
+```bash=
+pm2 start getTrafic.js --name mycosim-trafic
 ```
