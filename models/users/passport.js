@@ -124,7 +124,7 @@ module.exports = async function(passport)
         "stuType" : stuInfo[3] ,
         "stuClass" : stuInfo[4] , 
         "stuClassTeacher" : stuInfo[5] , 
-        "stuStatu" : stuInfo[6]
+        "stuStatus" : stuInfo[6]
       }
       req.session.stuInfo = stuInfoObj;
       let sessionStuInfo = _.get(req.session , "stuInfo");
