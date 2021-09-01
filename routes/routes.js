@@ -78,13 +78,13 @@ module.exports =
                     // Should not cause any errors
                     if (err) { return next(err); }
                     if (req.headers['referer'] != undefined && req.headers['referer'].includes('Course_Search')) {
-                        return res.json("success");
+                        return res.json(req.session.stuInfo);
                     } else if (req.headers['referer'] != undefined && req.headers['referer'].includes('historyScoreChart')) {
                         let refererSplit = req.req.headers['referer'].split("/");
                         let redirectUrl = refererSplit[refererSplit.length-1];
-                        return res.json("success");
+                        return res.json(req.session.stuInfo);
                     } else {
-                        return res.json("success");
+                        return res.json(req.session.stuInfo);
                     }
                 });
             })(req, res, next);
@@ -93,7 +93,7 @@ module.exports =
         app.get('/api/logout', function (req, res) {
             req.logout();
             req.session.destroy();
-            res.redirect('/');
+            res.end();
         });
 
         app.get('/api/user', My_Func.IsLoggedIn, function (req, res) {

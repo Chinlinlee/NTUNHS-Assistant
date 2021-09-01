@@ -26,7 +26,10 @@ app.use(flash());
 app.use(cors({
   origin : [
     "http://localhost:4200" ,
-    "http://127.0.0.1:3001"
+    "http://127.0.0.1:3001",
+    "capacitor://localhost",
+    "http://localhost",
+    "http://localhost:8100"
   ] ,
   credentials : true
 }));
