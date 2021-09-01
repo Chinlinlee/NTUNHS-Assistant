@@ -1,8 +1,9 @@
+const _ = require('lodash');
 const data_log = require("../../../../models/common/data.js");
 
 module.exports = async function(req ,res)
 {
-    var queryParams = req.query;
+    let queryParams = req.query;
     Object.keys(queryParams).forEach(element => 
     {
         if (!queryParams[element])
@@ -14,34 +15,34 @@ module.exports = async function(req ,res)
             queryParams[element] = [queryParams[element]];
         }
     });
-    if (queryParams['IsRootPart'] == undefined && queryParams['IsCityPart'] == undefined)
+    if (!_.get(queryParams , "IsRootPart") && !_.get(queryParams , "IsCityPart"))
     {
         queryParams['IsRootPart']  = new Array("true");
         queryParams['IsCityPart']  = new Array("true");
     }
-    if ((queryParams['IsRootPart'][0] == "true" && queryParams['IsCityPart'][0] == "true" ) || (queryParams['IsRootPart'][0] == "false" && queryParams['IsCityPart'][0] == "false"))
+    if (_.get(queryParams , "IsRootPart.0") == _.get(queryParams , "IsCityPart.0"))
     {
         delete queryParams['IsRootPart'];
         delete queryParams['IsCityPart'];
     }
-    else if (queryParams['IsRootPart'][0] == "true")
+    else if (_.get(queryParams , "IsRootPart.0") == "true")
     {
         delete queryParams['IsRootPart'];
         delete queryParams['IsCityPart'];
-        var City = new RegExp("城區");
+        let City = new RegExp("城區");
         queryParams['Course_Other'] = {"$not":City};
     }
-    else if (queryParams['IsCityPart'][0] == "true")
+    else if (_.get(queryParams , "IsCityPart.0") == "true")
     {
         delete queryParams['IsRootPart'];
         delete queryParams['IsCityPart'];
-        var City = new RegExp("城區");
+        let City = new RegExp("城區");
         queryParams['Course_Other'] = {"$in":[City]};
     }
     Promise.all(await data_log.Getdata("All_Courses" , queryParams)).then(
     value=>
     {
-        var Result = [];
+        let Result = [];
         value.forEach(item=>
             {
                 if (item.Course_Place !="")
@@ -60,7 +61,7 @@ module.exports = async function(req ,res)
                     }
                 } 
             });
-        var output = Array.from(new Set(Result));
+        let output = Array.from(new Set(Result));
         res.send(output);
     });
 }
