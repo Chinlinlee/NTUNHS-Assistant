@@ -51,10 +51,16 @@ app.use(session(
     store : new MongoStore({
       url : mongoConnectionURL
     }) ,
-    cookie : {maxAge: 60 * 60* 24 * 1000} ,
+    cookie : {
+      maxAge: 60 * 60* 24 * 1000,
+      sameSite: 'none',
+      secure : true
+    } ,
     expires : new Date(Date.now() + (86400 * 1000))
   }
 ));
+app.set('trust proxy', 1);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
