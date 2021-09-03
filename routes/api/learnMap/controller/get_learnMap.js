@@ -17,11 +17,71 @@ module.exports = async function (req, res) {
         let htmlCreditRes = await fetchCookie(`https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Map/qry/Map_qry_20.aspx?action=htmlCredit&group=${sessionStuInfo.groupno}&deptno=${sessionStuInfo.deptno}&year=${sessionStuInfo.entryYear}&semno=${sessionStuInfo.lastSem}&edutype=${sessionStuInfo.edutypeCode}`);
         let htmlCreditText = await htmlCreditRes.text();
         let $ = cheerio.load(htmlCreditText);
+        /** 
+         * 應修畢業學分
+         * 已修畢業學分
+         * 共同必修
+         * 專業必修
+         * 選修
+         */
+        let creditTableTr3 = $('table tr:eq(3)').find('td');
+        /**
+         * 應修未修學分 total
+         */
+        let missingCreditsSummary = $('table tr:eq(4)').find('td').eq(0).text();
+        let creditTableObj = {
+            creditsRequirementForGraduation: creditTableTr3.eq(0).text(),
+            tookCredits: creditTableTr3.eq(1).text(),
+            missingCommonRequiredCredits: creditTableTr3.eq(2).text(),
+            missingProfessionalRequiredCredits: creditTableTr3.eq(3).text(),
+            missingElectiveCredits: creditTableTr3.eq(4).text(),
+            missingCreditsSummary: missingCreditsSummary
+        }
+        console.log(creditTableObj);
         $("table").addClass("table table-bordered table-sm static-color-white");
         $("table").attr('style', '');
         $("span").remove();
         let tablehtml = $.html();
-    
+
+        let htmlCreditHisRes = await fetchCookie(`https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Map/qry/Map_qry_20.aspx?action=htmlCreditHis&group=${sessionStuInfo.groupno}&deptno=${sessionStuInfo.deptno}&year=${sessionStuInfo.entryYear}&semno=${sessionStuInfo.lastSem}&edutype=${sessionStuInfo.edutypeCode}`);
+
+        let htmlCreditHisText = await htmlCreditHisRes.text();
+        $ = cheerio.load(htmlCreditHisText);
+        let creditHisTrList = $('table tr').slice(2);
+        let creditHisObjectList = [];
+        let creditHisSummaryObject = {};
+        //學年度	共同必修(通識)	專業必修(系所)	選修課程(一般、專業)	學期總學分
+        //          應修  已修	    應修  已修	  應修  已修	       應修  已修
+        creditHisTrList.each((index, tr)=> {
+            let tdInTr = $(tr).find('td');
+            if (index != creditHisTrList.length - 1) {
+                let creditHisObject = {
+                    semNo: tdInTr.eq(0).text().trim(),
+                    commonRequiredShouldTake: tdInTr.eq(1).text().trim(),
+                    commonRequiredTook: tdInTr.eq(2).text().trim(),
+                    professionalRequiredShouldTake: tdInTr.eq(3).text().trim(),
+                    professionalRequiredTook: tdInTr.eq(4).text().trim(),
+                    electiveShouldTake: tdInTr.eq(5).text().trim(),
+                    electiveTook: tdInTr.eq(6).text().trim(),
+                    totalCreditsShouldTake: tdInTr.eq(7).text().trim(),
+                    totalCreditsTook: tdInTr.eq(8).text().trim()
+                }
+                creditHisObjectList.push(creditHisObject);
+            } else {
+                creditHisSummaryObject = {
+                    semNo: tdInTr.eq(0).text().trim(),
+                    commonRequiredShouldTake: tdInTr.eq(1).text().trim(),
+                    commonRequiredTook: tdInTr.eq(2).text().trim(),
+                    professionalRequiredShouldTake: tdInTr.eq(3).text().trim(),
+                    professionalRequiredTook: tdInTr.eq(4).text().trim(),
+                    electiveShouldTake: tdInTr.eq(5).text().trim(),
+                    electiveTook: tdInTr.eq(6).text().trim(),
+                    totalCreditsShouldTake: tdInTr.eq(7).text().trim(),
+                    totalCreditsTook: tdInTr.eq(8).text().trim()
+                }
+            }
+        });
+
         //#region  獲取學習地圖修過的課
         let htmlCourseRes = await fetchCookie(`https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Map/qry/Map_qry_20.aspx?action=htmlCourse&group=${sessionStuInfo.groupno}&deptno=${sessionStuInfo.deptno}&year=${sessionStuInfo.entryYear}&semno=${sessionStuInfo.lastSem}&edutype=${sessionStuInfo.edutypeCode}`);
         let htmlCourseText =  await htmlCourseRes.text();
@@ -81,6 +141,9 @@ module.exports = async function (req, res) {
         console.log(allOverCourse);*/
         req.session.learnMap = {
             hitCredit : tablehtml ,
+            creditObject: creditTableObj,
+            creditHisObjectList: creditHisObjectList,
+            creditHisSummaryObject: creditHisSummaryObject,
             program : myProgram
         };
         return res.send(req.session.learnMap);

@@ -3,6 +3,11 @@ let learnMapApp = angular.module("learnMapApp", ["commonApp"]);
 learnMapApp.controller("learnMapCtrl", function ($scope, learnMapService, commonService) {
     $scope.Currentuser = "";
     $scope.userProgram = {};
+    $scope.creditObject = {};
+    $scope.creditHisObjectList= [];
+    $scope.creditHisSummaryObject = {};
+    
+
     commonService.user.getStuInfo().then(function (res) {
         $scope.Currentuser = res.data;
     });
@@ -11,10 +16,12 @@ learnMapApp.controller("learnMapCtrl", function ($scope, learnMapService, common
         if (res.status == 401) {
             window.location.href = '/';
         }
-        console.log(res.data);
-        $(".container").prepend(res.data.hitCredit);
-        console.log(res.data.hitCredit);
+        //$(".container").prepend(res.data.hitCredit);
+        //console.log(res.data.hitCredit);
         $scope.userProgram = res.data.program;
+        $scope.creditObject = res.data.creditObject;
+        $scope.creditHisObjectList = res.data.creditHisObjectList;
+        $scope.creditHisSummaryObject = res.data.creditHisSummaryObject;
         $.unblockUI();
     });
 });
