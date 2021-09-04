@@ -85,6 +85,13 @@
 }
 /* #endregion */
 
+
+/* #region card*/
+.darkmode--activated .card-header{
+    background-color: #343a40;
+}
+/* #endregion */
+
 .darkmode--activated hr {
     border: 1px solid gray ;
 }

@@ -7,7 +7,8 @@
     <title>NTUNHS 學習地圖</title>
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="../externals/Bootstrap/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -62,43 +63,70 @@
                 各學期應修及已修學分總覽表
             </div>
             <ul class="list-group list-group-flush" ng-repeat="creditHisObject in creditHisObjectList">
-                <li class="list-group-item text-center">{{creditHisObject.semNo}}學期</li>
-                <li class="list-group-item">
-                    共同必修(通識)應修：{{ creditHisObject.commonRequiredShouldTake }}
-                    <br />
-                    共同必修(通識)已修：{{ creditHisObject.commonRequiredTook }}
-                    <br />
-                    專業必修(系所)應修：{{ creditHisObject.professionalRequiredShouldTake }}
-                    <br />
-                    專業必修(系所)已修：{{ creditHisObject.professionalRequiredTook }}
-                    <br />
-                    選修課程(一般、專業)應修：{{ creditHisObject.electiveShouldTake }}
-                    <br />
-                    選修課程(一般、專業)已修：{{ creditHisObject.electiveTook }}
-                    <br />
-                    學期應修：{{ creditHisObject.totalCreditsShouldTake }}
-                    <br />
-                    學期已修：{{ creditHisObject.totalCreditsTook }}
-                </li>
-            </ul> 
+                <div class="accordion">
+                    <li class="list-group-item text-center" type="button" data-toggle="collapse"
+                        data-target="#collapse-list-item-{{creditHisObject.semNo}}" aria-expanded="false"
+                        aria-controls="collapse-list-item-{{creditHisObject.semNo}}"
+                        id="collapse-{{ creditHisObject.semNo }}">
+                        {{creditHisObject.semNo}}學期
+                        <span ng-if="!creditHisObject.opened">➕</span>
+                        <span ng-if="creditHisObject.opened">➖</span>
+                    </li>
+                    <li class="list-group-item collapse" id="collapse-list-item-{{creditHisObject.semNo}}">
+                        <span>共同必修(通識):</span>
+                        <br />
+                        <span class="pl-5">應修：{{ creditHisObject.commonRequiredShouldTake }}</span>
+                        <br />
+                        <span class="pl-5">已修：{{ creditHisObject.commonRequiredTook }}</span>
+                        <hr class="border-bottom">
+                        <span>專業必修(系所):</span>
+                        <br />
+                        <span class="pl-5">應修：{{ creditHisObject.professionalRequiredShouldTake }}</span>
+                        <br />
+                        <span class="pl-5">已修：{{ creditHisObject.professionalRequiredTook }}</span>
+                        <hr class="border-bottom">
+                        <span>選修課程(一般、專業):</span>
+                        <br />
+                        <span class="pl-5">應修：{{ creditHisObject.electiveShouldTake }}</span>
+                        <br />
+                        <span class="pl-5">已修：{{ creditHisObject.electiveTook }}</span>
+                        <hr class="border-bottom">
+                        <span>學期:</span>
+                        <br />
+                        <span class="pl-5">應修：{{ creditHisObject.totalCreditsShouldTake }}</span>
+                        <br />
+                        <span class="pl-5">已修：{{ creditHisObject.totalCreditsTook }}</span>
+                        <hr class="border-bottom">
+                    </li>
+                </div>
+            </ul>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-center">各學期總和</li>
                 <li class="list-group-item">
-                    共同必修(通識)應修：{{ creditHisSummaryObject.commonRequiredShouldTake }}
+                    <span>共同必修(通識):</span>
                     <br />
-                    共同必修(通識)已修：{{ creditHisSummaryObject.commonRequiredTook }}
+                    <span class="pl-5">應修：{{ creditHisSummaryObject.commonRequiredShouldTake }}</span>
                     <br />
-                    專業必修(系所)應修：{{ creditHisSummaryObject.professionalRequiredShouldTake }}
+                    <span class="pl-5">已修：{{ creditHisSummaryObject.commonRequiredTook }}</span>
+                    <hr class="border-bottom">
+                    <span>專業必修(系所):</span>
                     <br />
-                    專業必修(系所)已修：{{ creditHisSummaryObject.professionalRequiredTook }}
+                    <span class="pl-5">應修：{{ creditHisSummaryObject.professionalRequiredShouldTake }}</span>
                     <br />
-                    選修課程(一般、專業)應修：{{ creditHisSummaryObject.electiveShouldTake }}
+                    <span class="pl-5">已修：{{ creditHisSummaryObject.professionalRequiredTook }}</span>
+                    <hr class="border-bottom">
+                    <span>選修課程(一般、專業):</span>
                     <br />
-                    選修課程(一般、專業)已修：{{ creditHisSummaryObject.electiveTook }}
+                    <span class="pl-5">應修：{{ creditHisSummaryObject.electiveShouldTake }}</span>
                     <br />
-                    學期應修：{{ creditHisSummaryObject.totalCreditsShouldTake }}
+                    <span class="pl-5">已修：{{ creditHisSummaryObject.electiveTook }}</span>
+                    <hr class="border-bottom">
+                    <span>學期:</span>
                     <br />
-                    學期已修：{{ creditHisSummaryObject.totalCreditsTook }}
+                    <span class="pl-5">應修：{{ creditHisSummaryObject.totalCreditsShouldTake }}</span>
+                    <br />
+                    <span class="pl-5">已修：{{ creditHisSummaryObject.totalCreditsTook }}</span>
+                    <hr class="border-bottom">
                 </li>
             </ul>
         </div>
@@ -126,9 +154,12 @@
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZMFWZCWXXN"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
 
-  gtag('config', 'G-ZMFWZCWXXN');
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZMFWZCWXXN');
 </script>

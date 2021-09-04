@@ -22,6 +22,23 @@ learnMapApp.controller("learnMapCtrl", function ($scope, learnMapService, common
         $scope.creditObject = res.data.creditObject;
         $scope.creditHisObjectList = res.data.creditHisObjectList;
         $scope.creditHisSummaryObject = res.data.creditHisSummaryObject;
+        for (let creditHisObject of $scope.creditHisObjectList) { 
+            let checkDOMExist = setInterval(function () {
+                if ($(`#collapse-list-item-${ creditHisObject.semNo }`).length > 0 ) {
+                    creditHisObject.opened = false;
+                    $(`#collapse-list-item-${ creditHisObject.semNo }`).on("hide.bs.collapse" , function () {
+                        creditHisObject.opened = false;
+                        $scope.$apply();
+                    });
+                    $(`#collapse-list-item-${ creditHisObject.semNo }`).on("show.bs.collapse" , function () {
+                        creditHisObject.opened = true;
+                        $scope.$apply();
+                    });
+                    clearInterval(checkDOMExist);
+                }
+            } , 100);
+        }
+        
         $.unblockUI();
     });
 });
@@ -50,4 +67,6 @@ learnMapApp.service("learnMapService", function ($http) {
         return (response);
     }
 });
+
+
 
