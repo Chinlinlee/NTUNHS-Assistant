@@ -48,10 +48,10 @@ module.exports = {
             watch: false,
             exec_mode: 'fork',
             log_date_format: 'YYYY-MM-DD HH:mm Z',
-            error_file: './pm2log/course-update-err.log',
+            error_file: './pm2log/checkSignOff-err.log',
             // 正常輸出 log 的指定位置
-            out_file: './pm2log/course-update-out.log',
-            log_file: './pm2log/course-update-log.log'
+            out_file: './pm2log/checkSignOff-out.log',
+            log_file: './pm2log/checkSignOff-log.log'
         }
     ]
 };
