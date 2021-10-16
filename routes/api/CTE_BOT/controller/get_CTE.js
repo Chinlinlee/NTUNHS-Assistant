@@ -11,7 +11,7 @@ module.exports =async function (req , res)
     };
     var option_1 = 
     {
-        url : "http://System1.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp",
+        url : "http://System8.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp",
         method : "GET" ,
         followAllRedirects : true , 
         headers : headers ,

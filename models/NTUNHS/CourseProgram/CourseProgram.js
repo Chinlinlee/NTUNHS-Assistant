@@ -78,6 +78,10 @@ const courseProgram = {
                     name : "產業經營績效之大數據分析" , 
                     credit : 3
                 } ,
+                {
+                    name: "機器學習程式設計",
+                    credit: 3
+                }
             ]
         } ,
         "醫療資訊學程" : {

@@ -43,7 +43,7 @@ module.exports = {
             log_file: './pm2log/course-update-log.log'
         },
         {
-            name: "mycosim-checkSignOff ",
+            name: "mycosim-checkSignOff",
             script: "models/NTUNHS/checkSignOffLessTakeSchedule.js",
             watch: false,
             exec_mode: 'fork',
