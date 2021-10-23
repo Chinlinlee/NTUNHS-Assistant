@@ -7,6 +7,5 @@ for (let item of needFolder) {
 }
 
 (async()=> {
-    await updateCourseMain()
-    process.exit(0);
+    await updateCourseMain();
 })();

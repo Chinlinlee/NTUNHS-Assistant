@@ -239,10 +239,10 @@ async function updateCourse() {
 async function updateCourseMain() {
     let opt = new chrome.Options();
     //opt.addArguments('--no-sandbox');
-    //opt.addArguments('--disable-dev-shm-usage');
-    opt.addArguments('--headless');
-    opt.addArguments('--disable-gpu');
-    opt.addArguments('--incognito');
+    opt.addArguments('--disable-dev-shm-usage'); //大量渲染时候写入/tmp而非/dev/shm
+    opt.addArguments('--headless'); //無頭模式 (透過命令列啟動 Chrome 以無 GUI 方式執行)
+    opt.addArguments('--disable-gpu'); //禁用gpu
+    opt.addArguments('--incognito'); //無痕模式
     let debugPort = await getPort();
     opt.addArguments(`--remote-debugging-port=${debugPort}`);
     opt.setUserPreferences({ "download.default_directory": __dirname });
