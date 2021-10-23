@@ -54,6 +54,15 @@ npm run build #創建當學期課程查詢資料用
 ```
 
 ### 啟動
+**注意**
+- 如果要在localhost測試請將server.js當中`session`的`cookie`的`sameSite`以及`secure`註解掉，並注意不要commit到此註解
+```javascript
+cookie : {
+      maxAge: 60 * 60* 24 * 1000,
+      //sameSite: 'none',
+      //secure : true
+} ,
+```
 ```bash=
 node server.js
 ```
