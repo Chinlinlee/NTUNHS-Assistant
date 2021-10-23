@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/Chinlinlee/NTUNHS-Assistant/compare/v1.0.0...v1.2.0) (2021-10-23)
+
+
+### Features
+
+* 更改取得Object的方式 ([c7bd7c9](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/c7bd7c963968def0878ff73db49a3b2fb63016a9))
+* 更改api login回傳的資料 ([3f475ee](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/3f475eea853cc92ac8bdea783352e6707b2f39e6))
+* 相關課程成績分佈圖標題新增`上課班級` ([61a5ea3](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/61a5ea3ba9a7937c42c40fd05ea309a236cab7ed))
+* 將學習地圖回傳資料由html轉為Object ([74dcdaf](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/74dcdafe17b6d7fc8f91fa779ba4065529bd5894))
+* 將selenium檢查簽核系統的方法分為立即執行及排程版本 ([eec4b7b](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/eec4b7bb26299e8d29e83c14f83b5e594c2bdfb8))
+* 新增用學期成績檢查登入狀態的API ([c250328](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/c250328d26b09b86344046f82898bd31c979ba2e))
+* 新增dark mode 的card-header樣式 ([caf61b2](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/caf61b2589aedd3f98e6f2b4dfe0a4cf3fbff80e))
+* add update Course schedule ([6041a9e](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/6041a9efcd8fa6834d3d4a1411ecbff7c3d7a4e1))
+* **storedHistoryScore:** 更改成績分佈的回傳資料以及排序 ([deafd2a](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/deafd2af3e3f8f223f86772737f4ac50539aedd6))
+
+
+### Bug Fixes
+
+* 修正取得教學評量是否可用的url ([a386f98](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/a386f98e1bfda1928465681449432c5ce487c1f7))
+* 修正執行時會直接停止的問題 ([dd778d4](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/dd778d411cde787092a0dc89a15242e14c3e7cd2))
+* 修正獲取修課明細的課程名稱 ([f5915cb](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/f5915cb49d147275b65450307608df9cee9f5708))
+* add sameSite to solve ionic can't access the api ([9c50621](https://github.com/Chinlinlee/NTUNHS-Assistant/commit/9c506216130b29bccd97fba73810303b016048ef))
+
 ## 1.0.0 (2021-06-28)
 
 
