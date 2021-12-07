@@ -18,13 +18,23 @@ module.exports = async function (req, res) {
     }
     return res.send(result);
 }
+
+/**
+ * 
+ * @param {import('express').Request} req 
+ * @returns 
+ */
 async function getCourse(req) {
+    let stuAllSemno = _.get(req.session , "stuInfo.allSemno");
     let semno = req.query.semno;
     let courseJson = await getCourseJson(req , semno);
     if (!courseJson) {
         return Promise.resolve(false);
     }
     req.session.Course = courseJson;
+    if (_.isArray(courseJson) && courseJson.length == 0) {
+        courseJson = await getCourseJson(req, stuAllSemno[stuAllSemno.length-2]);
+    }
     return Promise.resolve(courseJson);
 }
 

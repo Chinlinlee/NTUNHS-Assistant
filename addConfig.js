@@ -12,7 +12,8 @@ module.exports =
         "viewsRoot": "./views",
         "httpPort": 30087,
         "host" : "127.0.0.1" ,
-        "timeout": 30000
+        "timeout": 30000,
+        "isProduction" : false
     },
     MONGODB: {
         "host" : "127.0.0.1" , 

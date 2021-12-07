@@ -42,10 +42,8 @@ let mongoUsername = `${config.MONGODB.username}:` || "";
 let mongoPassword = config.MONGODB.password || "";
 let at = (mongoUsername || mongoPassword) ? "@" : "";
 let mongoConnectionURL =`mongodb://${mongoUsername}${mongoPassword}${at}${config.MONGODB.host}:${config.MONGODB.port}/${config.MONGODB.db}?ssl=${config.MONGODB.ssl}&authSource=${config.MONGODB.authDB}`;
-
-app.use(session(
-  {
-    secret : 'ntunhsimsercret',
+let sessionOptions = {
+  secret : 'ntunhsimsercret',
     resave : false,
     saveUninitialized : false , 
     store : new MongoStore({
@@ -53,11 +51,17 @@ app.use(session(
     }) ,
     cookie : {
       maxAge: 60 * 60* 24 * 1000,
-      sameSite: 'none',
-      secure : true
+      //sameSite: 'none',
+      //secure : true
     } ,
     expires : new Date(Date.now() + (86400 * 1000))
-  }
+}
+if (config.HTTPServer.isProduction) {
+  sessionOptions.cookie.sameSite = "none";
+  sessionOptions.cookie.secure = true;
+}
+app.use(session(
+  sessionOptions
 ));
 app.set('trust proxy', 1);
 
