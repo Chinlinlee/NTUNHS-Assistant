@@ -1,125 +1,127 @@
-var HSApp = angular.module('HSApp', ['commonApp'])
+var HSApp = angular.module('HSApp', ['commonApp']);
 HSApp.controller('HSCtrl', function ($scope, HSService, commonService) {
-    $scope.historyScoreList = []
-    $scope.historyScoresRankList = []
-    $scope.Sems = []
-    $scope.GPA = 0
-    $scope.scoreChartData = {}
-    $scope.isOnlyAvgScore = {}
-    $scope.Currentuser = ''
+    $scope.historyScoreList = [];
+    $scope.historyScoresRankList = [];
+    $scope.Sems = [];
+    $scope.GPA = 0;
+    $scope.scoreChartData = {};
+    $scope.isOnlyAvgScore = {};
+    $scope.Currentuser = '';
     commonService.user.getStuInfo().then(function (res) {
-        $scope.Currentuser = res.data
-    })
+        $scope.Currentuser = res.data;
+    });
     //$scope.showItemEmpty = false;
-    let width = window.innerWidth > 0 ? window.innerWidth : screen.width
-    $scope.Ismobile = width <= 736 ? true : false
+    let width = window.innerWidth > 0 ? window.innerWidth : screen.width;
+    $scope.Ismobile = width <= 736 ? true : false;
     $scope.Query = function () {
-        commonFunc.blockUI()
+        commonFunc.blockUI();
         HSService.getHistoryScores().then(function (res) {
             if (res.status == 401) {
-                window.location.href = '/'
+                window.location.href = '/';
             }
             if (res.data == null) {
-                $scope.historyScoreList = []
-                $scope.historyScoresRankList = []
-                $.unblockUI()
+                $scope.historyScoreList = [];
+                $scope.historyScoresRankList = [];
+                $.unblockUI();
             } else {
-                $scope.historyScoreList = res.data.historyScores
+                $scope.historyScoreList = res.data.historyScores;
                 for (let key in $scope.historyScoreList) {
-                    let data = $scope.historyScoreList[key]
-                    let course = data.Course.substring(0, 8)
+                    let data = $scope.historyScoreList[key];
+                    let course = data.Course.substring(0, 8);
                     let checkDOMExist = setInterval(function () {
                         if ($(`#${course}-btn-chart-inClass`).length > 0) {
                             if (!data.haveStoredScore) {
                                 addChartBtnDisable(
                                     `#${course}-btn-chart-inClass`
-                                )
+                                );
                                 addChartBtnDisable(
                                     `#${course}-btn-chart-relateCourse`
-                                )
+                                );
                             } else {
                                 removeChartBtnDisable(
                                     `#${course}-btn-chart-inClass`
-                                )
+                                );
                                 removeChartBtnDisable(
                                     `#${course}-btn-chart-relateCourse`
-                                )
+                                );
                             }
-                            clearInterval(checkDOMExist)
+                            clearInterval(checkDOMExist);
                         }
-                    }, 100)
+                    }, 100);
                 }
-                $scope.historyScoresRankList = res.data.historyScoresRanks
-                var Sems = res.data.sems
-                $scope.Sems = Sems
-                $scope.GPA = res.data.GPA
+                $scope.historyScoresRankList = res.data.historyScoresRanks;
+                var Sems = res.data.sems;
+                $scope.Sems = Sems;
+                $scope.GPA = res.data.GPA;
                 for (let sem of $scope.Sems) {
-                    $scope.isOnlyAvgScore[sem] = false
+                    $scope.isOnlyAvgScore[sem] = false;
                 }
                 let checkDOMExist = setInterval(function () {
                     if ($('table').length > 0) {
-                        console.log('yes')
-                        $.unblockUI()
-                        clearInterval(checkDOMExist)
+                        console.log('yes');
+                        $.unblockUI();
+                        clearInterval(checkDOMExist);
                     }
-                }, 100)
+                }, 100);
             }
-        })
-    }
+        });
+    };
     function addChartBtnDisable(id) {
-        $(id).prop('disabled', true)
-        $(id).removeClass('btn-secondary')
-        $(id).addClass('btn-danger')
+        $(id).prop('disabled', true);
+        $(id).removeClass('btn-secondary');
+        $(id).addClass('btn-danger');
     }
     function removeChartBtnDisable(id) {
-        $(id).removeProp('disabled')
+        $(id).removeProp('disabled');
     }
     $scope.uploadScore = function () {
-        $('#ModalCenter_Confirm').modal('hide')
-        commonFunc.blockUI()
+        $('#ModalCenter_Confirm').modal('hide');
+        commonFunc.blockUI();
         HSService.uploadScore().then(function (res) {
             if (res.status == 200) {
-                alert('上傳成功')
-                location.reload()
+                alert('上傳成功');
+                location.reload();
             }
-            $.unblockUI()
-        })
-    }
+            $.unblockUI();
+        });
+    };
     $scope.RemoveSpace = function (i_item) {
-        let width = window.innerWidth > 0 ? window.innerWidth : screen.width
-        $scope.Ismobile = width <= 736 ? true : false
-        showItemEmpty = false
+        let width = window.innerWidth > 0 ? window.innerWidth : screen.width;
+        $scope.Ismobile = width <= 736 ? true : false;
+        showItemEmpty = false;
         if ($scope.Ismobile && i_item != '') {
-            showItemEmpty = true
-            return showItemEmpty
+            showItemEmpty = true;
+            return showItemEmpty;
         } else if (!$scope.Ismobile) {
-            showItemEmpty = true
-            return showItemEmpty
+            showItemEmpty = true;
+            return showItemEmpty;
         }
-        return showItemEmpty
-    }
+        return showItemEmpty;
+    };
 
     $scope.getCourseScoreChart = function (iItem) {
-        console.log(iItem)
-        let sem = ''
+        console.log(iItem);
+        let sem = '';
         if (iItem.Up_Score) {
-            sem = `${iItem.Sem}1`
+            sem = `${iItem.Sem}1`;
         } else {
-            sem = `${iItem.Sem}2`
+            sem = `${iItem.Sem}2`;
         }
         let queryData = {
             courseNormalId: iItem.courseNormalId,
             courseSem: sem,
-        }
+        };
         HSService.getCourseScoreChart(queryData).then(function (res) {
-            $scope.scoreChartData = res.data
+            $scope.scoreChartData = res.data;
             if (!res.data) {
-                console.log('error')
-                alert('此課程無法呈現圖表，未有人上傳或資料無法分享，e.g. 操行')
-                return
+                console.log('error');
+                alert(
+                    '此課程無法呈現圖表，未有人上傳或資料無法分享，e.g. 操行'
+                );
+                return;
             }
-            let scoreCategory = $scope.scoreChartData.scoreCategory
-            let ctx = $('#scoreChart')
+            let scoreCategory = $scope.scoreChartData.scoreCategory;
+            let ctx = $('#scoreChart');
             let myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -182,75 +184,75 @@ HSApp.controller('HSCtrl', function ($scope, HSService, commonService) {
                         ],
                     },
                 },
-            })
-            $('#ModalCenter_Chart').modal('show')
+            });
+            $('#ModalCenter_Chart').modal('show');
             $('#ModalCenter_Chart').on('hidden.bs.modal', function () {
-                myChart.destroy()
-            })
-        })
-    }
+                myChart.destroy();
+            });
+        });
+    };
 
     $scope.getCourseScoreChartByTeacher = function (item) {
-        let courseName = item.Course.substring(9)
-        console.log(courseName)
+        let courseName = item.Course.substring(9);
+        console.log(courseName);
         window.open(
             `/historyScoreChart?courseName=${courseName}&courseTeacher=${item.courseTeacher}`,
             '_blank'
-        )
-    }
+        );
+    };
     window.onresize = async function () {
-        let width = window.innerWidth > 0 ? window.innerWidth : screen.width
+        let width = window.innerWidth > 0 ? window.innerWidth : screen.width;
         if (width <= 736) {
-            $("[id*='HStable_']").addClass('table-rwd')
-            TdDisplay('content')
+            $("[id*='HStable_']").addClass('table-rwd');
+            TdDisplay('content');
             $('[id*=_content_empty]').each(function () {
                 if (!$(this).text()) {
-                    $(this).hide()
+                    $(this).hide();
                 }
-            })
-            $scope.Ismobile = true
+            });
+            $scope.Ismobile = true;
         } else {
-            $("[id*='HStable_']").removeClass('table-rwd')
-            TdDisplayNoneRWD('content')
-            $scope.Ismobile = false
+            $("[id*='HStable_']").removeClass('table-rwd');
+            TdDisplayNoneRWD('content');
+            $scope.Ismobile = false;
         }
-        $scope.$apply()
-    }
-})
+        $scope.$apply();
+    };
+});
 
 HSApp.service('HSService', function ($http) {
     return {
         getHistoryScores: getHistoryScores,
         uploadScore: uploadScore,
         getCourseScoreChart: getCourseScoreChart,
-    }
+    };
     function getHistoryScores() {
         var request = $http({
             method: 'GET',
             url: 'api/History_Scores',
-        })
-        return request.then(handleSuccess, handleError)
+        });
+        return request.then(handleSuccess, handleError);
     }
     function getCourseScoreChart(item) {
         var request = $http({
             method: 'GET',
             url: 'api/History_Scores/storedHistoryScore',
             params: item,
-        })
-        return request.then(handleSuccess, handleError)
+        });
+        return request.then(handleSuccess, handleError);
     }
     function uploadScore() {
         var request = $http({
             method: 'POST',
             url: 'api/History_Scores',
-        })
-        return request.then(handleSuccess, handleError)
+        });
+        return request.then(handleSuccess, handleError);
     }
     function handleSuccess(response) {
-        return response
+        return response;
     }
 
     function handleError(response) {
-        return response
+        return response;
     }
-})
+});

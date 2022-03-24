@@ -1,7 +1,7 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
 module.exports = async function (req, res) {
-    let sessionStuInfo = _.get(req.session, 'stuInfo')
+    let sessionStuInfo = _.get(req.session, 'stuInfo');
     if (sessionStuInfo) {
         let result = {
             system: sessionStuInfo.stuType,
@@ -9,8 +9,8 @@ module.exports = async function (req, res) {
             stuName: sessionStuInfo.stuName,
             stuNum: sessionStuInfo.stuNum,
             allSemno: sessionStuInfo.allSemno,
-        }
-        return res.send(result)
+        };
+        return res.send(result);
     }
-    return res.status(204).send('')
-}
+    return res.status(204).send('');
+};

@@ -1,5 +1,5 @@
-let { checkSignOffLessTake } = require('./checkSignOffLessTake')
+let { checkSignOffLessTake } = require('./checkSignOffLessTake');
 
-;(async () => {
-    await checkSignOffLessTake()
-})()
+(async () => {
+    await checkSignOffLessTake();
+})();

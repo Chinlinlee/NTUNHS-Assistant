@@ -1,10 +1,10 @@
 function Get_ReData(Item, req) {
-    var Columns = req.query.Columns
-    var Columns_Obj = []
+    var Columns = req.query.Columns;
+    var Columns_Obj = [];
     for (var i = 0; i < Columns.length; i++) {
-        var tempjson = JSON.parse(Columns[i])
+        var tempjson = JSON.parse(Columns[i]);
         if (tempjson.IsChecked == true) {
-            Columns_Obj.push(tempjson)
+            Columns_Obj.push(tempjson);
         }
     }
     var title = [
@@ -22,7 +22,7 @@ function Get_ReData(Item, req) {
         '節次',
         '備註',
         '教學計劃',
-    ]
+    ];
     var item_title = [
         'Sem',
         'Faculty_Name',
@@ -38,40 +38,40 @@ function Get_ReData(Item, req) {
         'Course_Time',
         'Course_Other',
         'Class_Plan',
-    ]
+    ];
     title = title.filter((value, index, arr) => {
         for (var i = 0; i < Columns_Obj.length; i++) {
             if (value == Columns_Obj[i].name) {
-                return true
+                return true;
             }
         }
-        return false
-    })
+        return false;
+    });
     item_title = item_title.filter((value, index, arr) => {
         for (var i = 0; i < Columns_Obj.length; i++) {
             if (value == Columns_Obj[i].value) {
-                return true
+                return true;
             }
         }
-        return false
-    })
+        return false;
+    });
     /*console.log(item_title);
     console.log(title);*/
-    var Result = []
+    var Result = [];
     for (var i = 0; i < Item.length; i++) {
-        var temp = []
+        var temp = [];
         for (var x = 0; x < title.length; x++) {
             if (title[x].split('/').length > 1) {
                 temp[title[x]] =
-                    Item[i].Course_People + '/' + Item[i].Limit_People
+                    Item[i].Course_People + '/' + Item[i].Limit_People;
             } else {
-                temp[title[x]] = Item[i][item_title[x]]
+                temp[title[x]] = Item[i][item_title[x]];
             }
         }
-        temp.length = title.length
-        Result.push(temp)
+        temp.length = title.length;
+        Result.push(temp);
     }
-    return Result
+    return Result;
 }
 
-module.exports.Get_ReData = Get_ReData
+module.exports.Get_ReData = Get_ReData;

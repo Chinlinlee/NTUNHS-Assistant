@@ -149,6 +149,6 @@ const courseProgram = {
             ],
         },
     },
-}
+};
 
-module.exports.courseProgram = courseProgram
+module.exports.courseProgram = courseProgram;

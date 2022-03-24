@@ -1,19 +1,19 @@
-const pdfMakePrinter = require('pdfmake')
-const My_Course_Search_Func = require('./Course_Search_Func.js')
-const fs = require('fs')
-const pdfmake_func = require('./pdfmake_func.js')
-const { getData } = require('./get_storeData')
+const pdfMakePrinter = require('pdfmake');
+const My_Course_Search_Func = require('./Course_Search_Func.js');
+const fs = require('fs');
+const pdfmake_func = require('./pdfmake_func.js');
+const { getData } = require('./get_storeData');
 
 module.exports = async function (req, res) {
-    let data
+    let data;
     if (req.query.IsPreSchedule == 'true') {
-        data = getData(req)
-        data = [data]
+        data = getData(req);
+        data = [data];
     } else {
-        data = await pdfmake_func.Get_Data(req)
+        data = await pdfmake_func.Get_Data(req);
         if (data.includes('err')) {
-            res.status(500).send('Error:' + data)
-            return
+            res.status(500).send('Error:' + data);
+            return;
         }
     }
 
@@ -21,23 +21,23 @@ module.exports = async function (req, res) {
     {
         data = JSON.parse(data);
     }*/
-    var Redata = My_Course_Search_Func.Get_ReData(data[0], req)
-    var columns = await pdfmake_func.Get_Columns(Redata[0])
-    var realrows = []
-    realrows.push(columns)
-    var rows = await pdfmake_func.Get_Rows(Redata)
-    realrows = realrows.concat(rows)
+    var Redata = My_Course_Search_Func.Get_ReData(data[0], req);
+    var columns = await pdfmake_func.Get_Columns(Redata[0]);
+    var realrows = [];
+    realrows.push(columns);
+    var rows = await pdfmake_func.Get_Rows(Redata);
+    realrows = realrows.concat(rows);
     realrows.forEach((item, index) => {
         item.forEach((item2, index2) => {
             if (item2.includes('http')) {
-                item[index2] = { text: '點我下載', link: item2, color: 'red' }
+                item[index2] = { text: '點我下載', link: item2, color: 'red' };
             }
-        })
+        });
         /*item[13] = index==0 ? {text:'教學計劃'}:{text : '點我下載' , link : item[13] , color:'red'};*/
-    })
-    var widths = []
+    });
+    var widths = [];
     for (var i = 0; i < columns.length; i++) {
-        widths.push('auto')
+        widths.push('auto');
     }
     var docDefinition = {
         content: [
@@ -54,34 +54,34 @@ module.exports = async function (req, res) {
             font: 'kaiu',
         },
         pageSize: 'A2',
-    }
+    };
     await createPdfBinary(
         docDefinition,
         function (binary) {
             if (req.query.IsLine == 'true') {
-                var file = binary.split('/')
+                var file = binary.split('/');
                 res.send(
                     '1081New_Project/nodejs_mongo/myExpressApp/' +
                         file[file.length - 2] +
                         '/' +
                         file[file.length - 1]
-                )
+                );
             } else {
                 res.setHeader(
                     'Content-Disposition',
                     'attachment; filename=quote.pdf'
-                )
-                res.setHeader('Content-Type', 'application/pdf')
+                );
+                res.setHeader('Content-Type', 'application/pdf');
                 res.download(binary, function (err) {
-                    if (err) console.log(err)
-                })
+                    if (err) console.log(err);
+                });
             }
         },
         function (err) {
-            res.send('Error:' + err)
+            res.send('Error:' + err);
         }
-    )
-}
+    );
+};
 async function createPdfBinary(pdfdoc, callback) {
     var font = {
         Roboto: {
@@ -99,18 +99,18 @@ async function createPdfBinary(pdfdoc, callback) {
             bolditalics:
                 './views/externals/pdfmake-master/examples/fonts/kaiu.ttf',
         },
-    }
-    var printer = new pdfMakePrinter(font)
-    var doc = await printer.createPdfKitDocument(pdfdoc)
-    var waitfs
+    };
+    var printer = new pdfMakePrinter(font);
+    var doc = await printer.createPdfKitDocument(pdfdoc);
+    var waitfs;
     var rndName = await pdfmake_func.CreateFileName(
         process.cwd() + '/pdf/',
         '.pdf'
-    )
-    var filename = rndName
-    doc.pipe((waitfs = fs.createWriteStream(filename)), { encoding: 'utf16' })
-    doc.end()
+    );
+    var filename = rndName;
+    doc.pipe((waitfs = fs.createWriteStream(filename)), { encoding: 'utf16' });
+    doc.end();
     waitfs.on('finish', async function () {
-        callback(filename)
-    })
+        callback(filename);
+    });
 }

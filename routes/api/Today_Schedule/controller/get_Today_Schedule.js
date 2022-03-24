@@ -1,19 +1,19 @@
-const data_log = require('../../../../models/common/data.js')
-const myFunc = require('../../../My_Func')
-const { getCourse } = require('../../Course/controller/get_Course')
-const _ = require('lodash')
+const data_log = require('../../../../models/common/data.js');
+const myFunc = require('../../../My_Func');
+const { getCourse } = require('../../Course/controller/get_Course');
+const _ = require('lodash');
 module.exports = async function (req, res) {
-    var queryParams = req.query
+    var queryParams = req.query;
     Object.keys(queryParams).forEach((element) => {
         if (!queryParams[element]) {
-            delete queryParams[element]
+            delete queryParams[element];
         }
-    })
-    let Result = []
-    let course = await getCourse(req)
+    });
+    let Result = [];
+    let course = await getCourse(req);
     if (!course) {
-        req.logout()
-        return res.status(401).send()
+        req.logout();
+        return res.status(401).send();
     }
     let Class_timearray = new Array(
         '08:10~09:00',
@@ -30,33 +30,33 @@ module.exports = async function (req, res) {
         '19:30~20:20',
         '20:25~21:15',
         '21:20~22:10'
-    )
+    );
     course = await Promise.all(
         _.filter(course, (v) => v.Day == queryParams.day)
-    )
+    );
     for (let i = 0; i < course.length; i++) {
-        let item = course[i]
+        let item = course[i];
 
-        let Period = item.Period.split('~')
-        let class_Stime = ''
-        let class_Etime = ''
+        let Period = item.Period.split('~');
+        let class_Stime = '';
+        let class_Etime = '';
         if (Period.length == 1) {
-            class_Stime = Class_timearray[Period[0] - 1].substr(0, 5)
-            class_Etime = Class_timearray[Period[0] - 1].substr(6)
+            class_Stime = Class_timearray[Period[0] - 1].substr(0, 5);
+            class_Etime = Class_timearray[Period[0] - 1].substr(6);
         } else {
-            class_Stime = Class_timearray[Period[0] - 1].substr(0, 5)
-            class_Etime = Class_timearray[Period[1] - 1].substr(6)
+            class_Stime = Class_timearray[Period[0] - 1].substr(0, 5);
+            class_Etime = Class_timearray[Period[1] - 1].substr(6);
         }
-        item.Teacher = item.Teacher.replace(/<br\/>/gi, '')
-        let class_time = class_Stime + '~' + class_Etime
+        item.Teacher = item.Teacher.replace(/<br\/>/gi, '');
+        let class_time = class_Stime + '~' + class_Etime;
         Result.push({
             Name: item.Name,
             Time: class_time,
             Place: item.Place,
             Period: item.Period,
             Teacher: item.Teacher,
-        })
+        });
     }
-    Result = _.orderBy(Result, ['Period'], ['desc'])
-    return res.send(Result)
-}
+    Result = _.orderBy(Result, ['Period'], ['desc']);
+    return res.send(Result);
+};
