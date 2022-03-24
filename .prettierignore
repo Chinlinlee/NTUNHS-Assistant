@@ -1,0 +1,5 @@
+*.html
+*.css
+*.md
+*.json
+/views/externals/**

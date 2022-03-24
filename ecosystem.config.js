@@ -4,7 +4,15 @@ module.exports = {
             name: 'mycosim',
             script: 'server.js',
             watch: false,
-            ignore_watch: ["node_modules", "pm2log", "docx", "pdf", "picture", "xlsx", "*.log"],
+            ignore_watch: [
+                'node_modules',
+                'pm2log',
+                'docx',
+                'pdf',
+                'picture',
+                'xlsx',
+                '*.log',
+            ],
             exec_mode: 'cluster',
             instances: 5,
             max_memory_restart: '1000M',
@@ -18,40 +26,40 @@ module.exports = {
             error_file: './pm2log/err.log',
             // 正常輸出 log 的指定位置
             out_file: './pm2log/out.log',
-            log_file: './pm2log/log.log'
+            log_file: './pm2log/log.log',
         },
         {
-            name: "mycosim-traffic",
-            script: "getTraffic.js",
+            name: 'mycosim-traffic',
+            script: 'getTraffic.js',
             watch: false,
             exec_mode: 'fork',
             log_date_format: 'YYYY-MM-DD HH:mm Z',
             error_file: './pm2log/traffic-err.log',
             // 正常輸出 log 的指定位置
             out_file: './pm2log/traffic-out.log',
-            log_file: './pm2log/traffic-log.log'
+            log_file: './pm2log/traffic-log.log',
         },
         {
-            name: "mycosim-update",
-            script: "models/NTUNHS/updateCourseSchedule.js",
+            name: 'mycosim-update',
+            script: 'models/NTUNHS/updateCourseSchedule.js',
             watch: false,
             exec_mode: 'fork',
             log_date_format: 'YYYY-MM-DD HH:mm Z',
             error_file: './pm2log/course-update-err.log',
             // 正常輸出 log 的指定位置
             out_file: './pm2log/course-update-out.log',
-            log_file: './pm2log/course-update-log.log'
+            log_file: './pm2log/course-update-log.log',
         },
         {
-            name: "mycosim-checkSignOff",
-            script: "models/NTUNHS/checkSignOffLessTakeSchedule.js",
+            name: 'mycosim-checkSignOff',
+            script: 'models/NTUNHS/checkSignOffLessTakeSchedule.js',
             watch: false,
             exec_mode: 'fork',
             log_date_format: 'YYYY-MM-DD HH:mm Z',
             error_file: './pm2log/checkSignOff-err.log',
             // 正常輸出 log 的指定位置
             out_file: './pm2log/checkSignOff-out.log',
-            log_file: './pm2log/checkSignOff-log.log'
-        }
-    ]
-};
+            log_file: './pm2log/checkSignOff-log.log',
+        },
+    ],
+}
