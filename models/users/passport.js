@@ -43,11 +43,12 @@ async function getSTNOFromDB(req) {
         let stuInfo = await studentCollection.findOne({
             username: req.body.username
         });
-        if (stuInfo) {
+        let stno = _.get(stuInfo, "stno", false);
+        if (stno) {
             return {
                 status: true,
                 isError: false,
-                data: stuInfo.stno
+                data: stno
             };
         }
         return {
