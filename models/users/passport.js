@@ -66,7 +66,7 @@ async function getSTNOFromDB(req) {
 }
 async function getSTNO(req, iFetch) {
     let stnoInDB = await getSTNOFromDB(req);
-    if (stnoInDB.status) return stnoInDB;
+    if (stnoInDB.status) return stnoInDB.data;
     else if (!stnoInDB.status && !stnoInDB.isError) {
         let option = {
             method: 'GET',
