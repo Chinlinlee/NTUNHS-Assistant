@@ -134,26 +134,32 @@ let scheduleDeleteExpireSession = schedule.scheduleJob(
 });*/
 
 //updateCourseMain();
-mongodb.MongoExe().then((conn) => {
-    conn.db('My_ntunhs')
-        .collection('storedHistoryScore')
-        .createIndex(
-            {
-                courseName: 1,
-            },
-            function (err, result) {
-                if (err) console.error(err);
-                conn.db('My_ntunhs')
-                    .collection('storedHistoryScore')
-                    .createIndex(
-                        {
-                            courseTeacher: 1,
-                        },
-                        function (err, result) {
-                            if (err) console.error(err);
-                            console.log(result);
-                        }
-                    );
-            }
-        );
-});
+
+/**
+ * create index of mongodb 
+ */
+(async ()=> {
+    try {
+        let mongodbConn = await MongoExe();
+        let db = mongodbConn.db("My_ntunhs");
+        //create index for stored history score
+        //為已上傳的歷史成績做索引
+        let storedHistoryScoreCollection = db.collection("storedHistoryScore");
+        await storedHistoryScoreCollection.createIndex({
+            courseName: 1
+        });
+        console.log("create 'courseName' index for stored history score successful");
+        await storedHistoryScoreCollection.createIndex({
+            courseTeacher: 1
+        });
+        console.log("create 'courseTeacher' index for stored history score successful");
+        //為"學生資訊"做索引
+        let studentCollection = db.collection("Students");
+        await studentCollection.createIndex({
+            username: 1
+        });
+    } catch(e) {
+        console.error(e);
+        process.exit(1);
+    }
+})();
