@@ -61,3 +61,15 @@ LoginApp.service('LoginService', function ($http) {
         return response;
     }
 });
+
+function togglePassword() {
+    const passwordInput = document.querySelector("#inputPassword");
+    const inputType = passwordInput.getAttribute("type");
+    if (inputType === "password") {
+        passwordInput.setAttribute("type", "text");
+    } else {
+        passwordInput.setAttribute("type", "password");
+    }
+    const faEye = document.querySelector("#togglePassword");
+    faEye.classList.toggle("fa-eye-slash");
+}

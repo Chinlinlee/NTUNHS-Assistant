@@ -38,8 +38,27 @@ body
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
-.form-signin input[type="password"] {
+.form-signin input[type="password"],.form-signin #inputPassword {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  border-bottom-right-radius: 0.25rem!important;
+  border-bottom-left-radius: 0.25rem!important;
+  width: 100%!important;
+  flex: 0 0 auto!important;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+.password-eye {
+  position: absolute;
+  right: 0;
+  margin-right: 0.35rem;
+  margin-top: 0.65rem;
+  color: #1f1f1f!important;
+  z-index: 10;
+  cursor: pointer;
 }
