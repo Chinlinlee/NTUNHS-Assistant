@@ -1,0 +1,80 @@
+get:
+  tags:
+    - 課程查詢
+  summary: 查詢課程資料
+  description: 查詢課程資料，各parameter用,轉換成array，只查詢可選課程請這樣輸入<br/>Course_Other=本系,外系&Faculty_Name=資訊管理系&IsOnly=true&Sem=1101
+  parameters:
+    - in: query
+      name: Sem
+      description: 學期
+      schema:
+        type: string
+    - in: query
+      name: EduType
+      description: 學制
+      schema:
+        type: string
+    - in: query
+      name: Faculty
+      description: 系所
+      schema:
+        type: string
+    - in: query
+      name: Grad
+      description: 年級
+      schema:
+        type: string
+    - in: query
+      name: Course_Type
+      description: 課別
+      schema:
+        type: string
+    - in: query
+      name: Course_Day
+      description: 星期
+      schema:
+        type: string
+    - in: query
+      name: Course_Time
+      description: 節次
+      schema:
+        type: string
+    - in: query
+      name: Course_Other
+      description: 課程內容分類(備註)
+      schema:
+        type: string
+    - in: query
+      name: Course_Name
+      description: 課程名稱
+      schema:
+        type: string
+    - in: query
+      name: IsCityPart
+      description: 城區部
+      required: true
+      schema:
+        type: boolean
+    - in: query
+      name: IsRootPart
+      description: 校本部
+      required: true
+      schema:
+        type: boolean
+    - in: query
+      name: Course_Place
+      description: 教室
+      schema:
+        type: string
+    - in: query
+      name: Teacher
+      description: 老師
+      schema:
+        type: string
+    
+  responses:
+    200:
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Course_Search.yaml#hitCourseList"

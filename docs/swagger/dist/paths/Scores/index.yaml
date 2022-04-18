@@ -1,0 +1,11 @@
+get:
+  description: 獲取學期成績
+  summary: 獲取學期成績
+  tags:
+    - 學期成績
+  responses:
+    200:
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/score.yaml#scoreItem"

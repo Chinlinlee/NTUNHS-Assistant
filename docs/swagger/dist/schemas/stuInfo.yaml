@@ -1,0 +1,19 @@
+stuInfo:
+  properties:
+    system:
+      description: 學制
+      type: string
+    faculty:
+      description: 系所
+      type: string
+    stuName:
+      description: 名字
+      type: string
+    stuNum:
+      description: 學號
+      type: string
+    allSemno:
+      description: 待過的所有學期
+      type: array
+      items: 
+        type: string

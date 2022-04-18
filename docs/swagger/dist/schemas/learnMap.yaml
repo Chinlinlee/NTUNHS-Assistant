@@ -1,0 +1,32 @@
+learnMapItem:
+  properties:
+    hitCredit: 
+      $ref: "#hitCredit"
+    program:
+      type: array
+      items:
+        $ref: "#program"
+
+
+hitCredit:
+  description: 已修學分表格
+  type: string
+
+program:
+  description: 學程已修學分
+  properties:
+    key:
+      description: 學程名稱 , e.g. 大數據學程
+      type: string
+    course:
+      description: 課程名稱及學分
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+          credit:
+            type: number
+      
+    

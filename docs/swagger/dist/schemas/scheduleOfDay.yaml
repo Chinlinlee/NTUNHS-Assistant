@@ -1,0 +1,18 @@
+scheduleOfDay:
+  type: array
+  items:
+    $ref: "#schedule"
+
+schedule:
+  properties:
+    Name:
+      type: string
+    Time:
+      type: string
+    Place:
+      type: string
+    Period:
+      type: string
+    Teacher:
+      type: string
+

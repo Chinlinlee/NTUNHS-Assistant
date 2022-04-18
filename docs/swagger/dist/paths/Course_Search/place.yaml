@@ -1,0 +1,24 @@
+get:
+  tags:
+    - 課程查詢
+  summary: 獲取上課教室
+  description: 獲取上課教室，用於教室的autocomplete
+  parameters:
+    - in: query
+      name: IsRootPart
+      description: 校本部
+      required: true
+      schema:
+        type: boolean
+    - in: query
+      name: IsCityPart
+      description: 城區部
+      required: true
+      schema:
+        type: boolean
+  responses:
+    200:
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Course_Search.yaml#place"

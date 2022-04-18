@@ -1,0 +1,24 @@
+Error:
+  required:
+    - code
+    - message
+  properties:
+    code:
+      type: integer
+      format: int32
+    message:
+      type: string
+CommonFHIRMessage:
+  required:
+    - code
+    - message
+    - location
+  properties:
+    code:
+      type: integer
+      format: int32
+    message:
+      type: string
+    location:
+      type: string
+    

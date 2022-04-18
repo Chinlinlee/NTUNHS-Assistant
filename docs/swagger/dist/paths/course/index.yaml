@@ -1,0 +1,17 @@
+get:
+  summary: 獲取個人修課明細
+  description: 獲取個人修課明細
+  tags:
+    - 個人修課明細
+  parameters:
+    - in: query
+      name: semno
+      description: 學期
+      example: "1092"
+      
+  responses:
+    "200":
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/course.yaml#courses"

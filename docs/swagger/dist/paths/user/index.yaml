@@ -1,0 +1,30 @@
+get:
+  summary: List all users
+  operationId: listUsers
+  security:
+    #- bearerAuth: []
+    - basicAuth: [] 
+  tags:
+    - users
+  parameters:
+  - in: query
+    name: _offset
+    description: The data offset
+    required: false
+    schema:
+      type: integer
+      format: int32
+  - in: query
+    name: _count
+    description : How many data return by count
+    required: false
+    schema:
+      type: integer
+      format: int32
+  responses:
+    '200': 
+      description: array of users
+      content:
+        application/json: 
+          schema:
+            $ref: "/dist/schemas/users.yaml#users"

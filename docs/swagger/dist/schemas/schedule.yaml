@@ -1,0 +1,68 @@
+schedule:
+  type: array
+  items:
+    properties:
+      schedule:
+        type: array
+        items:
+          $ref: "#scheduleItem"
+      courses:
+        type: array
+        items:
+          $ref: "#course"
+
+scheduleItem:
+  properties:
+    Period:
+      type: number
+    Time:
+      type: string
+    Mon:
+      type: string
+    Tue:
+      type: string
+    Wed:
+      type: string
+    Thu:
+      type: string
+    Fri:
+      type: string
+    Sat:
+      type: string
+    Sun:
+      type: string
+    detail:
+      $ref: "#course"
+
+course:
+  properties:
+    Name:
+      type: string
+    Code:
+      type: string
+    FullCode:
+      type: string
+    Place:
+      type: string
+    Day:
+      type: string
+    Period:
+      type: string
+    Credit:
+      type: string
+    Type:
+      type: string
+    Teacher:
+      type: string
+    Other:
+      type: string
+    takeStatu:
+      type: string
+    conflictStatu:
+      type: string
+    Time:
+      type: string
+    startPeriod:
+      type: number
+
+

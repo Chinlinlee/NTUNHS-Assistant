@@ -1,0 +1,21 @@
+get:
+  description: 獲取指定星期的課表
+  summary: 獲取指定星期的課表
+  tags:
+    - 今日課表
+  parameters:
+    - in: query
+      name: day
+      description: 星期
+      required: true
+      schema:
+        type: string
+      emxaple: 1
+  
+  responses:
+    "200":
+      description: 成功獲取指定星期的課表
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/scheduleOfDay.yaml#scheduleOfDay"

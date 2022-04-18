@@ -1,0 +1,82 @@
+hitCourseList:
+  type: array
+  items:
+    $ref: "#hitCourse"
+
+hitCourse:
+  properties:
+    _id:
+      type: string
+    Class_Name:
+      type: string
+    Class_Plan:
+      type: uri
+    Course_Class:
+      type: string
+    Course_Code:
+      type: string
+    Course_Day:
+      type: string
+    Course_Eng_Name:
+      type: string
+    Course_Id:
+      type: string
+    Course_Name:
+      type: string
+    Course_Other:
+      description: 備註，可選課程用`外系` 來查詢
+      type: string
+    Course_People:
+      type: string
+    Course_Place:
+      type: string
+    Course_Time:
+      type: string
+    Course_Type:
+      type: string
+    Course_Week:
+      type: string
+    Credits:
+      type: string
+    Faculty_Id:
+      type: string
+    Faculty_Name:
+      type: string
+    Grad:
+      type: string
+    Id:
+      type: string
+    Limit_People:
+      type: string
+    Open_Teacher:
+      type: string
+    Open_Teacher_Code:
+      type: string
+    Schedule_Code:
+      type: string
+    Sem:
+      type: string
+    Teacher:
+      type: string
+    Period:
+      description: 節次
+      type: string
+    startPeriod:
+      type: string
+    endPeriod:
+      type: string
+
+place:
+  type: array
+  items:
+    type: string
+
+teacher:
+  type: array
+  items:
+    type: string
+
+sem:
+  type: array
+  items:
+    type: string

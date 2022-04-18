@@ -1,0 +1,12 @@
+get:
+  tags:
+    - 學習歷程
+  summary: 獲取已修學分表格以及學程已修學分
+  description: 獲取已修學分表格，包含畢業學分、已修畢業學分、應修未修學分(共同必修、專業必修、選修)
+  responses:
+    "200":
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/learnMap.yaml#learnMapItem"
+      

@@ -1,0 +1,36 @@
+courses:
+  type: array
+  items:
+    $ref: "#course"
+
+
+course:
+  properties:
+    Name:
+      type: string
+    FullCode:
+      type: string
+    Place:
+      description: 上課地點
+      type: string
+    Day:
+      type: string
+    Period:
+      type: string
+    Credit:
+      type: string
+    Type:
+      description: 必選修
+      type: string
+    Teacher:
+      type: string
+    Other:
+      description: 備註
+      type: string
+    takeStatu:
+      description: 課程狀態
+      type: string
+    conflictStatu:
+      description: 衝堂狀態
+      type: string
+    

@@ -1,0 +1,42 @@
+get:
+  tags: 
+    - 歷年成績
+  summary: 獲取上傳的歷年成績指定課程的分佈
+  description: 獲取上傳的歷年成績指定課程的分佈
+  parameters:
+    - in: query
+      name: courseNormalId
+      description: 課程代碼(14碼)
+      schema:
+        type: string
+    - in: query
+      name: courseSem
+      description: 學期
+      schema:
+        type: string
+      
+  responses:
+    200:
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/historyScore.yaml#storedHistoryScore"
+          example:
+            "courseClass": "資日四技1年B0班"
+            "courseName": "程式設計"
+            "courseNormalId": "221400124011B0"
+            "courseTeacher": "陳彥宏YEN-HUNG CHEN"
+            "courseSem": "1061"
+            "scoreCategory": {
+              "90~100": 5,
+              "80~90": 1,
+              "70~80": 2,
+              "60~70": 3,
+              "50~60": 0,
+              "40~50": 0,
+              "30~40": 0,
+              "20~30": 0,
+              "10~20": 0,
+              "0~10": 0
+            }
+

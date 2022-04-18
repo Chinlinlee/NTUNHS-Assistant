@@ -1,0 +1,10 @@
+storedRank:
+  properties:
+    sem:
+      type: string
+    stuNum:
+      type: string
+    rank:
+      type: string
+    rankPercentInClass:
+      type: string

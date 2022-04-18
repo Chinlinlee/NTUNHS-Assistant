@@ -1,0 +1,11 @@
+get:
+  tags:
+    - 課程查詢
+  summary: 獲取老師
+  description: 獲取老師，用於老師的autocomplete
+  responses:
+    200:
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/Course_Search.yaml#teacher"

@@ -1,0 +1,19 @@
+get:
+  tags:
+    - 歷年成績
+  summary: 獲取上傳的歷年成績相關課程的分佈
+  description: 獲取上傳的歷年成績相關課程的分佈
+  parameters:
+    - in: query
+      name: courseName
+      description: 課程名稱
+      required: true
+    - in: query
+      name: courseTeacher
+      description: 開課老師，此項為`ALL`時會找同課程所有老師的資料
+  responses:
+    200:
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/historyScore.yaml#storedHistoryScoreList"

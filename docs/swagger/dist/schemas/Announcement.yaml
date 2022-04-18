@@ -1,0 +1,30 @@
+announcement:
+  description: "北護公告"
+  properties:
+    news:
+      type: array
+      items:
+        $ref: "#newsObj"
+    info:
+      type: array
+      items:
+        $ref: "#infoObj"
+        
+newsObj:
+  properties:
+    text:
+      type: string
+    url:
+      type: string
+    time:
+      type: string
+
+infoObj:
+  properties:
+    text:
+      type: string
+    url:
+      type: string
+    time:
+      type: string
+

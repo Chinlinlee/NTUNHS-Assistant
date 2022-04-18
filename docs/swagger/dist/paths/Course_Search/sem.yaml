@@ -1,0 +1,11 @@
+get:
+  tags:
+    - 課程查詢
+  summary: 獲取已儲存的課程資料的學期
+  description: 獲取已儲存的課程資料的學期，用於選取xxx上學期下拉式選單
+  responses:
+    200:
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Course_Search.yaml#sem"

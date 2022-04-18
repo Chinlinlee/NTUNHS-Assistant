@@ -1,0 +1,38 @@
+scoreItem:
+  properties:
+    scores:
+      type: array
+      items:
+        $ref: "#score"
+    ranks:
+      type: array
+      items:
+        $ref: "#rank"
+
+
+score:
+  properties:
+    Name:
+      type: string
+    Class:
+      type: string
+    Teacher:
+      type: string
+    Type:
+      type: string
+    Credit:
+      type: string
+    Score:
+      type: string
+    haveStoredScore:
+      description: 描述：是否有儲存在歷年成績分佈圖
+      type: string
+rank:
+  properties:
+    id:
+      description: 描述：排名區塊的標題
+      type: string
+    name:
+      description: 描述：排名區塊的內容
+      type: string
+

@@ -1,0 +1,69 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Example
+  description: 北護助手 API 文件。
+  license:
+    name: MIT
+servers:
+  - url : http://127.0.0.1:30087
+  - url : https://mycosim.ntunhs.edu.tw
+paths:
+  # /pet:
+  #   $ref: "/dist/pets/index.yaml"
+  # /pet/{petId}:
+  #   $ref: "/dist/pets/pets_petId.yaml"
+  /api/announcement:
+    $ref: "./paths/announcement/index.yaml"
+  /login:
+    $ref: "./paths/login/index.yaml"
+  /api/stuInfo:
+    $ref: "./paths/stuInfo/index.yaml"
+  /api/Course:
+    $ref: "./paths/course/index.yaml"
+  /api/Today_Schedule:
+    $ref: "./paths/Today_Schedule/index.yaml"
+  /api/Schedule:
+    $ref: "./paths/schedule/index.yaml"
+  /api/Scores:
+    $ref: "./paths/Scores/index.yaml"
+  /api/Scores/storeRank:
+    $ref: "./paths/Scores/storedRank.yaml"
+  /api/History_Scores:
+    $ref: "./paths/historyScore/index.yaml"
+  /api/History_Scores/storedHistoryScore:
+    $ref: "./paths/historyScore/storedHistoryScore.yaml"
+  /api/History_Scores/storedHistoryScoreByTeacher:
+    $ref: "./paths/historyScore/storedHistoryScoreByTeacher.yaml"
+  /api/CTE_BOT:
+    $ref: "./paths/CTE_BOT/index.yaml"
+  /api/learnMap:
+    $ref: "./paths/learnMap/index.yaml"
+  /api/Course_Search:
+    $ref: "./paths/Course_Search/index.yaml"
+  /api/Course_Search/Place:
+    $ref: "./paths/Course_Search/place.yaml"
+  /api/Course_Search/Teacher:
+    $ref: "./paths/Course_Search/teacher.yaml"
+  /api/Course_Search/GetSem:
+    $ref: "./paths/Course_Search/sem.yaml"
+
+components:
+  # securitySchemes:
+  #   #bearerAuth:            # arbitrary name for the security scheme
+  #   #  type: http
+  #   #  scheme: bearer
+  #   #  bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+  #   cookieAuth:     # <-- arbitrary name for the security scheme
+  #     type: apiKey
+  #     in: cookie
+  #     name: connect.sid
+  schemas:
+    "announcement 北護公告":
+      $ref: "./schemas/Announcement.yaml#announcement"
+    "stuInfo 學生資訊":
+      $ref: "./schemas/stuInfo.yaml#stuInfo"
+    "course 修課明細":
+      $ref: "./schemas/course.yaml#course"
+    "score 學期成績":
+      $ref: "./schemas/score.yaml#scoreItem"

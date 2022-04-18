@@ -1,0 +1,12 @@
+get:
+  description: 獲取北護e-portfolio公告
+  summary: 獲取北護e-portfolio公告
+  tags:
+    - 北護公告
+  responses:
+    '200':
+      description: 成功獲取北護e-portfolio公告
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Announcement.yaml#announcement"

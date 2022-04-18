@@ -1,0 +1,58 @@
+post:
+  tags:
+    - 教學評量機器人
+  summary: 填寫全部教學評量
+  description: 填寫全部教學評量
+  requestBody:
+    required: true
+    content:
+      application/x-www-form-urlencoded:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+            password:
+              type: string
+              format: password
+            Q1:
+              type: string
+            Q2:
+              type: string
+            Q3:
+              type: string
+            Q4:
+              type: string
+            Q5:
+              type: string
+            Q6:
+              type: string
+            Q7:
+              type: string
+            Q8:
+              type: string
+            Q9:
+              type: string
+            Q10:
+              type: string
+            Q11:
+              type: string
+            Q12:
+              type: string
+            Q13:
+              type: string
+            Q14:
+              type: string
+  responses:
+    "302":
+      description: 會導向原本的頁面，並在網址後面加入error=xxx
+      headers:
+        Location:
+          description: 導向的網址
+          schema:
+            type: string
+            format: uri
+          emxaples:
+            302Success:
+              description: 填寫成功
+              value: '/CTE_BOT?error=Success'

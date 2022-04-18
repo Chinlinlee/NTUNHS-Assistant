@@ -1,0 +1,12 @@
+get:
+  summary: 獲取學生資訊
+  description: 獲取學生資訊
+  tags:
+    - 學生資訊
+  responses:
+    "200":
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/stuInfo.yaml#stuInfo"
+  

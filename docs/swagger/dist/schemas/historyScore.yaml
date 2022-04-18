@@ -1,0 +1,108 @@
+historyScoreItem:
+  properties:
+    historyScores:
+      type: array
+      items:
+        $ref: "#historyScore"
+    historyScoresRanks:
+      type: array
+      items:
+        $ref: "#historyScoresRank"
+    sems:
+      type: array
+      items:
+        properties:
+          Sem:
+            type: string
+    GPA:
+      type: string
+
+historyScore:
+  properties:
+    Sem:
+      type: string
+    Type:
+      type: string
+      description: 
+    Course:
+      type: string
+    Up_Credit:
+      description: 上學期學分
+      type: string
+    Up_Score:
+      description: 上學期成績
+      type: string
+    Down_Credit:
+      description: 下學期學分
+      type: string
+    Down_Score:
+      description: 下學期成績
+      type: string
+    courseNormalId:
+      description: 課程14碼 
+      type: string
+    courseTeacher:
+      type: string
+    haveStoredScore:
+      description: 是否有被別人上傳歷年成績
+      type: string
+
+historyScoresRank:
+  properties:
+    title:
+      type: string
+    Up_Credit:
+      type: string
+    Up_Score:
+      type: string
+    Down_Credit:
+      type: string
+    Down_Score:
+      type: string
+
+storedHistoryScoreList:
+  type: array
+  items:
+    $ref: "#storedHistoryScore"
+
+storedHistoryScore:
+  properties:
+    courseClass:
+      description: 上課班級
+      type: string
+    courseName:
+      type: string
+    courseNormalId:
+      description: 課程代碼(14碼)
+      type: string
+    courseTeacher:
+      type: string
+    courseSem:
+      description: 學期
+      type: string
+    scoreCategory:
+      type: object
+      properties:
+        "90~100":
+          type: number
+        "80~90":
+          type: number
+        "70~80":
+          type: number
+        "60~70":
+          type: number
+        "50~60":
+          type: number
+        "40~50":
+          type: number
+        "30~40":
+          type: number
+        "20~30":
+          type: number
+        "10~20":
+          type: number
+        "0~10":
+          type: number
+
+
+    

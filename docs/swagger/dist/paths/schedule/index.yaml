@@ -1,0 +1,12 @@
+get:
+  description: 獲取課表
+  summary: 獲取課表
+  tags:
+    - 整體課表
+  responses:
+    "200":
+      description: 成功獲取課表
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/schedule.yaml#schedule"

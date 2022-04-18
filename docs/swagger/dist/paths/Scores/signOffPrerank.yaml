@@ -1,0 +1,11 @@
+get:
+  description: 獲取簽核系統上(少修申請)的排名成績
+  summary: 獲取簽核系統上(少修申請)的排名成績
+  tags:
+    - 學期成績
+  responses:
+    200:
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/score.yaml#scoreItem"

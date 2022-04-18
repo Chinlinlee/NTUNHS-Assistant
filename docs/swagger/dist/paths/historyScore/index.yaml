@@ -1,0 +1,58 @@
+get:
+  summary: 獲取歷年成績
+  description: 獲取歷年成績，注意，Up_xxx為上學期資料，Down_xxx為下學期資料
+  tags:
+   - 歷年成績
+  responses:
+    "200":
+      content:
+        "application/json":
+          schema:
+            $ref: "../../schemas/historyScore.yaml#historyScoreItem"
+          example:
+            historyScores: [
+                {
+                  "Sem": "106",
+                  "Type": "必修",
+                  "Course": "4231F332 國文二",
+                  "Up_Credit": "",
+                  "Up_Score": "",
+                  "Down_Credit": "2 ",
+                  "Down_Score": "87.00",
+                  "courseNormalId": "211400001011B0",
+                  "courseTeacher": "林怡岑Yi-Chen Lin",
+                  "haveStoredScore": true
+                }
+            ]
+            historyScoresRanks: [
+              {
+                "title": " 實得學分與平均成績 ",
+                "Up_Credit": "21",
+                "Up_Score": "85.52",
+                "Down_Credit": "19",
+                "Down_Score": "85.21"
+              }
+            ]
+            sems: [
+              {
+                "Sem": "106"
+              },
+              {
+                "Sem": "107"
+              },
+              {
+                "Sem": "108"
+              },
+              {
+                "Sem": "109"
+              }
+            ]
+            GPA: "3.80"
+post:
+  tags:
+    - 歷年成績
+  summary: 上傳歷年成績
+  description: 上傳歷年成績
+  responses:
+    200:
+      description: 上傳成功
