@@ -5,6 +5,7 @@ const School_Auth = require('../../../../models/users/School_Auth.js');
 const tough = require('tough-cookie');
 const myFunc = require('../../../My_Func');
 const iconv = require('iconv-lite');
+const { SocksProxyAgent } = require("socks-proxy-agent");
 
 module.exports = async function (req, res) {
     let queryParams = req.body;
@@ -26,14 +27,17 @@ module.exports = async function (req, res) {
             '/CTE_BOT?error=' + encodeURIComponent('Password_Error')
         );
     }
+
+    let proxyAgent = await checkSocksAndGetAgent();
     let first = await fetchCookie(
         'http://system8.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp',
-        { method: 'GET' }
+        { method: 'GET', agent: proxyAgent  }
     );
 
     let requestOptions = {
         method: 'POST',
         redirect: 'follow',
+        agent: proxyAgent
     };
 
     let ctePageFetch = await fetchCookie(
@@ -145,4 +149,17 @@ async function Request_func(req_obj, i_option) {
             resolve(body);
         });
     });
+}
+
+async function checkSocksAndGetAgent() {
+    try {
+        const proxy = process.env.SOCKS_PROXY || 'socks5h://127.0.0.1:9050';
+        const proxyAgent = new SocksProxyAgent(proxy);
+        await nodeFetch("http://system8.ntunhs.edu.tw/intranetasp/evaMain/stLogin.asp", {
+            agent: proxyAgent
+        });
+        return proxyAgent;
+    } catch(e) {
+        throw e;
+    }
 }
