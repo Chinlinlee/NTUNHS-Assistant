@@ -10,8 +10,12 @@ body
   font-style: normal;
   color: aliceblue;
   font-weight: 400;
-  padding-top: 4.5rem;
-  margin-bottom: 100px;
+  margin-top: 56px;
+  margin-bottom: 85px;
+}
+
+.container {
+  min-height: calc(100vh - 65px - 85px);
 }
 
 .form-signin {

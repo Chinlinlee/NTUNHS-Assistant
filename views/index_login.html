@@ -41,9 +41,9 @@
             </ul>
         </div>
     </nav>
-    <div class="container text-center d-flex min-vh-100 justify-content-center align-items-center">
+    <div class="container text-center d-flex justify-content-center align-items-center">
         <form class="form-signin" action="/login" method="post"  onsubmit="return commonFunc.blockUI();">
-            <img class="mb-4" src="./images/NTUNHS.gif" alt="" width="72" height="72">
+            <img class="mb-1" src="./images/temp_logo.png" alt="北護助手logo" width="72" height="92">
             <h1 class="h3 mb-3 font-weight-normal">Login NTUNHS account</h1>
             <label for="inputUsername" class="sr-only">Student number</label>
             <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Student number" required=""
@@ -80,15 +80,6 @@
     function showAlert(err) {
       alert('error: ' + err);
     }
-    $(function () {
-        let height = $(window).height();
-        if (height >= 400) {
-            $('html, body').animate({scrollTop:height}, '100');
-            if (height >= 675) {
-                $('body').css('overflow-y' , 'hidden');
-            }
-        }
-    })
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZMFWZCWXXN"></script>
 <script>
