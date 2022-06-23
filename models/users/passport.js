@@ -281,7 +281,7 @@ async function getStudentBasicInfo (username, loginResultCode, fetch) {
             // stuName: stuInfo[1],
             stuFaculty: stuInfo[2],
             // stuType: stuInfo[3],
-            stuClass: stuInfo[4],
+            // stuClass: stuInfo[4],
             // stuClassTeacher: stuInfo[5],
             // stuStatus: stuInfo[6],
         };
