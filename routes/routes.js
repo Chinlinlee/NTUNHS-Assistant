@@ -18,7 +18,6 @@ module.exports =
         app.use('/api/History_Scores', require('./api/History_Scores'));
         app.use('/api/Course_Search', require('./api/Course_Search'));
         app.use('/api/pdfmake', require('./api/pdfmake'));
-        app.use('/api/CTE_BOT', require('./api/CTE_BOT'));
         app.use('/api/stuInfo', require('./api/stuInfo'));
         app.use('/api/Schedule', require('./api/Schedule'));
         app.use('/api/announcement', require('./api/announcement'));

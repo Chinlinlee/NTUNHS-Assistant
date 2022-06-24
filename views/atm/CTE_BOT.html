@@ -38,47 +38,8 @@
             line-height: 60px; /* Vertically center the text there */
             background-color: #f5f5f5;
         }
-       @media (max-width: 736px) 
-       { 
-           .div-rwd p 
-            {
-                text-align: left;
-                font-size: 20px;
-                overflow: hidden;
-                width: 100%;
-                display: block;
-            }
-            .div-rwd p:after 
-            {
-                /*最重要的就是這串*/
-                content: attr(data-th);
-                /*最重要的就是這串*/
-                display: inline-block;
-                text-transform: uppercase;
-                font-weight: bold;
-                margin-right: 10px;
-                color: rgb(11, 57, 210);
-            }
-            .div-rwd .before:before 
-            {
-                /*最重要的就是這串*/
-                content: attr(data-before-th) " : ";
-                /*最重要的就是這串*/
-                display: inline-block;
-                text-transform: uppercase;
-                font-weight: bold;
-                margin-right: 10px;
-                color: rgb(11, 57, 210);
-            }
-            .no-th
-            {
-                display:none !important;
-            }
-            .topgap
-            {
-                margin-top: 8px;
-                margin-bottom: 8px;
-            }
+        .container {
+            min-height: calc(100vh - 60px - 85px);
         }
     </style>
 </head>
@@ -99,106 +60,7 @@
         </div>
     </nav>
     <div class="container">
-        <form action="/api/CTE_BOT" method="POST" onsubmit="return blockui();">
-            <div class="row">
-                <div class="col-sm-1 text-lg-center">
-                    <p>學號:</p>
-                </div>
-                <div class="col-sm-5 text-lg-center topgap">
-                    <input type="text" class="input input-lg" id="username" name="username" required>
-                </div>
-                <div class="col-sm-1 text-lg-center">
-                    <p>密碼:</p>
-                </div>
-                <div class="col-sm-5 text-lg-center topgap">
-                    <input type="password" class="input password input-lg" id="usernmae" name="password" required>
-                </div>
-            </div>
-            <div class="row div-rwd">
-                <div class="col-sm-1">
-                    <p class="font-weight-bold text-center no-th">題號</p>
-                </div>
-                <div class="col-sm-4">
-                    <p class="font-weight-bold text-center no-th">題目</p>
-                </div>
-                <div class="col-sm-2">
-                    <p class="font-weight-bold text-center no-th">非常同意</p>
-                </div>
-                <div class="col-sm-1">
-                    <p class="font-weight-bold text-center no-th">同意</p>
-                </div>
-                <div class="col-sm-1">
-                    <p class="font-weight-bold text-center no-th">普通</p>
-                </div>
-                <div class="col-sm-1">
-                    <p class="font-weight-bold text-center no-th">不滿意</p>
-                </div>
-                <div class="col-sm-2">
-                    <p class="font-weight-bold text-center no-th">非常不滿意</p>
-                </div>
-            </div>
-            
-            <div ng-repeat="Item in Items">
-                <div class="row div-rwd">
-                    <div class="col-sm-1 font-weight-bold text-center border" >
-                        <p data-before-th="題號" class="before">{{Item.Num}}</p>
-                    </div>
-                    <div class="col-sm-4 font-weight-bold border">
-                        <p data-before-th="題目" class="before">{{Item.Question}}</p>
-                    </div>
-                    <div class="col-sm-2 text-center border">
-                        <div class="custom-control custom-radio">
-                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E1_{{$index+1}}" value="{{Item.E1}}"> 
-                            <label class="custom-control-label" for="E1_{{$index+1}}">
-                                <p ng-if="$index<13" data-th="非常同意"></p>
-                                <span ng-if="$index == 13">總是</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-1 text-center border">
-                        <div class="custom-control custom-radio">
-                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E2_{{$index+1}}" value="{{Item.E2}}"> 
-                            <label class="custom-control-label" for="E2_{{$index+1}}">
-                                <p ng-if="$index<13" data-th="同意"></p>
-                                <span ng-if="$index == 13">經常</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-1 text-center border">
-                        <div class="custom-control custom-radio">
-                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E3_{{$index+1}}" value="{{Item.E3}}"> 
-                            <label class="custom-control-label" for="E3_{{$index+1}}">
-                                <p ng-if="$index<13" data-th="普通"></p>
-                                <span ng-if="$index == 13">偶爾</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-1 text-center border">
-                        <div class="custom-control custom-radio">
-                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E4_{{$index+1}}" value="{{Item.E4}}"> 
-                            <label class="custom-control-label" for="E4_{{$index+1}}">
-                                <p ng-if="$index<13" data-th="不同意"></p>
-                                <span ng-if="$index == 13">很少</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-2 text-center border">
-                        <div class="custom-control custom-radio">
-                            <input type="radio"  class="custom-control-input" name="Q_{{$index+1}}" id="E5_{{$index+1}}" value="{{Item.E5}}"> 
-                            <label class="custom-control-label" for="E5_{{$index+1}}">
-                                <p ng-if="$index<13" data-th="非常不同意"></p>
-                                <span ng-if="$index == 13">從不 </span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="margin-top: 8px;">
-                <div class="col-lg-12 text-center">
-                    <button class="btn btn-success btn-lg" type="submit">送出</button>
-                </div>
-            </div>
-        </form>
+        <p class="text-center">很遺憾地，此功能因為一些因素而移除。</p>
     </div>
     <div ng-include="'footer.html'"></div>
 </body>

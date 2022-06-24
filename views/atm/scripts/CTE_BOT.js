@@ -33,12 +33,6 @@ CTE_BOTApp.controller(
             Obj['Question'] = E_Questions[i];
             $scope.Items.push(Obj);
         }
-        CTE_BOTService.Get_Status().then(function (res) {
-            if (res.data == '非填寫時間') {
-                alert('非填寫時間，跳回主畫面');
-                window.location = '/';
-            }
-        });
     }
 );
 
