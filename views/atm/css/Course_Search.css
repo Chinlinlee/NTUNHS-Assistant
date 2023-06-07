@@ -87,24 +87,35 @@ table {
 .condition-button 
 {
     display: inline-block;
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 36px;
     position: fixed;
-    bottom: 10%;
-    right: 0px;
+    bottom: 2rem;
+    right: 1rem;
     transition: background-color .3s, 
       opacity .5s, visibility .5s;
     z-index: 1000;
-    border: 1px #2f2f2f solid;
+    border: 1px #047857 solid;
     margin: auto;
-    background-image: url('../images/loupe.svg');
+    background-image: url('../images/search.svg');
     background-repeat: no-repeat;
     background-size: 28px 28px;
     background-position: center;
-    background-color: #ffc500;
+    background-color: #34d399;
     cursor: pointer;
+    color: #d4d4d4;
+}
+
+@media screen and (max-width: 768px) {
+  .condition-button {
+    width: 42px;
+    height: 42px;
+    bottom: 1rem;
+    right: 1rem;
+    border-radius: 24px;
+  }
 }
 
 #Condition {
