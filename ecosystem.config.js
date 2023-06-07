@@ -29,17 +29,6 @@ module.exports = {
             log_file: './pm2log/log.log',
         },
         {
-            name: 'mycosim-traffic',
-            script: 'getTraffic.js',
-            watch: false,
-            exec_mode: 'fork',
-            log_date_format: 'YYYY-MM-DD HH:mm Z',
-            error_file: './pm2log/traffic-err.log',
-            // 正常輸出 log 的指定位置
-            out_file: './pm2log/traffic-out.log',
-            log_file: './pm2log/traffic-log.log',
-        },
-        {
             name: 'mycosim-update',
             script: 'models/NTUNHS/updateCourseSchedule.js',
             watch: false,
@@ -49,17 +38,6 @@ module.exports = {
             // 正常輸出 log 的指定位置
             out_file: './pm2log/course-update-out.log',
             log_file: './pm2log/course-update-log.log',
-        },
-        {
-            name: 'mycosim-checkSignOff',
-            script: 'models/NTUNHS/checkSignOffLessTakeSchedule.js',
-            watch: false,
-            exec_mode: 'fork',
-            log_date_format: 'YYYY-MM-DD HH:mm Z',
-            error_file: './pm2log/checkSignOff-err.log',
-            // 正常輸出 log 的指定位置
-            out_file: './pm2log/checkSignOff-out.log',
-            log_file: './pm2log/checkSignOff-log.log',
         },
     ],
 };

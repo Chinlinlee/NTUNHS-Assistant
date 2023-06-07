@@ -78,9 +78,7 @@ CSApp.controller('CSCtrl', function ($scope, CSService, commonService) {
     $scope.curPreModalPage = 1;
     $scope.numPerPagePreModal = 10;
     //#region Item 查詢條件
-    commonService.user.getStuInfo().then(function (res) {
-        $scope.Currentuser = res.data;
-    });
+
     $scope.Iteminit = function () {
         $scope.EduType = [
             {
@@ -397,11 +395,7 @@ CSApp.controller('CSCtrl', function ($scope, CSService, commonService) {
     }
     //initial 是否登入過
 
-    //登入過拿取資訊
-    CSService.Get_UserInf().then((u_res) => {
-        $scope.userinfo.faculty = u_res.data.faculty;
-        $scope.userinfo.system = u_res.system;
-    });
+
     //initial 獲取所有教室
     CSService.Get_Place($scope).then((res) => {
         $scope.Place_list = res.data;
@@ -1164,7 +1158,6 @@ CSApp.service('CSService', function ($http) {
         PreScheduleQuery: PreScheduleQuery,
         Get_Place: Get_Place,
         Get_Teacher: Get_Teacher,
-        Get_UserInf: Get_UserInf,
         Get_OnlyIcan: Get_OnlyIcan,
         Get_Sem: Get_Sem,
         Create_Pdf: Create_Pdf,
@@ -1253,13 +1246,7 @@ CSApp.service('CSService', function ($http) {
         });
         return request.then(handleSuccess, handleError);
     }
-    function Get_UserInf() {
-        var request = $http({
-            method: 'GET',
-            url: '/api/stuInfo',
-        });
-        return request.then(handleSuccess, handleError);
-    }
+
     function Get_OnlyIcan(scope) {
         var request = $http({
             method: 'GET',

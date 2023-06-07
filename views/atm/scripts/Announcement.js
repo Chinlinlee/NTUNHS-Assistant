@@ -5,9 +5,6 @@ announcementApp.controller(
     function ($scope, announcementService, commonService) {
         $scope.Currentuser = '';
         $scope.q = '';
-        commonService.user.getStuInfo().then(function (res) {
-            $scope.Currentuser = res.data;
-        });
 
         $scope.news = {};
         $scope.info = {};
