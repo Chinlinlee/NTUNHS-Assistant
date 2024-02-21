@@ -62,7 +62,7 @@ const tdFunc = {
 
 async function getHistoryScores(req) {
     let j = myFunc.getJar(req);
-    let historyScoreURL = `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_25.aspx?stno=${req.session.STNO}`;
+    let historyScoreURL = `https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_25.aspx?stno=${req.session.STNO}`;
     let reqOption = {
         method: 'GET',
         uri: historyScoreURL,
@@ -106,57 +106,7 @@ async function getHistoryScores(req) {
             v.Sem = v.Sem + '2';
         }
     }
-    let tookCourses = await getTookCourse(req);
-    if (tookCourses) {
-        for (let key in historyScoresClone) {
-            let data = historyScoresClone[key];
-            let hitCourse = _.find(
-                tookCourses,
-                (v) =>
-                    v.courseName.includes(data.Course) &&
-                    v.courseSem == data.Sem
-            );
-            if (hitCourse) {
-                historyScores[key].courseNormalId = hitCourse.courseNormalId;
-                historyScores[key].courseTeacher = hitCourse.courseTeacher;
-            }
-        }
-    } else {
-        return false;
-    }
-    let conn = await MongoExe();
-    for (let key in historyScores) {
-        let historyCourseScoreObj = historyScores[key];
-        let courseName = historyCourseScoreObj.Course.substring(9);
-
-        let db = conn.db('My_ntunhs');
-        let collection = db.collection('storedHistoryScore');
-        try {
-            let queryString = {
-                $and: [
-                    {
-                        courseName: courseName,
-                    },
-                    {
-                        courseTeacher: new RegExp(
-                            historyCourseScoreObj.courseTeacher,
-                            'gi'
-                        ),
-                    },
-                ],
-            };
-            let docCount = await collection.countDocuments(queryString);
-            if (docCount > 0) {
-                historyScores[key].haveStoredScore = true;
-            } else {
-                historyScores[key].haveStoredScore = false;
-            }
-        } catch (e) {
-            console.error(e);
-            return Promise.resolve(false);
-        }
-    }
-    await conn.close();
+    
     //result -> 歷年成績
     //result2 -> 平均分數 , 累計學分、排名...
     //sems -> 所有學年

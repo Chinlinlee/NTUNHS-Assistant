@@ -48,9 +48,16 @@
         <form class="form-signin" action="/login" method="post"  onsubmit="return commonFunc.blockUI();">
             <img class="mb-1" src="./images/logo.png" alt="北護助手logo" width="60" height="60">
             <h1 class="h3 mb-3 font-weight-normal">Login NTUNHS account</h1>
-            <div>
-                <p>基於一些因素，目前無法提供登入服務</p>
-            </div>
+            <label for="inputUsername" class="sr-only">Student number</label>
+            <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Student number" required=""
+                autofocus="">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <div class="input-group">
+                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                <span class="float-right password-eye">
+                    <i class="fa fa-eye" id="togglePassword" onclick="togglePassword();"></i>
+                </span>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
             <div class="mt-1">
                 <a href="/privacy-policy">免責聲明</a>
             </div>

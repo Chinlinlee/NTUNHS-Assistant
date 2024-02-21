@@ -118,7 +118,7 @@ module.exports.getJar = function (req) {
     let sessionntunhsApp = _.get(req.session, 'ntunhsApp');
     if (req && sessionntunhsApp) {
         req.session.ntunhsApp.split(';').map(function (value) {
-            jar.setCookieSync(value, 'http://system8.ntunhs.edu.tw');
+            jar.setCookieSync(value, 'https://system8.ntunhs.edu.tw');
         });
     }
     return jar;

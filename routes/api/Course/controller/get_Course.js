@@ -51,7 +51,7 @@ async function getCourseJson(req, semno) {
         action: 'LoadJSon',
     });
     let courses_URL = new URL(
-        'http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_14.aspx'
+        'https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/qry/Profile_qry_14.aspx'
     );
     courses_URL.search = parameter;
     let reqOption = {

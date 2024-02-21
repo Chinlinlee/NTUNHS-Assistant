@@ -15,7 +15,6 @@ const cors = require('cors');
 const mongodb = require('./models/common/data.js');
 const MongoStore = require('connect-mongo')({ session: session });
 const path = require('path');
-const { updateCourseMain } = require('./models/NTUNHS/updateCourse');
 //End import modules
 var app = express();
 app.use(compression());

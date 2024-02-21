@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "abort-controller": "^3.0.0",
+    "body-parser": "^1.20.2",
     "cheerio": "^1.0.0-rc.10",
     "chromedriver": "^94.0.0",
     "compression": "^1.7.4",
@@ -35,6 +36,7 @@
     "form-data": "^3.0.1",
     "fs": "0.0.1-security",
     "get-port": "^5.1.1",
+    "glob": "^10.3.10",
     "iconv-lite": "^0.5.2",
     "lodash": "^4.17.21",
     "log-to-file": "^2.0.2",
@@ -49,6 +51,7 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "pdfmake": "^0.1.71",
+    "puppeteer": "^22.1.0",
     "request": "^2.88.2",
     "saslprep": "^1.0.3",
     "selenium-webdriver": "^4.0.0-beta.4",

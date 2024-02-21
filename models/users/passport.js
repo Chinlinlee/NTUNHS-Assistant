@@ -6,6 +6,7 @@ const cheerio = require('cheerio');
 const nodeFetch = require('node-fetch');
 require('tls').DEFAULT_MIN_VERSION = 'TLSv1';
 const _ = require('lodash');
+const fs = require("fs");
 
 async function updateSTNOToDB(req, stno) {
     try {
@@ -13,7 +14,7 @@ async function updateSTNOToDB(req, stno) {
         let db = mongoConn.db("My_ntunhs");
         let studentCollection = db.collection("Students");
         await studentCollection.findOneAndUpdate({
-            username: req.body.username
+            username: req.query.username
         }, {
             $set: {
                 stno: stno
@@ -21,15 +22,15 @@ async function updateSTNOToDB(req, stno) {
         }, {
             upsert: true
         });
-        console.log(`update STNO of student ${req.body.username} successful`);
+        console.log(`update STNO of student ${req.query.username} successful`);
         return {
-            status: true, 
+            status: true,
             data: "update STNO successful"
         };
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         return {
-            status: false, 
+            status: false,
             data: e
         };
     }
@@ -56,7 +57,7 @@ async function getSTNOFromDB(req) {
             isError: false,
             data: "student info not exist"
         }
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         return {
             status: false,
@@ -71,7 +72,7 @@ async function getSTNO(req, iFetch) {
     else if (!stnoInDB.status && !stnoInDB.isError) {
         let option = {
             method: 'GET',
-            uri: `http://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/tab/Profile_tab_02.aspx`,
+            uri: `https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Profile/tab/Profile_tab_02.aspx`,
         };
         let fetchRes = await iFetch(option.uri);
         let getStnoPageUri = await fetchRes.text();
@@ -101,7 +102,7 @@ async function getSTNO(req, iFetch) {
         try {
             for (let index in frame) {
                 let frameSrc = $(frame[index]).attr('src') || '';
-                console.log("found the stno frame URL:",frameSrc);
+                console.log("found the stno frame URL:", frameSrc);
                 if (frameSrc.includes('stno')) {
                     stno = frameSrc.substring(frameSrc.indexOf('stno=') + 5);
                     break;
@@ -137,24 +138,25 @@ module.exports = async function (passport) {
                 passReqToCallback: true,
             },
             async function (req, username, password, done) {
-                let loginResult = await School_Auth.Auth(
-                    username,
-                    password,
-                    req
-                );
-                //req.session.myJar = myReqObj.jar;
-                let loginResultCode = loginResult.split('_');
+
+                let authHandler = new School_Auth.NtunhsAuthHandler(req);
+                let { txtid, code, select } = await authHandler.portfolioAuth(username, password);
                 let j = myFunc.getJar(req);
-                if (!loginResultCode.includes('true')) {
+                req.session.ntunhsApp = await j.getCookieString(
+                    'https://system8.ntunhs.edu.tw'
+                );
+
+                if (!code) {
                     console.log('error pwd');
                     return done(null, false, {
                         message: '帳號或密碼錯誤(Invalid user or password)',
                     });
                 }
+
                 let fetch = require('fetch-cookie')(nodeFetch, j, false);
 
                 //獲取學生基本資料，即 e-portfolio 左邊的學生資訊
-                let stuInfoResult = await getStudentBasicInfo(username, loginResultCode, fetch);
+                let stuInfoResult = await getStudentBasicInfo(username, code, fetch);
                 req.session.stuInfo = stuInfoResult;
 
                 let sessionStuInfo = _.get(req.session, 'stuInfo');
@@ -164,9 +166,6 @@ module.exports = async function (passport) {
                 //獲取學生待過的學年，並儲存至 session
                 await setStudentStayedSem(sessionStuInfo, fetch);
 
-                req.session.ntunhsApp = await j.getCookieString(
-                    'http://system8.ntunhs.edu.tw'
-                );
                 req.session.Course = [];
                 req.session.HistoryScore = [];
                 req.session.noPreRank = false;
@@ -183,7 +182,7 @@ module.exports = async function (passport) {
                     );
                 }
 
-                await School_Auth.ilmsAuth(username, password, req);
+                // await School_Auth.ilmsAuth(username, password, req);
                 return done(null, username);
             }
         )
@@ -204,13 +203,13 @@ async function updateStudentInfoToDB(username, stuInfoObj) {
         });
         console.log(`update student info of student ${username} successful`);
         return {
-            status: true, 
+            status: true,
             data: "update student info successful"
         };
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         return {
-            status: false, 
+            status: false,
             data: e
         };
     }
@@ -236,7 +235,7 @@ async function getStudentBasicInfoFromDB(username) {
             isError: false,
             data: "student info not exist"
         }
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         return {
             status: false,
@@ -253,10 +252,10 @@ async function getStudentBasicInfoFromDB(username) {
  * @param {import('fetch-cookie')} fetch 
  * @returns 
  */
-async function getStudentBasicInfo (username, loginResultCode, fetch) {
+async function getStudentBasicInfo(username, loginResultCode, fetch) {
     let loginHomeOption = {
         method: 'GET',
-        uri: `https://system8.ntunhs.edu.tw/myNTUNHS_student/Common/UserControls/loginModule.aspx?txtid=${username}&code=${loginResultCode[1]}&from=OVGfeJ71k85Va+5tUAkRpREuBeu/vj73Xq3Nr9sDoY5sDt38lS4gFsKrX0qYogYUVoxr8f++8G+yMZLEa9IDN5SWFS76zmop52j0OW69Fks=&select=student`,
+        uri: `https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Main/Index_student.aspx?first=true`,
     };
     let homeFetchRes = await fetch(loginHomeOption.uri, {
         method: 'GET',
@@ -267,7 +266,7 @@ async function getStudentBasicInfo (username, loginResultCode, fetch) {
         let homeBody = await homeFetchRes.text();
         let $ = cheerio.load(homeBody);
         let Profile = $('#ctl00_tableProfile tr');
-    
+
         let stuInfo = [];
         for (let i = 0; i < Profile.length; i++) {
             let td = Profile.eq(i).find('td');
@@ -344,11 +343,4 @@ async function setStudentStayedSem(sessionStuInfo, fetch) {
         allSemno.push(`${i}2`);
     }
     sessionStuInfo.allSemno = allSemno;
-}
-
-function logCookies(jar) {
-    jar._jar.store.getAllCookies(function (err, cookieArray) {
-        if (err) throw new Error('Failed to get cookies');
-        console.log(JSON.stringify(cookieArray, null, 4));
-    });
 }
