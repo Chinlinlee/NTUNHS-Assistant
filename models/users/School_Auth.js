@@ -6,6 +6,7 @@ const { URL, URLSearchParams } = require('url');
 const myFunc = require('../../routes/My_Func');
 const puppeteer = require("puppeteer");
 const { EventEmitter } = require('stream');
+const { cache } = require('ejs');
 
 class NtunhsAuthHandler {
     constructor(req) {
@@ -28,6 +29,13 @@ class NtunhsAuthHandler {
 
         let loginBtn = await page.waitForSelector("#btnLogin");
         await loginBtn.click();
+
+        try {
+            let multiUserType = await page.waitForSelector("#ddlSystype", {timeout: 500});
+            await multiUserType.select("student");
+            await loginBtn.click();
+        } catch(e) {}
+
         page.setRequestInterception(true);
         page.on("request", async req => {
             if (req.url().includes("loginModule")) {
